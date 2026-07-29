@@ -29,14 +29,7 @@ return new class () extends Migration {
 
             $Table->boolean('IsActive')->default(true);
 
-            $Table->unsignedBigInteger('CreatedBy')->nullable();
-            $Table->dateTime('CreatedDate')->useCurrent();
-
-            $Table->unsignedBigInteger('UpdatedBy')->nullable();
-            $Table->dateTime('UpdatedDate')->nullable();
-
-            $Table->unsignedBigInteger('DeletedBy')->nullable();
-            $Table->dateTime('DeletedDate')->nullable();
+            $Table->auditColumns();
 
             $Table->foreign('ParentID')
                   ->references('ID')
