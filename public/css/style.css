@@ -1,0 +1,15 @@
+body {
+    background: #f8f9fa;
+}
+
+.hero {
+    min-height: 80vh;
+}
+
+.display-4 {
+    font-weight: 700;
+}
+
+.rounded-circle {
+    border: 8px solid white;
+}

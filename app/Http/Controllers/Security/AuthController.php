@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Security;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Security\LoginRequest;
+use App\Models\Security\ScUser;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
@@ -15,20 +17,15 @@ class AuthController extends Controller
 
     public function store(LoginRequest $request)
     {
-        $credentials = [
-            'Username' => $request->Username,
-            'Password' => $request->Password,
-        ];
-
         if (!Auth::attempt([
-            'Username' => $credentials['Username'],
-            'password' => $credentials['Password'],
+            'Username' => $request->Username,
+            'password' => $request->Password,
         ])) {
 
             return back()
                 ->withInput()
                 ->withErrors([
-                    'Username' => 'Username atau Password salah.',
+                    'Username' => 'Username atau Password salah.'
                 ]);
         }
 

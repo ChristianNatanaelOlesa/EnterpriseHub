@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('ms_directorate', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->id('DirectorateID');
 
             $table->unsignedBigInteger('CompanyID');
 
@@ -21,15 +21,10 @@ return new class () extends Migration {
             $table->auditColumns();
 
             $table->foreign('CompanyID')
-                ->references('ID')
-                ->on('ms_company')
-                ->cascadeOnUpdate()
-                ->restrictOnDelete();
-
-            $table->unique(['CompanyID', 'DirectorateCode']);
-
-            $table->index('CompanyID');
-            $table->index('IsActive');
+                    ->references('CompanyID')
+                    ->on('ms_company')
+                    ->cascadeOnUpdate()
+                    ->restrictOnDelete();
         });
     }
 

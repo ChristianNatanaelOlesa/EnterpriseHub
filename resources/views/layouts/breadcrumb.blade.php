@@ -1,19 +1,21 @@
-<nav>
+<div class="content-header">
 
-    <ol class="breadcrumb">
+    <div class="container-fluid">
 
-        <li class="breadcrumb-item">
+        <div class="row">
 
-            Home
+            <div class="col-sm-6">
 
-        </li>
+                <h1 class="m-0">
 
-        <li class="breadcrumb-item active">
+                    @yield('title')
 
-            @yield('title')
+                </h1>
 
-        </li>
+            </div>
 
-    </ol>
+        </div>
 
-</nav>
+    </div>
+
+</div>

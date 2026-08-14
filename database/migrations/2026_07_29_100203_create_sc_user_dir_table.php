@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('sc_user_dir', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->bigIncrements('UserDirID');
 
             $table->unsignedBigInteger('UserID');
             $table->unsignedBigInteger('DirectorateID');
@@ -26,11 +26,11 @@ return new class () extends Migration {
             $table->dateTime('DeletedDate')->nullable();
 
             $table->foreign('UserID')
-                ->references('ID')
+                ->references('UserID')
                 ->on('sc_user');
 
             $table->foreign('DirectorateID')
-                ->references('ID')
+                ->references('DirectorateID')
                 ->on('ms_directorate');
 
             $table->unique(['UserID', 'DirectorateID']);

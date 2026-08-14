@@ -9,28 +9,35 @@ class RoleMenuSeeder extends Seeder
 {
     public function run(): void
     {
-        $SuperAdminID = DB::table('Sc_Role')
+        $SuperAdminID = DB::table('sc_role')
             ->where('Code', 'SUPERADMIN')
-            ->value('ID');
+            ->value('RoleID');
 
-        $Menus = DB::table('Sc_Menu')->get();
+        if (!$SuperAdminID) {
+            return;
+        }
+
+        $Menus = DB::table('sc_menu')
+            ->where('IsActive', true)
+            ->get();
 
         foreach ($Menus as $Menu) {
-            DB::table('Sc_RoleMenu')->updateOrInsert(
+
+            DB::table('sc_role_menu')->updateOrInsert(
                 [
                     'RoleID' => $SuperAdminID,
-                    'MenuID' => $Menu->ID,
+                    'MenuID' => $Menu->MenuID,
                 ],
                 [
-                    'CanOpen' => true,
-                    'CanAdd' => true,
-                    'CanEdit' => true,
-                    'CanDelete' => true,
-                    'CanPrint' => true,
-                    'CanExport' => true,
+                    'CanOpen'    => true,
+                    'CanAdd'     => true,
+                    'CanEdit'    => true,
+                    'CanDelete'  => true,
+                    'CanPrint'   => true,
+                    'CanExport'  => true,
                     'CanApprove' => true,
-                    'IsActive' => true,
-                    'CreatedDate' => now(),
+                    'IsActive'   => true,
+                    'UpdatedDate' => now(),
                 ]
             );
         }

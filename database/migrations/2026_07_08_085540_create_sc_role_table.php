@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Sc_Role', function (Blueprint $Table) {
+        Schema::create('sc_role', function (Blueprint $Table) {
 
-            $Table->id('ID');
+            $Table->id('RoleID');
 
             $Table->string('Code', 30)->unique();
 
@@ -26,6 +26,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('Sc_Role');
+        Schema::dropIfExists('sc_role');
     }
 };

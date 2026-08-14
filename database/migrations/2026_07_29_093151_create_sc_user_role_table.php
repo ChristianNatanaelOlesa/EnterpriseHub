@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('sc_user_role', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->bigIncrements('UserRoleID');
 
             $table->unsignedBigInteger('UserID');
             $table->unsignedBigInteger('RoleID');
@@ -19,11 +19,11 @@ return new class () extends Migration {
             $table->auditColumns();
 
             $table->foreign('UserID')
-                ->references('ID')
+                ->references('UserID')
                 ->on('sc_user');
 
             $table->foreign('RoleID')
-                ->references('ID')
+                ->references('RoleID')
                 ->on('sc_role');
 
             $table->unique(['UserID', 'RoleID']);

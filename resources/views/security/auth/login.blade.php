@@ -1,43 +1,84 @@
-@extends('layouts.app')
+@extends('layouts.auth')
 
 @section('title', 'Login')
 
 @section('content')
 
-<div class="row justify-content-center mt-5">
+<div class="card card-outline card-primary">
 
-    <div class="col-md-4">
+    <div class="card-header text-center">
 
-        <x-card>
+        <a href="#" class="h3">
+            <b>Enterprise</b>Hub
+        </a>
 
-            <x-slot:header>
+    </div>
 
-                Login
+    <div class="card-body">
 
-            </x-slot:header>
+        <p class="login-box-msg">
+            Sign in to start your session
+        </p>
 
-            <form method="POST" action="{{ route('login.store') }}">
+        <form method="POST" action="{{ route('login.store') }}">
 
-                @csrf
+            @csrf
 
-                <x-form.input
+            <div class="input-group mb-3">
+
+                <input
+                    type="text"
+                    class="form-control @error('Username') is-invalid @enderror"
                     name="Username"
-                    label="Username"
+                    placeholder="Username"
+                    value="{{ old('Username') }}"
                     required
-                />
+                >
 
-                <x-form.input
-                    name="Password"
-                    label="Password"
+                <div class="input-group-text">
+                    <span class="bi bi-person"></span>
+                </div>
+
+            </div>
+
+            @error('Username')
+                <div class="text-danger mb-3">
+                    {{ $message }}
+                </div>
+            @enderror
+
+            <div class="input-group mb-3">
+
+                <input
                     type="password"
+                    class="form-control"
+                    name="Password"
+                    placeholder="Password"
                     required
-                />
+                >
 
-                <x-button.save />
+                <div class="input-group-text">
+                    <span class="bi bi-lock-fill"></span>
+                </div>
 
-            </form>
+            </div>
 
-        </x-card>
+            <div class="row">
+
+                <div class="col-12">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100"
+                    >
+                        Sign In
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
 
     </div>
 

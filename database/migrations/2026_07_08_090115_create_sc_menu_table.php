@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Sc_Menu', function (Blueprint $Table) {
+        Schema::create('sc_menu', function (Blueprint $Table) {
 
-            $Table->bigIncrements('ID');
+            $Table->bigIncrements('MenuID');
 
             $Table->unsignedBigInteger('ParentID')->nullable();
 
@@ -31,10 +31,6 @@ return new class () extends Migration {
 
             $Table->auditColumns();
 
-            $Table->foreign('ParentID')
-                  ->references('ID')
-                  ->on('Sc_Menu');
-
             $Table->index('ParentID');
             $Table->index('Code');
             $Table->index('IsActive');
@@ -44,6 +40,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('Sc_Menu');
+        Schema::dropIfExists('sc_menu');
     }
 };

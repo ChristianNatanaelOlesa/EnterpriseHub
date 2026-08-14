@@ -7,15 +7,17 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Sc_User', function (Blueprint $Table) {
+        Schema::create('sc_user', function (Blueprint $Table) {
 
-            $Table->bigIncrements('ID');
+            $Table->bigIncrements('UserID');
 
             $Table->string('Username', 50)->unique();
 
+            $Table->string('FullName', 100);
+
             $Table->string('Password', 255);
 
-            $Table->string('FullName', 100);
+            $Table->unsignedBigInteger('RoleID')->nullable();
 
             $Table->string('Email', 100)->nullable();
 
@@ -28,16 +30,11 @@ return new class () extends Migration {
             $Table->boolean('IsActive')->default(true);
 
             $Table->auditColumns();
-
-            $Table->index('Username');
-            $Table->index('Email');
-            $Table->index('IsActive');
-
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('Sc_User');
+        Schema::dropIfExists('sc_user');
     }
 };

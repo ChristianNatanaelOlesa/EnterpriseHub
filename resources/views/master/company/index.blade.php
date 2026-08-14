@@ -4,111 +4,92 @@
 
 @section('content')
 
-<x-alert />
+<div class="card">
 
-<x-toolbar title="Company">
+    <div class="card-header d-flex justify-content-between">
 
-    <a href="{{ route('companies.create') }}"
-       class="btn btn-primary">
+        <h5>Company</h5>
 
-        <i class="bi bi-plus"></i>
+        <a href="{{ route('company.create') }}"
+           class="btn btn-primary">
 
-        Add Company
+            Tambah
 
-    </a>
+        </a>
 
-</x-toolbar>
+    </div>
 
-<x-card>
+    <form>
 
-<table class="table table-hover">
+        <input
+            type="text"
+            name="search"
+            value="{{ request('search') }}">
 
-    <thead>
+        <button>
 
-        <tr>
+            Search
 
-            <th width="80">Code</th>
-            <th>Name</th>
-            <th width="120">Status</th>
-            <th width="180">Action</th>
+        </button>
 
-        </tr>
+    </form>
 
-    </thead>
+    <div class="card-body">
 
-    <tbody>
+        <table class="table table-bordered">
 
-    @forelse($companies as $company)
+            <thead>
 
-        <tr>
+            <tr>
 
-            <td>{{ $company->CompanyCode }}</td>
+                <th>Kode</th>
 
-            <td>{{ $company->CompanyName }}</td>
+                <th>Nama</th>
 
-            <td>
+                <th>Status</th>
 
-                @if($company->IsActive)
+                <th width="180">Action</th>
 
-                    <span class="badge bg-success">
+            </tr>
 
-                        Active
+            </thead>
 
-                    </span>
+            <tbody>
 
-                @else
+            @foreach($companies as $company)
 
-                    <span class="badge bg-danger">
+                <tr>
 
-                        Inactive
+                    <td>{{ $company->CompanyCode }}</td>
 
-                    </span>
+                    <td>{{ $company->CompanyName }}</td>
 
-                @endif
+                    <td>
 
-            </td>
+                        {{ $company->IsActive ? 'Active':'Inactive' }}
 
-            <td>
-                <a href="{{ route('companies.edit', $company) }}"
-                class="btn btn-warning btn-sm">
-                    Edit
-                </a>
+                    </td>
 
-                <form method="POST"
-                    action="{{ route('companies.destroy', $company) }}"
-                    class="d-inline">
+                    <td>
 
-                    @csrf
-                    @method('DELETE')
+                        Edit
 
-                    <button class="btn btn-danger btn-sm"
-                            onclick="return confirm('Yakin ingin menghapus data ini?')">
                         Delete
-                    </button>
 
-                </form>
-            </td>
+                    </td>
 
-        </tr>
+                </tr>
 
-    @empty
+            @endforeach
 
-        <tr>
+            </tbody>
 
-            <td colspan="4" class="text-center">
+        </table>
 
-                No Data
+        {{ $companies->links() }}
 
-            </td>
+    </div>
 
-        </tr>
-
-    @endforelse
-
-    </tbody>
-
-</table>
-
-</x-card>
+</div>
 
 @endsection

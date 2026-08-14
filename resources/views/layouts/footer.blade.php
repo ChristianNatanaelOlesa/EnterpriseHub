@@ -1,5 +1,9 @@
-<footer class="text-center py-3 border-top">
+<footer class="main-footer">
 
-    EnterpriseHub Version 1.0
+    <strong>
+
+        EnterpriseHub © {{ date('Y') }}
+
+    </strong>
 
 </footer>

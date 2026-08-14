@@ -9,19 +9,27 @@ return new class () extends Migration {
     {
         Schema::create('ms_company', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->id('CompanyID');
 
             $table->string('CompanyCode', 20)->unique();
-            $table->string('CompanyName', 200);
-            $table->string('CompanyAlias', 100)->nullable();
+
+            $table->string('CompanyName', 100);
+
+            $table->string('Address')->nullable();
+
+            $table->string('Phone', 30)->nullable();
+
+            $table->string('Email', 100)->nullable();
 
             $table->boolean('IsActive')->default(true);
 
-            $table->auditColumns();
+            $table->string('CreatedBy', 50)->nullable();
 
-            $table->index('CompanyCode');
-            $table->index('CompanyName');
-            $table->index('IsActive');
+            $table->timestamp('CreatedDate')->nullable();
+
+            $table->string('UpdatedBy', 50)->nullable();
+
+            $table->timestamp('UpdatedDate')->nullable();
         });
     }
 

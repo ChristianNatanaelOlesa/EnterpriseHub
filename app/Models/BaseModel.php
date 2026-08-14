@@ -3,31 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Traits\AuditTrail;
 
-abstract class BaseModel extends Model
+class BaseModel extends Model
 {
-    /**
-     * Primary Key
-     */
-    protected $primaryKey = 'ID';
+    use AuditTrail;
 
-    /**
-     * Laravel Timestamp
-     */
     public $timestamps = false;
 
-    /**
-     * Guarded
-     */
     protected $guarded = [];
 
-    /**
-     * Incrementing
-     */
-    public $incrementing = true;
-
-    /**
-     * Key Type
-     */
-    protected $keyType = 'int';
+    protected $auditColumns = true;
 }

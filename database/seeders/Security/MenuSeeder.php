@@ -9,112 +9,115 @@ class MenuSeeder extends Seeder
 {
     public function run(): void
     {
-        // Dashboard
-        DB::table('Sc_Menu')->updateOrInsert(
+        $Menus = [
+
             [
-                'Code' => 'DASHBOARD',
-            ],
-            [
-                'ParentID' => null,
-                'Name' => 'Dashboard',
-                'Route' => 'dashboard.index',
-                'URL' => null,
-                'Icon' => 'bi-speedometer2',
+                'Code'      => 'DASHBOARD',
+                'Name'      => 'Dashboard',
+                'Route'     => 'dashboard',
+                'Icon'      => 'bi bi-speedometer2',
                 'SortOrder' => 1,
-                'IsMenu' => true,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
-
-        // Master
-        DB::table('Sc_Menu')->updateOrInsert(
-            [
-                'Code' => 'MASTER',
+                'IsMenu'    => true,
+                'IsActive'  => true,
             ],
-            [
-                'ParentID' => null,
-                'Name' => 'Master',
-                'Route' => null,
-                'URL' => null,
-                'Icon' => 'bi-database',
-                'SortOrder' => 2,
-                'IsMenu' => false,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
 
-        $MasterID = DB::table('Sc_Menu')
+            [
+                'Code'      => 'MASTER',
+                'Name'      => 'Master',
+                'Icon'      => 'bi bi-database',
+                'SortOrder' => 10,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+            [
+                'Code'      => 'MASTER_COMPANY',
+                'Name'      => 'Company',
+                'Route'     => 'master.company.index',
+                'Icon'      => 'bi bi-building',
+                'SortOrder' => 11,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+            [
+                'Code'      => 'SECURITY',
+                'Name'      => 'Security',
+                'Icon'      => 'bi bi-shield-lock',
+                'SortOrder' => 20,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+            [
+                'Code'      => 'SECURITY_USERS',
+                'Name'      => 'Users',
+                'Route'     => 'security.users.index',
+                'Icon'      => 'bi bi-people',
+                'SortOrder' => 21,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+            [
+                'Code'      => 'SECURITY_ROLES',
+                'Name'      => 'Roles',
+                'Route'     => 'security.roles.index',
+                'Icon'      => 'bi bi-person-badge',
+                'SortOrder' => 22,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+            [
+                'Code'      => 'SECURITY_MENUS',
+                'Name'      => 'Menus',
+                'Route'     => 'security.menus.index',
+                'Icon'      => 'bi bi-list',
+                'SortOrder' => 23,
+                'IsMenu'    => true,
+                'IsActive'  => true,
+            ],
+
+        ];
+
+        foreach ($Menus as $Menu) {
+
+            DB::table('sc_menu')->updateOrInsert(
+                [
+                    'Code' => $Menu['Code'],
+                ],
+                array_merge(
+                    $Menu,
+                    [
+                        'CreatedDate' => now(),
+                    ]
+                )
+            );
+        }
+
+        $MasterID = DB::table('sc_menu')
             ->where('Code', 'MASTER')
-            ->value('ID');
+            ->value('MenuID');
 
-        DB::table('Sc_Menu')->updateOrInsert(
-            [
-                'Code' => 'MASTER_COMPANY',
-            ],
-            [
+        DB::table('sc_menu')
+            ->where('Code', 'MASTER_COMPANY')
+            ->update([
                 'ParentID' => $MasterID,
-                'Name' => 'Company',
-                'Route' => 'master.company.index',
-                'URL' => null,
-                'Icon' => 'bi-building',
-                'SortOrder' => 1,
-                'IsMenu' => true,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
+            ]);
 
-        DB::table('Sc_Menu')->updateOrInsert(
-            [
-                'Code' => 'MASTER_DIRECTORATE',
-            ],
-            [
-                'ParentID' => $MasterID,
-                'Name' => 'Directorate',
-                'Route' => 'master.directorate.index',
-                'URL' => null,
-                'Icon' => 'bi-diagram-3',
-                'SortOrder' => 2,
-                'IsMenu' => true,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
+        $SecurityID = DB::table('sc_menu')
+            ->where('Code', 'SECURITY')
+            ->value('MenuID');
 
-        DB::table('Sc_Menu')->updateOrInsert(
-            [
-                'Code' => 'MASTER_DIVISION',
-            ],
-            [
-                'ParentID' => $MasterID,
-                'Name' => 'Division',
-                'Route' => 'master.division.index',
-                'URL' => null,
-                'Icon' => 'bi-diagram-2',
-                'SortOrder' => 3,
-                'IsMenu' => true,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
-
-        DB::table('Sc_Menu')->updateOrInsert(
-            [
-                'Code' => 'MASTER_DEPARTMENT',
-            ],
-            [
-                'ParentID' => $MasterID,
-                'Name' => 'Department',
-                'Route' => 'master.department.index',
-                'URL' => null,
-                'Icon' => 'bi-diagram-2-fill',
-                'SortOrder' => 4,
-                'IsMenu' => true,
-                'IsActive' => true,
-                'CreatedDate' => now(),
-            ]
-        );
+        DB::table('sc_menu')
+            ->whereIn('Code', [
+                'SECURITY_USERS',
+                'SECURITY_ROLES',
+                'SECURITY_MENUS',
+            ])
+            ->update([
+                'ParentID' => $SecurityID,
+            ]);
     }
 }

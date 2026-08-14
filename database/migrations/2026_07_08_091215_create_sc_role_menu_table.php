@@ -7,9 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Sc_RoleMenu', function (Blueprint $Table) {
+        Schema::create('sc_role_menu', function (Blueprint $Table) {
 
-            $Table->bigIncrements('ID');
+            $Table->bigIncrements('RoleMenuID');
 
             $Table->unsignedBigInteger('RoleID');
             $Table->unsignedBigInteger('MenuID');
@@ -27,11 +27,11 @@ return new class () extends Migration {
             $Table->auditColumns();
 
             $Table->foreign('RoleID')
-                ->references('ID')
+                ->references('RoleID')
                 ->on('Sc_Role');
 
             $Table->foreign('MenuID')
-                ->references('ID')
+                ->references('MenuID')
                 ->on('Sc_Menu');
 
             $Table->unique(['RoleID', 'MenuID']);
@@ -44,6 +44,6 @@ return new class () extends Migration {
 
     public function down(): void
     {
-        Schema::dropIfExists('Sc_RoleMenu');
+        Schema::dropIfExists('sc_role_menu');
     }
 };

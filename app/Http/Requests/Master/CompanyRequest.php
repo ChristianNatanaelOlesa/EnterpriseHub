@@ -2,35 +2,48 @@
 
 namespace App\Http\Requests\Master;
 
-use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CompanyRequest extends BaseRequest
+class CompanyRequest extends FormRequest
 {
+    public function authorize(): bool
+    {
+        return true;
+    }
+
     public function rules(): array
     {
-        $id = $this->route('id');
+        $companyId = $this->route('company');
 
         return [
+
             'CompanyCode' => [
+
                 'required',
+
                 'max:20',
-                Rule::unique('ms_company', 'CompanyCode')->ignore($id, 'ID'),
+
+                Rule::unique(
+                    'Ms_Company',
+                    'CompanyCode'
+                )->ignore(
+                    $companyId,
+                    'CompanyID'
+                )
+
             ],
 
-            'CompanyName' => [
-                'required',
-                'max:200',
-            ],
+            'CompanyName' => 'required|max:100',
 
-            'CompanyAlias' => [
-                'nullable',
-                'max:100',
-            ],
+            'CompanyAddress' => 'nullable|max:255',
 
-            'IsActive' => [
-                'boolean',
-            ],
+            'CompanyPhone' => 'nullable|max:30',
+
+            'CompanyEmail' => 'nullable|email',
+
+            'IsActive' => 'required|boolean'
+
         ];
     }
 }

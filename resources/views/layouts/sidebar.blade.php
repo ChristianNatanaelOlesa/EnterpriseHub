@@ -1,44 +1,112 @@
-<div class="list-group rounded-0 vh-100">
+<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
 
-    <a href="/dashboard"
-       class="list-group-item list-group-item-action">
+    <div class="sidebar-brand">
 
-        Dashboard
+        <a href="{{ route('dashboard') }}" class="brand-link">
 
-    </a>
+            <span class="brand-text fw-semibold">
 
-    <div class="list-group-item fw-bold">
+                EnterpriseHub
 
-        MASTER
+            </span>
+
+        </a>
 
     </div>
 
-    <a href="{{ route('companies.index') }}"
-       class="list-group-item list-group-item-action">
+    <div class="sidebar-wrapper">
 
-        Company
+        <nav class="mt-2">
 
-    </a>
+            <ul class="nav sidebar-menu flex-column"
+                data-lte-toggle="treeview"
+                role="menu"
+                data-accordion="false">
 
-    <a href="#"
-       class="list-group-item list-group-item-action">
+                <li class="nav-item">
 
-        Directorate
+                    <a href="{{ route('dashboard') }}"
+                       class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
 
-    </a>
+                        <i class="nav-icon bi bi-speedometer2"></i>
 
-    <a href="#"
-       class="list-group-item list-group-item-action">
+                        <p>
 
-        Division
+                            Dashboard
 
-    </a>
+                        </p>
 
-    <a href="#"
-       class="list-group-item list-group-item-action">
+                    </a>
 
-        Department
+                </li>
 
-    </a>
+                <li class="nav-header">
 
-</div>
+                    MASTER
+
+                </li>
+
+                <li class="nav-item">
+
+                    <a href="#"
+                       class="nav-link">
+
+                        <i class="nav-icon bi bi-building"></i>
+
+                        <p>
+
+                            Master
+
+                            <i class="nav-arrow bi bi-chevron-right"></i>
+
+                        </p>
+
+                    </a>
+
+                    <ul class="nav nav-treeview">
+
+                        <li class="nav-item">
+
+                            <a href="{{ route('master.company.index') }}"
+                               class="nav-link {{ request()->routeIs('master.company.*') ? 'active' : '' }}">
+
+                                <i class="nav-icon bi bi-circle"></i>
+
+                                <p>
+
+                                    Company
+
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                        <li class="nav-item">
+
+                            <a href="{{ route('security.users.index')}}"
+                            class="nav-link {{ request()->routeIs('security.users.*') ? 'active' : '' }}">
+
+                                <i class="nav-icon bi bi-people"></i>
+
+                                <p>
+
+                                    Users
+
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</aside>

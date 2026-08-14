@@ -1,16 +1,66 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+<nav class="app-header navbar navbar-expand bg-body">
 
     <div class="container-fluid">
 
-        <a class="navbar-brand fw-bold" href="#">
-            EnterpriseHub
-        </a>
+        <ul class="navbar-nav">
 
-        <div class="ms-auto">
+            <li class="nav-item">
 
-            Administrator
+                <a class="nav-link"
+                   data-lte-toggle="sidebar"
+                   href="#"
+                   role="button">
 
-        </div>
+                    <i class="bi bi-list"></i>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+        <ul class="navbar-nav ms-auto">
+
+            <li class="nav-item dropdown">
+
+                <a class="nav-link dropdown-toggle"
+                   href="#"
+                   data-bs-toggle="dropdown">
+
+                    <i class="bi bi-person-circle me-1"></i>
+
+                    {{ auth()->user()->FullName }}
+
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end">
+
+                    <li>
+
+                        <form method="POST"
+                              action="{{ route('logout') }}">
+
+                            @csrf
+
+                            <button
+                                type="submit"
+                                class="dropdown-item">
+
+                                <i class="bi bi-box-arrow-right me-2"></i>
+
+                                Logout
+
+                            </button>
+
+                        </form>
+
+                    </li>
+
+                </ul>
+
+            </li>
+
+        </ul>
 
     </div>
 

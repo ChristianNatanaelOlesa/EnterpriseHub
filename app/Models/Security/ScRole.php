@@ -1,23 +1,27 @@
 <?php
 
-namespace App\Models\Models\Security;
+namespace App\Models\Security;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\BaseModel;
-use App\Models\Security\ScUser;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class ScRole extends BaseModel
+class ScRole extends Model
 {
     protected $table = 'sc_role';
 
-    public function users(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            ScUser::class,
-            'sc_user_role',
-            'RoleID',
-            'UserID'
-        );
-    }
+    protected $primaryKey = 'RoleID';
+
+    public $timestamps = false;
+
+    protected $fillable = [
+        'Code',
+        'Name',
+        'Description',
+        'IsActive',
+        'CreatedBy',
+        'CreatedDate',
+        'UpdatedBy',
+        'UpdatedDate',
+        'DeletedBy',
+        'DeletedDate',
+    ];
 }

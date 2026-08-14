@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('ms_department', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->id('DepartmentID');
 
             $table->unsignedBigInteger('DivisionID');
 
@@ -21,15 +21,10 @@ return new class () extends Migration {
             $table->auditColumns();
 
             $table->foreign('DivisionID')
-                ->references('ID')
+                ->references('DivisionID')
                 ->on('ms_division')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
-
-            $table->unique(['DivisionID', 'DepartmentCode']);
-
-            $table->index('DivisionID');
-            $table->index('IsActive');
         });
     }
 

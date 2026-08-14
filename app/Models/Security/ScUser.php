@@ -11,18 +11,34 @@ class ScUser extends Authenticatable
 
     protected $table = 'sc_user';
 
-    protected $primaryKey = 'ID';
+    protected $primaryKey = 'UserID';
 
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected $fillable = [
+        'Username',
+        'FullName',
+        'Password',
+        'RoleID',
+        'Email',
+        'PhoneNumber',
+        'Photo',
+        'LastLogin',
+        'IsActive',
+        'CreatedBy',
+        'CreatedDate',
+        'UpdatedBy',
+        'UpdatedDate',
+        'DeletedBy',
+        'DeletedDate',
+    ];
 
     protected $hidden = [
         'Password',
     ];
 
     /**
-     * Password Column
+     * Laravel akan mengambil password dari kolom Password
      */
     public function getAuthPassword()
     {
@@ -30,10 +46,12 @@ class ScUser extends Authenticatable
     }
 
     /**
-     * Username Column
+     * Username login menggunakan kolom Username
      */
     public function getAuthIdentifierName()
     {
         return 'Username';
     }
+
+    // Relationship di bawah tetap seperti yang sudah Anda buat
 }

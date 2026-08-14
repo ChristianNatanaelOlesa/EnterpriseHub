@@ -3,41 +3,55 @@
 
 <head>
 
-    @include('layouts.head')
+    <meta charset="utf-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>
+
+        @yield('title', 'EnterpriseHub')
+
+    </title>
+
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js'
+    ])
 
 </head>
 
-<body>
+<body class="layout-fixed sidebar-expand-lg bg-body-tertiary">
+
+<div class="app-wrapper">
 
     @include('layouts.navbar')
 
-    <div class="container-fluid">
+    @include('layouts.sidebar')
 
-        <div class="row">
+    <main class="app-main">
 
-            <aside class="col-md-2 p-0">
+        @include('layouts.breadcrumb')
 
-                @include('layouts.sidebar')
+        <div class="app-content">
 
-            </aside>
+            <div class="container-fluid">
 
-            <main class="col-md-10 p-4">
-
-                @include('layouts.breadcrumb')
-
-                <x-alert />
+                @include('layouts.partials.alert')
 
                 @yield('content')
 
-            </main>
+            </div>
 
         </div>
 
-    </div>
+    </main>
 
     @include('layouts.footer')
 
-    @stack('scripts')
+</div>
+
+@stack('scripts')
 
 </body>
 

@@ -2,6 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Security\AuthController;
+use App\Http\Controllers\DashboardController;
+
+Route::get('/', function () {
+    return redirect('/login');
+});
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+
+    Route::post('/logout', [AuthController::class, 'destroy'])
+        ->name('logout');
+});
 
 Route::middleware('guest')->group(function () {
 
@@ -11,17 +25,6 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'store'])
         ->name('login.store');
 
-});
-
-Route::middleware('auth')->group(function () {
-
-    Route::post('/logout', [AuthController::class, 'destroy'])
-        ->name('logout');
-
-});
-
-Route::get('/', function () {
-    return redirect('/login');
 });
 
 require __DIR__.'/security.php';

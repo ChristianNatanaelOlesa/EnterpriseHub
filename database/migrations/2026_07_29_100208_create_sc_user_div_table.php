@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('sc_user_div', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->bigIncrements('UserDivID');
 
             $table->unsignedBigInteger('UserID');
             $table->unsignedBigInteger('DivisionID');
@@ -19,11 +19,11 @@ return new class () extends Migration {
             $table->auditColumns();
 
             $table->foreign('UserID')
-                ->references('ID')
+                ->references('UserID')
                 ->on('sc_user');
 
             $table->foreign('DivisionID')
-                ->references('ID')
+                ->references('DivisionID')
                 ->on('ms_division');
 
             $table->unique(['UserID', 'DivisionID']);

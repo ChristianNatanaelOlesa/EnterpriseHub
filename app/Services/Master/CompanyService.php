@@ -2,55 +2,40 @@
 
 namespace App\Services\Master;
 
-use App\Models\Master\MsCompany;
+use App\Repositories\Master\CompanyRepository;
 
 class CompanyService
 {
-    public function getAll()
-    {
-        return MsCompany::query()
-            ->whereNull('DeletedDate')
-            ->orderBy('CompanyCode')
-            ->get();
+    protected CompanyRepository $repository;
+
+    public function __construct(
+        CompanyRepository $repository
+    ) {
+        $this->repository = $repository;
     }
 
-    public function find(int $id): MsCompany
+    public function getList(?string $search = null)
     {
-        return MsCompany::findOrFail($id);
+        return $this->repository->search($search);
     }
 
-    public function store(array $data): MsCompany
+    public function create(array $data)
     {
-        $data['CreatedBy'] = null;
-
-        return MsCompany::create($data);
+        return $this->repository->create($data);
     }
 
-    public function update(int $id, array $data): MsCompany
+    public function update($id, array $data)
     {
-        $company = $this->find($id);
-
-        $data['UpdatedBy'] = null;
-
-        $company->update($data);
-
-        return $company;
+        return $this->repository->update($id, $data);
     }
 
-    public function delete(MsCompany $company): void
+    public function delete($id)
     {
-        $company->DeletedBy = null;
-        $company->DeletedDate = now();
-
-        $company->save();
+        return $this->repository->delete($id);
     }
 
-    public function destroy(int $id): void
+    public function find($id)
     {
-        $company = $this->find($id);
-
-        $company->delete();
+        return $this->repository->find($id);
     }
-
-
 }

@@ -9,7 +9,7 @@ return new class () extends Migration {
     {
         Schema::create('sc_user_comp', function (Blueprint $table) {
 
-            $table->bigIncrements('ID');
+            $table->bigIncrements('UserCompID');
 
             $table->unsignedBigInteger('UserID');
             $table->unsignedBigInteger('CompanyID');
@@ -19,11 +19,11 @@ return new class () extends Migration {
             $table->auditColumns();
 
             $table->foreign('UserID')
-                ->references('ID')
+                ->references('UserID')
                 ->on('sc_user');
 
             $table->foreign('CompanyID')
-                ->references('ID')
+                ->references('CompanyID')
                 ->on('ms_company');
 
             $table->unique(['UserID', 'CompanyID']);

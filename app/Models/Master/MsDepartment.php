@@ -3,14 +3,14 @@
 namespace App\Models\Master;
 
 use App\Models\BaseModel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Master\MsDivision;
 
 class MsDepartment extends BaseModel
 {
     protected $table = 'ms_department';
 
-    public function division(): BelongsTo
+    public function division()
     {
-        return $this->belongsTo(MsDivision::class, 'DivisionID', 'ID');
+        return $this->belongsTo(MsDivision::class, 'DivisionID', 'DivisionID');
     }
 }

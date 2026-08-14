@@ -2,7 +2,6 @@
 
 namespace App\Models\Security;
 
-use Illuminate\Database\Eloquent\Model;
 use App\Models\BaseModel;
 
 class ScUserRole extends BaseModel
