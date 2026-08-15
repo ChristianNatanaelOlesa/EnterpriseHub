@@ -37,21 +37,31 @@ class ScUser extends Authenticatable
         'Password',
     ];
 
-    /**
-     * Laravel akan mengambil password dari kolom Password
-     */
     public function getAuthPassword()
     {
         return $this->Password;
     }
 
-    /**
-     * Username login menggunakan kolom Username
-     */
     public function getAuthIdentifierName()
     {
         return 'Username';
     }
 
-    // Relationship di bawah tetap seperti yang sudah Anda buat
+    public function roles()
+    {
+        return $this->belongsToMany(
+            ScRole::class,
+            'sc_user_role',
+            'UserID',
+            'RoleID'
+        )->withPivot('IsActive');
+    }
+
+    public function activeRoles()
+    {
+        return $this->roles()
+            ->wherePivot('IsActive', true)
+            ->where('sc_role.IsActive', true)
+            ->whereNull('sc_role.DeletedDate');
+    }
 }

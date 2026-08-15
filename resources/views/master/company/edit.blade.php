@@ -1,54 +1,57 @@
 @extends('layouts.app')
 
+@section('title', 'Edit Company')
+
 @section('content')
 
-<div class="container">
+    <x-alert />
 
-    <h3>Tambah Company</h3>
+    <x-card>
 
-    <form method="POST" action="{{ route('companies.update', $company) }}">
+        <div class="card-header">
 
-    @csrf
-    @method('PUT')
+            <h5 class="mb-0">
+                Edit Company
+            </h5>
 
-        <div class="mb-3">
-            <x-form.input label="Company Code" name="CompanyCode" :value="$company->CompanyCode"/>
         </div>
 
-        <div class="mb-3">
-            <label>Company Name</label>
-            <input type="text"
-                   name="CompanyName"
-                   class="form-control"
-                   value="{{ old('CompanyName') }}">
+        <div class="card-body">
+
+            <form method="POST" action="{{ route('master.company.update', $company->CompanyID) }}">
+
+                @csrf
+
+                @method('PUT')
+
+                <x-form.input label="Company Code" name="CompanyCode" :value="old('CompanyCode', $company->CompanyCode)" required="true" />
+
+                <x-form.input label="Company Name" name="CompanyName" :value="old('CompanyName', $company->CompanyName)" required="true" />
+
+                <x-form.input label="Address" name="Address" :value="old('Address', $company->Address)" />
+
+                <x-form.input label="Phone" name="Phone" :value="old('Phone', $company->Phone)" />
+
+                <x-form.input label="Email" name="Email" :value="old('Email', $company->Email)" />
+
+                <x-form.checkbox label="Active" name="IsActive" :checked="$company->IsActive" />
+
+                <div class="mt-3">
+
+                    <button type="submit" class="btn btn-primary">
+                        Update
+                    </button>
+
+                    <a href="{{ route('master.company.index') }}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
         </div>
 
-        <div class="mb-3">
-            <label>Company Alias</label>
-            <input type="text"
-                   name="CompanyAlias"
-                   class="form-control"
-                   value="{{ old('CompanyAlias') }}">
-        </div>
-
-        <div class="form-check mb-3">
-            <input class="form-check-input"
-                   type="checkbox"
-                   name="IsActive"
-                   value="1"
-                   checked>
-
-            <label class="form-check-label">
-                Active
-            </label>
-        </div>
-
-        <button class="btn btn-primary">
-            Save
-        </button>
-
-    </form>
-
-</div>
+    </x-card>
 
 @endsection

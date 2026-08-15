@@ -3,8 +3,6 @@
 namespace App\Models\Master;
 
 use App\Models\BaseModel;
-use App\Models\Master\MsCompany;
-use App\Models\Master\MsDivision;
 
 class MsDirectorate extends BaseModel
 {
@@ -12,15 +10,42 @@ class MsDirectorate extends BaseModel
 
     protected $primaryKey = 'DirectorateID';
 
-    public $timestamps = false;
+    protected $fillable = [
+        'CompanyID',
+        'DirectorateCode',
+        'DirectorateName',
+        'IsActive',
+
+        'CreatedBy',
+        'CreatedDate',
+
+        'UpdatedBy',
+        'UpdatedDate',
+
+        'DeletedBy',
+        'DeletedDate',
+    ];
+
+    protected $casts = [
+        'CompanyID' => 'integer',
+        'IsActive' => 'boolean',
+    ];
 
     public function company()
     {
-        return $this->belongsTo(MsCompany::class, 'CompanyID', 'CompanyID');
+        return $this->belongsTo(
+            MsCompany::class,
+            'CompanyID',
+            'CompanyID'
+        );
     }
 
     public function divisions()
     {
-        return $this->hasMany(MsDivision::class, 'DirectorateID', 'DirectorateID');
+        return $this->hasMany(
+            MsDivision::class,
+            'DirectorateID',
+            'DirectorateID'
+        );
     }
 }

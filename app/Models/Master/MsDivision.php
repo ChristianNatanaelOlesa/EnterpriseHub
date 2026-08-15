@@ -3,20 +3,37 @@
 namespace App\Models\Master;
 
 use App\Models\BaseModel;
-use App\Models\Master\MsDirectorate;
-use App\Models\Master\MsDepartment;
 
 class MsDivision extends BaseModel
 {
     protected $table = 'ms_division';
 
+    protected $primaryKey = 'DivisionID';
+
+    protected $fillable = [
+        'DirectorateID',
+        'DivisionCode',
+        'DivisionName',
+        'IsActive',
+        'CreatedBy',
+        'CreatedDate',
+        'UpdatedBy',
+        'UpdatedDate',
+        'DeletedBy',
+        'DeletedDate',
+    ];
+
+    protected $casts = [
+        'DirectorateID' => 'integer',
+        'IsActive' => 'boolean',
+    ];
+
     public function directorate()
     {
-        return $this->belongsTo(MsDirectorate::class, 'DirectorateID', 'DirectorateID');
-    }
-
-    public function departments()
-    {
-        return $this->hasMany(MsDepartment::class, 'DivisionID', 'DivisionID');
+        return $this->belongsTo(
+            MsDirectorate::class,
+            'DirectorateID',
+            'DirectorateID'
+        );
     }
 }

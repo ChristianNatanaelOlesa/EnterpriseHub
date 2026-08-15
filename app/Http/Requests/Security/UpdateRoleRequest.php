@@ -16,20 +16,17 @@ class UpdateRoleRequest extends FormRequest
     {
         $roleId = $this->route('role');
 
+        if (is_object($roleId)) {
+            $roleId = $roleId->RoleID;
+        }
+
         return [
-
-            'Code' => [
-                'required',
-                'string',
-                'max:30',
-                Rule::unique('sc_role', 'Code')
-                    ->ignore($roleId, 'RoleID'),
-            ],
-
-            'Name' => [
+            'RoleName' => [
                 'required',
                 'string',
                 'max:100',
+                Rule::unique('sc_role', 'RoleName')
+                    ->ignore($roleId, 'RoleID'),
             ],
 
             'Description' => [
@@ -49,6 +46,7 @@ class UpdateRoleRequest extends FormRequest
             ],
 
             'permissions.*' => [
+                'nullable',
                 'array',
             ],
 
@@ -86,7 +84,6 @@ class UpdateRoleRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
-
         ];
     }
 }

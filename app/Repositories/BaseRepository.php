@@ -10,17 +10,17 @@ abstract class BaseRepository
 
     public function all()
     {
-        return $this->model->whereNull('DeletedDate')->get();
+        return $this->model
+            ->whereNull('DeletedDate')
+            ->get();
     }
 
-    public function paginate(int $perPage = 10)
+    public function find(int $id)
     {
-        return $this->model->whereNull('DeletedDate')->paginate($perPage);
-    }
-
-    public function find($id)
-    {
-        return $this->model->whereNull('DeletedDate')->findOrFail($id);
+        return $this->model
+            ->where($this->model->getKeyName(), $id)
+            ->whereNull('DeletedDate')
+            ->firstOrFail();
     }
 
     public function create(array $data)
@@ -28,17 +28,27 @@ abstract class BaseRepository
         return $this->model->create($data);
     }
 
-    public function update($id, array $data)
+    public function update(int $id, array $data)
     {
-        $record = $this->find($id);
+        $model = $this->find($id);
 
-        $record->update($data);
+        $model->update($data);
 
-        return $record;
+        return $model->fresh();
     }
 
-    public function delete($id)
+    public function delete(int $id)
     {
-        return $this->find($id)->delete();
+        $model = $this->find($id);
+
+        $model->update([
+            'IsActive' => false,
+            'DeletedBy' => auth()->check()
+                ? auth()->user()->UserID
+                : null,
+            'DeletedDate' => now(),
+        ]);
+
+        return $model->fresh();
     }
 }

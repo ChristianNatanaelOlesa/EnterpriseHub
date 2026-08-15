@@ -1,49 +1,55 @@
 @extends('layouts.app')
 
+@section('title', 'Tambah Company')
+
 @section('content')
 
-<x-alert />
+    <x-alert />
 
-<x-card>
+    <x-card>
 
-<form
-    method="POST"
-    action="{{ route('companies.store') }}"
->
+        <div class="card-header">
 
-    @csrf
+            <h5 class="mb-0">
+                Tambah Company
+            </h5>
 
-    <x-form.input
-        label="Company Code"
-        name="CompanyCode"
-        required="true"
-    />
+        </div>
 
-    <x-form.input
-        label="Company Name"
-        name="CompanyName"
-        required="true"
-    />
+        <div class="card-body">
 
-    <x-form.input
-        label="Company Alias"
-        name="CompanyAlias"
-    />
+            <form method="POST" action="{{ route('master.company.store') }}">
 
-    <x-form.checkbox
-        label="Active"
-        name="IsActive"
-        checked="true"
-    />
+                @csrf
 
-    <button
-        class="btn btn-primary"
-    >
-        Save
-    </button>
+                <x-form.input label="Company Code" name="CompanyCode" :value="old('CompanyCode')" required="true" />
 
-</form>
+                <x-form.input label="Company Name" name="CompanyName" :value="old('CompanyName')" required="true" />
 
-</x-card>
+                <x-form.input label="Address" name="Address" :value="old('Address')" />
+
+                <x-form.input label="Phone" name="Phone" :value="old('Phone')" />
+
+                <x-form.input label="Email" name="Email" :value="old('Email')" />
+
+                <x-form.checkbox label="Active" name="IsActive" checked="true" />
+
+                <div class="mt-3">
+
+                    <button type="submit" class="btn btn-primary">
+                        Save
+                    </button>
+
+                    <a href="{{ route('master.company.index') }}" class="btn btn-secondary">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </x-card>
 
 @endsection

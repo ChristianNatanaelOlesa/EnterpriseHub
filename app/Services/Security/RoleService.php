@@ -19,6 +19,11 @@ class RoleService
         return $this->repository->getPaginated(10);
     }
 
+    public function getActiveRoles()
+    {
+        return $this->repository->getActiveRoles();
+    }
+
     public function findById(int $id)
     {
         return $this->repository->findById($id);
@@ -42,34 +47,37 @@ class RoleService
             $data['CreatedDate'] = now();
 
             return $this->repository->create($data);
-
         });
     }
 
-    public function update(int $id, array $data)
-    {
-        return DB::transaction(function () use ($id, $data) {
+    public function update(
+        int $id,
+        array $data,
+        array $permissions = []
+    ) {
+        return DB::transaction(function () use (
+            $id,
+            $data,
+            $permissions
+        ) {
 
-            $data['UpdatedBy'] = auth()->user()->UserID;
+            $userId = auth()->user()->UserID;
+
+            $data['UpdatedBy'] = $userId;
             $data['UpdatedDate'] = now();
 
-            return $this->repository->update($id, $data);
-
-        });
-    }
-
-    public function syncPermissions(
-        int $roleId,
-        array $permissions
-    ): void {
-        DB::transaction(function () use ($roleId, $permissions) {
-
-            $this->repository->syncPermissions(
-                $roleId,
-                $permissions,
-                auth()->user()->UserID
+            $role = $this->repository->update(
+                $id,
+                $data
             );
 
+            $this->repository->syncPermissions(
+                $id,
+                $permissions,
+                $userId
+            );
+
+            return $role;
         });
     }
 
@@ -79,12 +87,11 @@ class RoleService
 
             return $this->repository->update($id, [
 
-                'IsActive'    => false,
-                'DeletedBy'   => auth()->user()->UserID,
+                'IsActive' => false,
+                'DeletedBy' => auth()->user()->UserID,
                 'DeletedDate' => now(),
 
             ]);
-
         });
     }
 }

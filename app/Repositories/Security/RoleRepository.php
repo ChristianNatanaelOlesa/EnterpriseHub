@@ -3,9 +3,9 @@
 namespace App\Repositories\Security;
 
 use App\Models\Security\ScRole;
-use App\Models\Security\ScMenu;
 use App\Models\Security\ScRoleMenu;
 use App\Repositories\BaseRepository;
+use Illuminate\Support\Facades\DB;
 
 class RoleRepository extends BaseRepository
 {
@@ -22,6 +22,15 @@ class RoleRepository extends BaseRepository
             ->paginate($perPage);
     }
 
+    public function getActiveRoles()
+    {
+        return $this->model
+            ->where('IsActive', true)
+            ->whereNull('DeletedDate')
+            ->orderBy('Name')
+            ->get();
+    }
+
     public function findById(int $id)
     {
         return $this->find($id);
@@ -29,9 +38,9 @@ class RoleRepository extends BaseRepository
 
     public function getMenus()
     {
-        return ScMenu::query()
-            ->whereNull('DeletedDate')
+        return DB::table('sc_menu')
             ->where('IsActive', true)
+            ->whereNull('DeletedDate')
             ->orderBy('SortOrder')
             ->orderBy('MenuID')
             ->get();
@@ -55,16 +64,18 @@ class RoleRepository extends BaseRepository
 
         foreach ($permissions as $menuId => $permission) {
 
+            $canOpen = ! empty($permission['CanOpen']);
+
             $values = [
-                'CanOpen'    => !empty($permission['CanOpen']),
-                'CanAdd'     => !empty($permission['CanAdd']),
-                'CanEdit'    => !empty($permission['CanEdit']),
-                'CanDelete'  => !empty($permission['CanDelete']),
-                'CanPrint'   => !empty($permission['CanPrint']),
-                'CanExport'  => !empty($permission['CanExport']),
-                'CanApprove' => !empty($permission['CanApprove']),
-                'IsActive'   => true,
-                'UpdatedBy'  => $userId,
+                'CanOpen' => $canOpen,
+                'CanAdd' => $canOpen && ! empty($permission['CanAdd']),
+                'CanEdit' => $canOpen && ! empty($permission['CanEdit']),
+                'CanDelete' => $canOpen && ! empty($permission['CanDelete']),
+                'CanPrint' => $canOpen && ! empty($permission['CanPrint']),
+                'CanExport' => $canOpen && ! empty($permission['CanExport']),
+                'CanApprove' => $canOpen && ! empty($permission['CanApprove']),
+                'IsActive' => true,
+                'UpdatedBy' => $userId,
                 'UpdatedDate' => $now,
             ];
 
@@ -88,41 +99,31 @@ class RoleRepository extends BaseRepository
                     ],
                     $values
                 ));
-
             }
         }
 
-        /*
-         * Menu yang tidak dikirim berarti
-         * permission-nya harus dinonaktifkan.
-         */
         $query = ScRoleMenu::query()
-    ->where('RoleID', $roleId);
+            ->where('RoleID', $roleId);
 
-        if (!empty($permissions)) {
+        if (! empty($permissions)) {
 
             $query->whereNotIn(
                 'MenuID',
                 array_keys($permissions)
             );
-
         }
 
         $query->update([
-
-            'CanOpen'    => false,
-            'CanAdd'     => false,
-            'CanEdit'    => false,
-            'CanDelete'  => false,
-            'CanPrint'   => false,
-            'CanExport'  => false,
+            'CanOpen' => false,
+            'CanAdd' => false,
+            'CanEdit' => false,
+            'CanDelete' => false,
+            'CanPrint' => false,
+            'CanExport' => false,
             'CanApprove' => false,
-
-            'IsActive'   => false,
-
-            'UpdatedBy'  => $userId,
+            'IsActive' => false,
+            'UpdatedBy' => $userId,
             'UpdatedDate' => $now,
-
         ]);
     }
 }

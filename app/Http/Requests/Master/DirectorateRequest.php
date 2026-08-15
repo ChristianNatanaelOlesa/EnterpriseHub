@@ -2,28 +2,48 @@
 
 namespace App\Http\Requests\Master;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DirectorateRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $directorateId = $this->route('directorate');
+
         return [
-            //
+            'CompanyID' => [
+                'required',
+                'integer',
+                'exists:ms_company,CompanyID',
+            ],
+
+            'DirectorateCode' => [
+                'required',
+                'max:20',
+                Rule::unique(
+                    'ms_directorate',
+                    'DirectorateCode'
+                )->ignore(
+                    $directorateId,
+                    'DirectorateID'
+                ),
+            ],
+
+            'DirectorateName' => [
+                'required',
+                'max:200',
+            ],
+
+            'IsActive' => [
+                'required',
+                'boolean',
+            ],
         ];
     }
 }

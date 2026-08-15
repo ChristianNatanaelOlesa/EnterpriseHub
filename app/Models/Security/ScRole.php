@@ -24,4 +24,23 @@ class ScRole extends Model
         'DeletedBy',
         'DeletedDate',
     ];
+
+    public function menus()
+    {
+        return $this->hasMany(
+            ScRoleMenu::class,
+            'RoleID',
+            'RoleID'
+        );
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(
+            ScUser::class,
+            'sc_user_role',
+            'RoleID',
+            'UserID'
+        )->withPivot('IsActive');
+    }
 }

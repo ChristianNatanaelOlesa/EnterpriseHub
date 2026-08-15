@@ -20,7 +20,10 @@ class RoleController extends Controller
     {
         $roles = $this->roleService->getAll();
 
-        return view('security.roles.index', compact('roles'));
+        return view(
+            'security.roles.index',
+            compact('roles')
+        );
     }
 
     public function create()
@@ -30,11 +33,16 @@ class RoleController extends Controller
 
     public function store(StoreRoleRequest $request)
     {
-        $this->roleService->store($request->validated());
+        $this->roleService->store(
+            $request->validated()
+        );
 
         return redirect()
             ->route('security.roles.index')
-            ->with('success', 'Role berhasil ditambahkan.');
+            ->with(
+                'success',
+                'Role berhasil ditambahkan.'
+            );
     }
 
     public function show(string $id)
@@ -73,25 +81,29 @@ class RoleController extends Controller
 
         $this->roleService->update(
             $id,
-            $data
-        );
-
-        $this->roleService->syncPermissions(
-            $id,
+            $data,
             $permissions
         );
 
         return redirect()
             ->route('security.roles.index')
-            ->with('success', 'Role dan permission berhasil diupdate.');
+            ->with(
+                'success',
+                'Role dan hak akses berhasil diupdate.'
+            );
     }
 
     public function destroy(string $id)
     {
-        $this->roleService->delete($id);
+        $this->roleService->delete(
+            (int) $id
+        );
 
         return redirect()
             ->route('security.roles.index')
-            ->with('success', 'Role berhasil dihapus.');
+            ->with(
+                'success',
+                'Role berhasil dihapus.'
+            );
     }
 }

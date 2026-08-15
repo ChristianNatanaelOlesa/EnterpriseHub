@@ -23,13 +23,7 @@ return new class () extends Migration {
 
             $table->boolean('IsActive')->default(true);
 
-            $table->string('CreatedBy', 50)->nullable();
-
-            $table->timestamp('CreatedDate')->nullable();
-
-            $table->string('UpdatedBy', 50)->nullable();
-
-            $table->timestamp('UpdatedDate')->nullable();
+            $table->auditColumns();
         });
     }
 

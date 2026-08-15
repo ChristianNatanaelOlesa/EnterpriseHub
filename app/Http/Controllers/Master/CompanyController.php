@@ -2,51 +2,26 @@
 
 namespace App\Http\Controllers\Master;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\BaseController;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Master\StoreCompanyRequest;
+use App\Http\Requests\Master\UpdateCompanyRequest;
 use App\Services\Master\CompanyService;
-use App\Models\Master\MsCompany;
-use App\Http\Requests\Master\CompanyRequest;
+use Illuminate\Http\Request;
 
-class CompanyController extends BaseController
+class CompanyController extends Controller
 {
-    private CompanyService $service;
+    protected CompanyService $companyService;
 
-    public function __construct(CompanyService $service)
+    public function __construct(CompanyService $companyService)
     {
-        $this->service = $service;
+        $this->companyService = $companyService;
     }
 
     public function index(Request $request)
     {
-        $companies = MsCompany::query()
-
-            ->when(
-                $request->search,
-                function ($query) use ($request) {
-
-                    $query->where(
-                        'CompanyCode',
-                        'like',
-                        "%{$request->search}%"
-                    )
-
-                    ->orWhere(
-                        'CompanyName',
-                        'like',
-                        "%{$request->search}%"
-                    );
-
-                }
-            )
-
-            ->where('IsActive', 1)
-
-            ->orderBy('CompanyCode')
-
-            ->paginate(10)
-
-            ->withQueryString();
+        $companies = $this->companyService->getAll(
+            $request->input('search')
+        );
 
         return view(
             'master.company.index',
@@ -56,35 +31,35 @@ class CompanyController extends BaseController
 
     public function create()
     {
+        return view('master.company.create');
+    }
+
+    public function store(StoreCompanyRequest $request)
+    {
+        $this->companyService->store(
+            $request->validated()
+        );
+
+        return redirect()
+            ->route('master.company.index')
+            ->with('success', 'Company berhasil ditambahkan.');
+    }
+
+    public function show(string $id)
+    {
+        $company = $this->companyService->findById((int) $id);
+
         return view(
-            'master.company.create'
+            'master.company.show',
+            compact('company')
         );
     }
 
-    public function store(
-        CompanyRequest $request
-    ) {
-        $data = $request->validated();
-
-        $data['CreatedBy'] = auth()->user()->Username;
-
-        $data['CreatedDate'] = now();
-
-        MsCompany::create($data);
-
-        return redirect()
-
-            ->route('master.company.index')
-
-            ->with(
-                'success',
-                'Company berhasil ditambahkan.'
-            );
-    }
-
-    public function edit($id)
+    public function edit(string $id)
     {
-        $company = MsCompany::findOrFail($id);
+        $company = $this->companyService->findById(
+            (int) $id
+        );
 
         return view(
             'master.company.edit',
@@ -93,50 +68,25 @@ class CompanyController extends BaseController
     }
 
     public function update(
-        CompanyRequest $request,
-        $id
+        UpdateCompanyRequest $request,
+        string $id
     ) {
-        $company = MsCompany::findOrFail($id);
-
-        $data = $request->validated();
-
-        $data['UpdatedBy'] = auth()->user()->Username;
-
-        $data['UpdatedDate'] = now();
-
-        $company->update($data);
+        $this->companyService->update(
+            (int) $id,
+            $request->validated()
+        );
 
         return redirect()
-
             ->route('master.company.index')
-
-            ->with(
-                'success',
-                'Company berhasil diubah.'
-            );
+            ->with('success', 'Company berhasil diupdate.');
     }
 
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        $company = MsCompany::findOrFail($id);
-
-        $company->update([
-
-            'IsActive' => 0,
-
-            'DeletedBy' => auth()->user()->Username,
-
-            'DeletedDate' => now()
-
-        ]);
+        $this->companyService->delete((int) $id);
 
         return redirect()
-
             ->route('master.company.index')
-
-            ->with(
-                'success',
-                'Company berhasil dinonaktifkan.'
-            );
+            ->with('success', 'Company berhasil dinonaktifkan.');
     }
 }

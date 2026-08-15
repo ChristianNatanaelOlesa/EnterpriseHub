@@ -2,28 +2,52 @@
 
 namespace App\Http\Requests\Master;
 
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class DepartmentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
+        $departmentId = $this->route('department');
+
         return [
-            //
+
+            'DivisionID' => [
+                'required',
+                'integer',
+                'exists:ms_division,DivisionID',
+            ],
+
+            'DepartmentCode' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique(
+                    'ms_department',
+                    'DepartmentCode'
+                )->ignore(
+                    $departmentId,
+                    'DepartmentID'
+                ),
+            ],
+
+            'DepartmentName' => [
+                'required',
+                'string',
+                'max:200',
+            ],
+
+            'IsActive' => [
+                'required',
+                'boolean',
+            ],
+
         ];
     }
 }

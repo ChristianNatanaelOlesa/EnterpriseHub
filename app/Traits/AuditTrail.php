@@ -4,37 +4,40 @@ namespace App\Traits;
 
 trait AuditTrail
 {
-    protected static function bootAuditTrail()
+    protected static function bootAuditTrail(): void
     {
         static::creating(function ($model) {
 
-            if (auth()->check()) {
-
-                if (property_exists($model, 'auditColumns')) {
-
-                    $model->CreatedBy = auth()->user()->UserName;
-                    $model->CreatedDate = now();
-
-                }
-
+            if (! auth()->check()) {
+                return;
             }
+
+            if (! $model->auditColumns) {
+                return;
+            }
+
+            $userId = auth()->user()->UserID;
+
+            $model->CreatedBy = $userId;
+            $model->CreatedDate = now();
 
         });
 
         static::updating(function ($model) {
 
-            if (auth()->check()) {
-
-                if (property_exists($model, 'auditColumns')) {
-
-                    $model->UpdatedBy = auth()->user()->UserName;
-                    $model->UpdatedDate = now();
-
-                }
-
+            if (! auth()->check()) {
+                return;
             }
 
-        });
+            if (! $model->auditColumns) {
+                return;
+            }
 
+            $userId = auth()->user()->UserID;
+
+            $model->UpdatedBy = $userId;
+            $model->UpdatedDate = now();
+
+        });
     }
 }

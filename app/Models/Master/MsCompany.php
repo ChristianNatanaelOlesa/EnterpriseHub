@@ -3,15 +3,12 @@
 namespace App\Models\Master;
 
 use App\Models\BaseModel;
-use App\Models\Master\MsDirectorate;
 
 class MsCompany extends BaseModel
 {
     protected $table = 'ms_company';
 
     protected $primaryKey = 'CompanyID';
-
-    public $timestamps = false;
 
     protected $fillable = [
         'CompanyCode',
@@ -20,14 +17,45 @@ class MsCompany extends BaseModel
         'Phone',
         'Email',
         'IsActive',
+
         'CreatedBy',
         'CreatedDate',
+
         'UpdatedBy',
-        'UpdatedDate'
+        'UpdatedDate',
+
+        'DeletedBy',
+        'DeletedDate',
+    ];
+
+    protected $casts = [
+        'IsActive' => 'boolean',
     ];
 
     public function directorates()
     {
-        return $this->hasMany(MsDirectorate::class, 'CompanyID', 'CompanyID');
+        return $this->hasMany(
+            MsDirectorate::class,
+            'CompanyID',
+            'CompanyID'
+        );
+    }
+
+    public function divisions()
+    {
+        return $this->hasMany(
+            MsDivision::class,
+            'CompanyID',
+            'CompanyID'
+        );
+    }
+
+    public function departments()
+    {
+        return $this->hasMany(
+            MsDepartment::class,
+            'CompanyID',
+            'CompanyID'
+        );
     }
 }

@@ -30,19 +30,19 @@ class CompanyRequest extends FormRequest
                 )->ignore(
                     $companyId,
                     'CompanyID'
-                )
+                ),
 
             ],
 
             'CompanyName' => 'required|max:100',
 
-            'CompanyAddress' => 'nullable|max:255',
+            'Address' => 'nullable|max:255',
 
-            'CompanyPhone' => 'nullable|max:30',
+            'Phone' => 'nullable|max:30',
 
-            'CompanyEmail' => 'nullable|email',
+            'Email' => 'nullable|email',
 
-            'IsActive' => 'required|boolean'
+            'IsActive' => 'required|boolean',
 
         ];
     }

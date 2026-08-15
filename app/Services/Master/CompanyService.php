@@ -3,39 +3,60 @@
 namespace App\Services\Master;
 
 use App\Repositories\Master\CompanyRepository;
+use Illuminate\Support\Facades\DB;
 
 class CompanyService
 {
     protected CompanyRepository $repository;
 
-    public function __construct(
-        CompanyRepository $repository
-    ) {
+    public function __construct(CompanyRepository $repository)
+    {
         $this->repository = $repository;
     }
 
-    public function getList(?string $search = null)
+    public function getAll(?string $search = null)
     {
-        return $this->repository->search($search);
+        return $this->repository->search($search, 10);
     }
 
-    public function create(array $data)
+    public function findById(int $id)
     {
-        return $this->repository->create($data);
+        return $this->repository->findById($id);
     }
 
-    public function update($id, array $data)
+    public function store(array $data)
     {
-        return $this->repository->update($id, $data);
+        return DB::transaction(function () use ($data) {
+
+            $data['CreatedBy'] = auth()->user()->UserID;
+            $data['CreatedDate'] = now();
+
+            return $this->repository->create($data);
+        });
     }
 
-    public function delete($id)
+    public function update(int $id, array $data)
     {
-        return $this->repository->delete($id);
+        return DB::transaction(function () use ($id, $data) {
+
+            $data['UpdatedBy'] = auth()->user()->UserID;
+            $data['UpdatedDate'] = now();
+
+            return $this->repository->update($id, $data);
+        });
     }
 
-    public function find($id)
+    public function delete(int $id)
     {
-        return $this->repository->find($id);
+        return DB::transaction(function () use ($id) {
+
+            return $this->repository->update($id, [
+
+                'IsActive' => false,
+                'DeletedBy' => auth()->user()->UserID,
+                'DeletedDate' => now(),
+
+            ]);
+        });
     }
 }

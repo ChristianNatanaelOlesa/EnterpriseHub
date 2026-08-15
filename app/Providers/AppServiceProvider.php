@@ -2,10 +2,11 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use App\Support\BlueprintMacros;
 use App\Interfaces\Master\ICompanyRepository;
 use App\Repositories\Master\CompanyRepository;
+use App\Support\Permission;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,32 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        BlueprintMacros::register();
+        Blade::if('canOpen', function (string $routeName) {
+            return Permission::canOpen($routeName);
+        });
+
+        Blade::if('canAdd', function (string $routeName) {
+            return Permission::canAdd($routeName);
+        });
+
+        Blade::if('canEdit', function (string $routeName) {
+            return Permission::canEdit($routeName);
+        });
+
+        Blade::if('canDelete', function (string $routeName) {
+            return Permission::canDelete($routeName);
+        });
+
+        Blade::if('canPrint', function (string $routeName) {
+            return Permission::canPrint($routeName);
+        });
+
+        Blade::if('canExport', function (string $routeName) {
+            return Permission::canExport($routeName);
+        });
+
+        Blade::if('canApprove', function (string $routeName) {
+            return Permission::canApprove($routeName);
+        });
     }
 }

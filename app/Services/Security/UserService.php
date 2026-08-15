@@ -3,11 +3,10 @@
 namespace App\Services\Security;
 
 use App\Repositories\Security\UserRepository;
-use App\Services\BaseService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class UserService extends BaseService
+class UserService
 {
     protected UserRepository $repository;
 
@@ -23,20 +22,42 @@ class UserService extends BaseService
 
     public function findById(int $id)
     {
-        return $this->repository->findById($id);
+        $user = $this->repository->findById($id);
+
+        if ($user) {
+            $user->RoleID = DB::table('sc_user_role')
+                ->where('UserID', $id)
+                ->where('IsActive', true)
+                ->value('RoleID');
+        }
+
+        return $user;
     }
 
     public function store(array $data)
     {
         return DB::transaction(function () use ($data) {
 
-            $data['Password'] = Hash::make($data['Password']);
+            $roleId = $data['RoleID'];
+
+            unset($data['RoleID']);
+
+            $data['Password'] = Hash::make(
+                $data['Password']
+            );
 
             $data['CreatedBy'] = auth()->user()->UserID;
             $data['CreatedDate'] = now();
 
-            return $this->repository->create($data);
+            $user = $this->repository->create($data);
 
+            $this->repository->syncRole(
+                $user->UserID,
+                $roleId,
+                auth()->user()->UserID
+            );
+
+            return $user;
         });
     }
 
@@ -44,11 +65,25 @@ class UserService extends BaseService
     {
         return DB::transaction(function () use ($id, $data) {
 
+            $roleId = $data['RoleID'];
+
+            unset($data['RoleID']);
+
             $data['UpdatedBy'] = auth()->user()->UserID;
             $data['UpdatedDate'] = now();
 
-            return $this->repository->update($id, $data);
+            $user = $this->repository->update(
+                $id,
+                $data
+            );
 
+            $this->repository->syncRole(
+                $id,
+                $roleId,
+                auth()->user()->UserID
+            );
+
+            return $user;
         });
     }
 
@@ -57,13 +92,10 @@ class UserService extends BaseService
         return DB::transaction(function () use ($id) {
 
             return $this->repository->update($id, [
-
-                'IsActive'   => false,
-                'DeletedBy'  => auth()->user()->UserID,
+                'IsActive' => false,
+                'DeletedBy' => auth()->user()->UserID,
                 'DeletedDate' => now(),
-
             ]);
-
         });
     }
 
@@ -72,13 +104,10 @@ class UserService extends BaseService
         return DB::transaction(function () use ($id) {
 
             return $this->repository->update($id, [
-
-                'Password'    => Hash::make('admin123'),
-                'UpdatedBy'   => auth()->user()->UserID,
+                'Password' => Hash::make('admin123'),
+                'UpdatedBy' => auth()->user()->UserID,
                 'UpdatedDate' => now(),
-
             ]);
-
         });
     }
 
@@ -88,14 +117,14 @@ class UserService extends BaseService
 
         return DB::transaction(function () use ($user) {
 
-            return $this->repository->update($user->UserID, [
-
-                'IsActive'   => !$user->IsActive,
-                'UpdatedBy'  => auth()->user()->UserID,
-                'UpdatedDate' => now(),
-
-            ]);
-
+            return $this->repository->update(
+                $user->UserID,
+                [
+                    'IsActive' => ! $user->IsActive,
+                    'UpdatedBy' => auth()->user()->UserID,
+                    'UpdatedDate' => now(),
+                ]
+            );
         });
     }
 }

@@ -26,7 +26,8 @@ class UpdateUserRequest extends FormRequest
                 'required',
                 'string',
                 'max:50',
-                Rule::unique('sc_user', 'Username')->ignore($userId, 'UserID'),
+                Rule::unique('sc_user', 'Username')
+                    ->ignore($userId, 'UserID'),
             ],
 
             'FullName' => [
@@ -38,7 +39,9 @@ class UpdateUserRequest extends FormRequest
             'Email' => [
                 'required',
                 'email',
-                Rule::unique('sc_user', 'Email')->ignore($userId, 'UserID'),
+                'max:100',
+                Rule::unique('sc_user', 'Email')
+                    ->ignore($userId, 'UserID'),
             ],
 
             'PhoneNumber' => [
@@ -50,6 +53,7 @@ class UpdateUserRequest extends FormRequest
             'RoleID' => [
                 'required',
                 'integer',
+                'exists:sc_role,RoleID',
             ],
 
             'IsActive' => [

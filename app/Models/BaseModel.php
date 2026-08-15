@@ -3,15 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Traits\AuditTrail;
 
 class BaseModel extends Model
 {
-    use AuditTrail;
-
     public $timestamps = false;
 
-    protected $guarded = [];
+    protected static function booted(): void
+    {
+        static::creating(function ($model) {
 
-    protected $auditColumns = true;
+            if (auth()->check()) {
+
+                $userId = auth()->user()->UserID;
+
+                if (empty($model->CreatedBy)) {
+                    $model->CreatedBy = $userId;
+                }
+            }
+
+            if (empty($model->CreatedDate)) {
+                $model->CreatedDate = now();
+            }
+        });
+
+        static::updating(function ($model) {
+
+            if (auth()->check()) {
+
+                $model->UpdatedBy = auth()->user()->UserID;
+            }
+
+            $model->UpdatedDate = now();
+        });
+    }
 }
