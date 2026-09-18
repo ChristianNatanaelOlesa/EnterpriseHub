@@ -4,6 +4,12 @@ use App\Http\Controllers\Master\CompanyController;
 use App\Http\Controllers\Master\DepartmentController;
 use App\Http\Controllers\Master\DirectorateController;
 use App\Http\Controllers\Master\DivisionController;
+use App\Http\Controllers\Master\ReligionController;
+use App\Http\Controllers\Master\CountryController;
+use App\Http\Controllers\Master\ProvinceController;
+use App\Http\Controllers\Master\CityController;
+use App\Http\Controllers\Master\DistrictController;
+use App\Http\Controllers\Master\VillageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])
@@ -46,6 +52,123 @@ Route::middleware(['auth'])
                 'destroy',
                 'permission:master.company.index,CanDelete'
             );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Country
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('country', CountryController::class)
+            ->middlewareFor(
+                'index',
+                'permission:master.country.index,CanOpen'
+            )
+            ->middlewareFor(
+                'show',
+                'permission:master.country.index,CanOpen'
+            )
+            ->middlewareFor(
+                'create',
+                'permission:master.country.index,CanAdd'
+            )
+            ->middlewareFor(
+                'store',
+                'permission:master.country.index,CanAdd'
+            )
+            ->middlewareFor(
+                'edit',
+                'permission:master.country.index,CanEdit'
+            )
+            ->middlewareFor(
+                'update',
+                'permission:master.country.index,CanEdit'
+            )
+            ->middlewareFor(
+                'destroy',
+                'permission:master.country.index,CanDelete'
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Province
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('province', ProvinceController::class)
+            ->middlewareFor(
+                'index',
+                'permission:master.province.index,CanOpen'
+            )
+            ->middlewareFor(
+                'show',
+                'permission:master.province.index,CanOpen'
+            )
+            ->middlewareFor(
+                'create',
+                'permission:master.province.index,CanAdd'
+            )
+            ->middlewareFor(
+                'store',
+                'permission:master.province.index,CanAdd'
+            )
+            ->middlewareFor(
+                'edit',
+                'permission:master.province.index,CanEdit'
+            )
+            ->middlewareFor(
+                'update',
+                'permission:master.province.index,CanEdit'
+            )
+            ->middlewareFor(
+                'destroy',
+                'permission:master.province.index,CanDelete'
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | City
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('city', CityController::class)
+            ->middlewareFor('index', 'permission:master.city.index,CanOpen')
+            ->middlewareFor('show', 'permission:master.city.index,CanOpen')
+            ->middlewareFor('create', 'permission:master.city.index,CanAdd')
+            ->middlewareFor('store', 'permission:master.city.index,CanAdd')
+            ->middlewareFor('edit', 'permission:master.city.index,CanEdit')
+            ->middlewareFor('update', 'permission:master.city.index,CanEdit')
+            ->middlewareFor('destroy', 'permission:master.city.index,CanDelete');
+
+        /*
+        |--------------------------------------------------------------------------
+        | District
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('district', DistrictController::class)
+            ->middlewareFor('index', 'permission:master.district.index,CanOpen')
+            ->middlewareFor('show', 'permission:master.district.index,CanOpen')
+            ->middlewareFor('create', 'permission:master.district.index,CanAdd')
+            ->middlewareFor('store', 'permission:master.district.index,CanAdd')
+            ->middlewareFor('edit', 'permission:master.district.index,CanEdit')
+            ->middlewareFor('update', 'permission:master.district.index,CanEdit')
+            ->middlewareFor('destroy', 'permission:master.district.index,CanDelete');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Village
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('village', VillageController::class)
+            ->middlewareFor('index', 'permission:master.village.index,CanOpen')
+            ->middlewareFor('show', 'permission:master.village.index,CanOpen')
+            ->middlewareFor('create', 'permission:master.village.index,CanAdd')
+            ->middlewareFor('store', 'permission:master.village.index,CanAdd')
+            ->middlewareFor('edit', 'permission:master.village.index,CanEdit')
+            ->middlewareFor('update', 'permission:master.village.index,CanEdit')
+            ->middlewareFor('destroy', 'permission:master.village.index,CanDelete');
 
         /*
         |--------------------------------------------------------------------------
@@ -159,6 +282,42 @@ Route::middleware(['auth'])
             ->middlewareFor(
                 'destroy',
                 'permission:master.department.index,CanDelete'
+            );
+
+        /*
+        |--------------------------------------------------------------------------
+        | Religion
+        |--------------------------------------------------------------------------
+        */
+
+        Route::resource('religion', ReligionController::class)
+            ->middlewareFor(
+                'index',
+                'permission:master.religion.index,CanOpen'
+            )
+            ->middlewareFor(
+                'show',
+                'permission:master.religion.index,CanOpen'
+            )
+            ->middlewareFor(
+                'create',
+                'permission:master.religion.index,CanAdd'
+            )
+            ->middlewareFor(
+                'store',
+                'permission:master.religion.index,CanAdd'
+            )
+            ->middlewareFor(
+                'edit',
+                'permission:master.religion.index,CanEdit'
+            )
+            ->middlewareFor(
+                'update',
+                'permission:master.religion.index,CanEdit'
+            )
+            ->middlewareFor(
+                'destroy',
+                'permission:master.religion.index,CanDelete'
             );
 
     });

@@ -12,16 +12,18 @@
             Menu Management
         </h3>
 
-        <a
-            href="{{ route('security.menus.create') }}"
-            class="btn btn-primary"
-        >
+        @if (\App\Support\Permission::canAdd('security.menus.index'))
+            <a
+                href="{{ route('security.menus.create') }}"
+                class="btn btn-primary"
+            >
 
-            <i class="bi bi-plus-lg"></i>
+                <i class="bi bi-plus-lg"></i>
 
-            Add Menu
+                Add Menu
 
-        </a>
+            </a>
+        @endif
 
     </div>
 
@@ -133,35 +135,56 @@
 
                             <td>
 
-                                <a
-                                    href="{{ route('security.menus.edit', $menu->MenuID) }}"
-                                    class="btn btn-sm btn-warning"
-                                >
+                                @if (\App\Support\Permission::canEdit('security.menus.index'))
 
-                                    <i class="bi bi-pencil-square"></i>
-
-                                </a>
-
-                                <form
-                                    action="{{ route('security.menus.destroy', $menu->MenuID) }}"
-                                    method="POST"
-                                    class="d-inline"
-                                >
-
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Yakin ingin menghapus menu ini?')"
+                                    <a
+                                        href="{{ route('security.menus.edit', $menu->MenuID) }}"
+                                        class="btn btn-sm btn-warning"
+                                        title="Edit"
                                     >
 
-                                        <i class="bi bi-trash"></i>
+                                        <i class="bi bi-pencil-square"></i>
 
-                                    </button>
+                                    </a>
 
-                                </form>
+                                @endif
+
+                                @if (\App\Support\Permission::canDelete('security.menus.index'))
+
+                                    <form
+                                        action="{{ route('security.menus.destroy', $menu->MenuID) }}"
+                                        method="POST"
+                                        class="d-inline"
+                                    >
+
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-danger"
+                                            title="Delete"
+                                            onclick="return confirm('Yakin ingin menghapus menu ini?')"
+                                        >
+
+                                            <i class="bi bi-trash"></i>
+
+                                        </button>
+
+                                    </form>
+
+                                @endif
+
+                                @if (
+                                    !\App\Support\Permission::canEdit('security.menus.index')
+                                    && !\App\Support\Permission::canDelete('security.menus.index')
+                                )
+
+                                    <span class="text-muted">
+                                        -
+                                    </span>
+
+                                @endif
 
                             </td>
 

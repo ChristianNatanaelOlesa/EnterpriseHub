@@ -28,20 +28,37 @@ class RoleController extends Controller
 
     public function create()
     {
-        return view('security.roles.create');
+        $menus = $this->roleService->getMenus();
+
+        $permissions = collect();
+
+        return view(
+            'security.roles.create',
+            compact(
+                'menus',
+                'permissions'
+            )
+        );
     }
 
     public function store(StoreRoleRequest $request)
     {
+        $data = $request->validated();
+
+        $permissions = $data['permissions'] ?? [];
+
+        unset($data['permissions']);
+
         $this->roleService->store(
-            $request->validated()
+            $data,
+            $permissions
         );
 
         return redirect()
             ->route('security.roles.index')
             ->with(
                 'success',
-                'Role berhasil ditambahkan.'
+                'Role dan hak akses berhasil ditambahkan.'
             );
     }
 

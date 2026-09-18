@@ -21,12 +21,19 @@ class UpdateRoleRequest extends FormRequest
         }
 
         return [
-            'RoleName' => [
+
+            'Code' => [
+                'required',
+                'string',
+                'max:30',
+                Rule::unique('sc_role', 'Code')
+                    ->ignore($roleId, 'RoleID'),
+            ],
+
+            'Name' => [
                 'required',
                 'string',
                 'max:100',
-                Rule::unique('sc_role', 'RoleName')
-                    ->ignore($roleId, 'RoleID'),
             ],
 
             'Description' => [
@@ -84,6 +91,7 @@ class UpdateRoleRequest extends FormRequest
                 'nullable',
                 'boolean',
             ],
+
         ];
     }
 }

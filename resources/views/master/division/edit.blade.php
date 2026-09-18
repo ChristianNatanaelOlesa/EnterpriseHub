@@ -31,17 +31,28 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID" id="CompanyID" class="form-select @error('CompanyID') is-invalid @enderror">
+                    <select name="CompanyID"
+                            id="CompanyID"
+                            class="form-select @error('CompanyID') is-invalid @enderror"
+                            required>
 
                         <option value="">
                             -- Pilih Company --
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}" @selected(old('CompanyID', $division->CompanyID) == $company->CompanyID)>
+                            <option value="{{ $company->CompanyID }}"
+                                @selected(
+                                    old(
+                                        'CompanyID',
+                                        $division->directorate?->CompanyID
+                                    ) == $company->CompanyID
+                                )>
+
                                 {{ $company->CompanyCode }}
                                 -
                                 {{ $company->CompanyName }}
+
                             </option>
                         @endforeach
 
@@ -64,17 +75,29 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DirectorateID" id="DirectorateID"
-                        class="form-select @error('DirectorateID') is-invalid @enderror">
+                    <select name="DirectorateID"
+                            id="DirectorateID"
+                            class="form-select @error('DirectorateID') is-invalid @enderror"
+                            required>
 
                         <option value="">
                             -- Pilih Directorate --
                         </option>
 
                         @foreach ($directorates as $directorate)
-                            <option value="{{ $directorate->DirectorateID }}" @selected(old('DirectorateID', $division->DirectorateID) == $directorate->DirectorateID)>
+
+                            <option value="{{ $directorate->DirectorateID }}"
+                                @selected(
+                                    old(
+                                        'DirectorateID',
+                                        $division->DirectorateID
+                                    ) == $directorate->DirectorateID
+                                )>
+
                                 {{ $directorate->DirectorateName }}
+
                             </option>
+
                         @endforeach
 
                     </select>
@@ -96,9 +119,12 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DivisionCode"
-                        class="form-control @error('DivisionCode') is-invalid @enderror"
-                        value="{{ old('DivisionCode', $division->DivisionCode) }}" maxlength="20">
+                    <input type="text"
+                           name="DivisionCode"
+                           class="form-control @error('DivisionCode') is-invalid @enderror"
+                           value="{{ old('DivisionCode', $division->DivisionCode) }}"
+                           maxlength="20"
+                           required>
 
                     @error('DivisionCode')
                         <div class="invalid-feedback">
@@ -117,9 +143,12 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DivisionName"
-                        class="form-control @error('DivisionName') is-invalid @enderror"
-                        value="{{ old('DivisionName', $division->DivisionName) }}" maxlength="200">
+                    <input type="text"
+                           name="DivisionName"
+                           class="form-control @error('DivisionName') is-invalid @enderror"
+                           value="{{ old('DivisionName', $division->DivisionName) }}"
+                           maxlength="200"
+                           required>
 
                     @error('DivisionName')
                         <div class="invalid-feedback">
@@ -133,12 +162,19 @@
 
                 <div class="form-check mb-3">
 
-                    <input type="hidden" name="IsActive" value="0">
+                    <input type="hidden"
+                           name="IsActive"
+                           value="0">
 
-                    <input class="form-check-input" type="checkbox" name="IsActive" value="1" id="IsActive"
-                        @checked(old('IsActive', $division->IsActive))>
+                    <input class="form-check-input"
+                           type="checkbox"
+                           name="IsActive"
+                           value="1"
+                           id="IsActive"
+                           @checked(old('IsActive', $division->IsActive))>
 
-                    <label class="form-check-label" for="IsActive">
+                    <label class="form-check-label"
+                           for="IsActive">
                         Active
                     </label>
 
@@ -146,7 +182,8 @@
 
                 <div class="d-flex gap-2">
 
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit"
+                            class="btn btn-primary">
 
                         <i class="bi bi-save"></i>
 
@@ -154,8 +191,11 @@
 
                     </button>
 
-                    <a href="{{ route('master.division.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('master.division.index') }}"
+                       class="btn btn-secondary">
+
                         Cancel
+
                     </a>
 
                 </div>
@@ -169,8 +209,10 @@
 @endsection
 
 @push('scripts')
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
 
             const companySelect =
                 document.getElementById('CompanyID');
@@ -191,20 +233,20 @@
             ) {
 
                 directorateSelect.innerHTML = `
-            <option value="">
-                Loading...
-            </option>
-        `;
+                    <option value="">
+                        Loading...
+                    </option>
+                `;
 
                 directorateSelect.disabled = true;
 
                 if (!companyId) {
 
                     directorateSelect.innerHTML = `
-                <option value="">
-                    -- Pilih Company Terlebih Dahulu --
-                </option>
-            `;
+                        <option value="">
+                            -- Pilih Company Terlebih Dahulu --
+                        </option>
+                    `;
 
                     return;
                 }
@@ -212,7 +254,8 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.division.directorates') }}?CompanyID=${companyId}`, {
+                        `{{ route('master.division.directorates') }}?CompanyID=${companyId}`,
+                        {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -221,18 +264,21 @@
                     );
 
                     if (!response.ok) {
-                        throw new Error('Failed to load directorates.');
+                        throw new Error(
+                            'Failed to load directorates.'
+                        );
                     }
 
-                    const directorates = await response.json();
+                    const directorates =
+                        await response.json();
 
                     directorateSelect.innerHTML = `
-                <option value="">
-                    -- Pilih Directorate --
-                </option>
-            `;
+                        <option value="">
+                            -- Pilih Directorate --
+                        </option>
+                    `;
 
-                    directorates.forEach(function(directorate) {
+                    directorates.forEach(function (directorate) {
 
                         const option =
                             document.createElement('option');
@@ -261,17 +307,18 @@
                     console.error(error);
 
                     directorateSelect.innerHTML = `
-                <option value="">
-                    Gagal mengambil Directorate
-                </option>
-            `;
+                        <option value="">
+                            Gagal mengambil Directorate
+                        </option>
+                    `;
 
                 }
+
             }
 
             companySelect.addEventListener(
                 'change',
-                function() {
+                function () {
 
                     loadDirectorates(
                         this.value,
@@ -291,5 +338,7 @@
             }
 
         });
+
     </script>
+
 @endpush

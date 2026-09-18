@@ -16,33 +16,46 @@
 
         <div class="card-body">
 
-            <form method="POST" action="{{ route('master.department.update', $department->DepartmentID) }}">
+            <form method="POST"
+                  action="{{ route('master.department.update', $department->DepartmentID) }}">
 
                 @csrf
-
                 @method('PUT')
 
                 {{-- Company --}}
 
                 <div class="mb-3">
 
-                    <label class="form-label">
+                    <label for="CompanyID" class="form-label">
                         Company
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID" id="CompanyID" class="form-select @error('CompanyID') is-invalid @enderror">
+                    <select name="CompanyID"
+                            id="CompanyID"
+                            class="form-select @error('CompanyID') is-invalid @enderror"
+                            required>
 
                         <option value="">
                             -- Pilih Company --
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}" @selected(old('CompanyID', $department->CompanyID) == $company->CompanyID)>
+
+                            <option value="{{ $company->CompanyID }}"
+                                @selected(
+                                    old(
+                                        'CompanyID',
+                                        $department->division?->directorate?->CompanyID
+                                    ) == $company->CompanyID
+                                )>
+
                                 {{ $company->CompanyCode }}
                                 -
                                 {{ $company->CompanyName }}
+
                             </option>
+
                         @endforeach
 
                     </select>
@@ -59,23 +72,19 @@
 
                 <div class="mb-3">
 
-                    <label class="form-label">
+                    <label for="DirectorateID" class="form-label">
                         Directorate
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DirectorateID" id="DirectorateID"
-                        class="form-select @error('DirectorateID') is-invalid @enderror">
+                    <select name="DirectorateID"
+                            id="DirectorateID"
+                            class="form-select @error('DirectorateID') is-invalid @enderror"
+                            required>
 
                         <option value="">
                             -- Pilih Directorate --
                         </option>
-
-                        @foreach ($directorates as $directorate)
-                            <option value="{{ $directorate->DirectorateID }}" @selected(old('DirectorateID', $department->DirectorateID) == $directorate->DirectorateID)>
-                                {{ $directorate->DirectorateName }}
-                            </option>
-                        @endforeach
 
                     </select>
 
@@ -91,22 +100,19 @@
 
                 <div class="mb-3">
 
-                    <label class="form-label">
+                    <label for="DivisionID" class="form-label">
                         Division
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DivisionID" id="DivisionID" class="form-select @error('DivisionID') is-invalid @enderror">
+                    <select name="DivisionID"
+                            id="DivisionID"
+                            class="form-select @error('DivisionID') is-invalid @enderror"
+                            required>
 
                         <option value="">
                             -- Pilih Division --
                         </option>
-
-                        @foreach ($divisions as $division)
-                            <option value="{{ $division->DivisionID }}" @selected(old('DivisionID', $department->DivisionID) == $division->DivisionID)>
-                                {{ $division->DivisionName }}
-                            </option>
-                        @endforeach
 
                     </select>
 
@@ -120,73 +126,44 @@
 
                 {{-- Department Code --}}
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-                        Department Code
-                        <span class="text-danger">*</span>
-                    </label>
-
-                    <input type="text" name="DepartmentCode"
-                        class="form-control @error('DepartmentCode') is-invalid @enderror"
-                        value="{{ old('DepartmentCode', $department->DepartmentCode) }}" maxlength="20">
-
-                    @error('DepartmentCode')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
-
-                </div>
+                <x-form.input
+                    label="Department Code"
+                    name="DepartmentCode"
+                    :value="old('DepartmentCode', $department->DepartmentCode)"
+                    required="true"
+                />
 
                 {{-- Department Name --}}
 
-                <div class="mb-3">
+                <x-form.input
+                    label="Department Name"
+                    name="DepartmentName"
+                    :value="old('DepartmentName', $department->DepartmentName)"
+                    required="true"
+                />
 
-                    <label class="form-label">
-                        Department Name
-                        <span class="text-danger">*</span>
-                    </label>
+                {{-- Active --}}
 
-                    <input type="text" name="DepartmentName"
-                        class="form-control @error('DepartmentName') is-invalid @enderror"
-                        value="{{ old('DepartmentName', $department->DepartmentName) }}" maxlength="200">
+                <x-form.checkbox
+                    label="Active"
+                    name="IsActive"
+                    :checked="$department->IsActive"
+                />
 
-                    @error('DepartmentName')
-                        <div class="invalid-feedback">
-                            {{ $message }}
-                        </div>
-                    @enderror
+                <div class="mt-3">
 
-                </div>
-
-                {{-- Status --}}
-
-                <div class="form-check mb-3">
-
-                    <input type="hidden" name="IsActive" value="0">
-
-                    <input class="form-check-input" type="checkbox" name="IsActive" value="1" id="IsActive"
-                        @checked(old('IsActive', $department->IsActive))>
-
-                    <label class="form-check-label" for="IsActive">
-                        Active
-                    </label>
-
-                </div>
-
-                <div class="d-flex gap-2">
-
-                    <button type="submit" class="btn btn-primary">
-
-                        <i class="bi bi-save"></i>
+                    <button type="submit"
+                            class="btn btn-primary">
 
                         Update
 
                     </button>
 
-                    <a href="{{ route('master.department.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('master.department.index') }}"
+                       class="btn btn-secondary">
+
                         Cancel
+
                     </a>
 
                 </div>
@@ -200,254 +177,268 @@
 @endsection
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
 
-            const companySelect =
-                document.getElementById('CompanyID');
+<script>
 
-            const directorateSelect =
-                document.getElementById('DirectorateID');
+document.addEventListener('DOMContentLoaded', function () {
 
-            const divisionSelect =
-                document.getElementById('DivisionID');
+    const companySelect =
+        document.getElementById('CompanyID');
 
-            const selectedDirectorate =
-                "{{ old('DirectorateID', $department->DirectorateID) }}";
+    const directorateSelect =
+        document.getElementById('DirectorateID');
 
-            const selectedDivision =
-                "{{ old('DivisionID', $department->DivisionID) }}";
+    const divisionSelect =
+        document.getElementById('DivisionID');
 
-            async function loadDirectorates(
-                companyId,
-                selectedId = ''
-            ) {
+    const selectedDirectorate =
+        "{{ old('DirectorateID', $department->division?->DirectorateID) }}";
 
-                directorateSelect.innerHTML = `
+    const selectedDivision =
+        "{{ old('DivisionID', $department->DivisionID) }}";
+
+    if (
+        !companySelect ||
+        !directorateSelect ||
+        !divisionSelect
+    ) {
+        return;
+    }
+
+    async function loadDirectorates(
+        companyId,
+        selectedId = ''
+    ) {
+
+        directorateSelect.innerHTML = `
             <option value="">
                 Loading...
             </option>
         `;
 
-                directorateSelect.disabled = true;
+        directorateSelect.disabled = true;
 
-                divisionSelect.innerHTML = `
+        divisionSelect.innerHTML = `
             <option value="">
                 -- Pilih Directorate Terlebih Dahulu --
             </option>
         `;
 
-                divisionSelect.disabled = true;
+        divisionSelect.disabled = true;
 
-                if (!companyId) {
+        if (!companyId) {
 
-                    directorateSelect.innerHTML = `
+            directorateSelect.innerHTML = `
                 <option value="">
                     -- Pilih Company Terlebih Dahulu --
                 </option>
             `;
 
-                    return;
+            return;
+        }
 
-                }
+        try {
 
-                try {
-
-                    const response = await fetch(
-                        `{{ route('master.department.directorates') }}?CompanyID=${companyId}`, {
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error(
-                            'Failed to load directorates.'
-                        );
+            const response = await fetch(
+                `{{ route('master.department.directorates') }}?CompanyID=${companyId}`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
+                }
+            );
 
-                    const data = await response.json();
+            if (!response.ok) {
+                throw new Error(
+                    'Failed to load directorates.'
+                );
+            }
 
-                    directorateSelect.innerHTML = `
+            const directorates =
+                await response.json();
+
+            directorateSelect.innerHTML = `
                 <option value="">
                     -- Pilih Directorate --
                 </option>
             `;
 
-                    data.forEach(function(item) {
+            directorates.forEach(function (directorate) {
 
-                        const option =
-                            document.createElement('option');
+                const option =
+                    document.createElement('option');
 
-                        option.value =
-                            item.DirectorateID;
+                option.value =
+                    directorate.DirectorateID;
 
-                        option.textContent =
-                            item.DirectorateName;
+                option.textContent =
+                    directorate.DirectorateName;
 
-                        if (
-                            String(item.DirectorateID) ===
-                            String(selectedId)
-                        ) {
-                            option.selected = true;
-                        }
+                if (
+                    String(directorate.DirectorateID) ===
+                    String(selectedId)
+                ) {
+                    option.selected = true;
+                }
 
-                        directorateSelect.appendChild(option);
+                directorateSelect.appendChild(option);
 
-                    });
+            });
 
-                    directorateSelect.disabled = false;
+            directorateSelect.disabled = false;
 
-                } catch (error) {
+        } catch (error) {
 
-                    console.error(error);
+            console.error(error);
 
-                    directorateSelect.innerHTML = `
+            directorateSelect.innerHTML = `
                 <option value="">
                     Gagal mengambil Directorate
                 </option>
             `;
 
-                }
-            }
+        }
 
-            async function loadDivisions(
-                directorateId,
-                selectedId = ''
-            ) {
+    }
 
-                divisionSelect.innerHTML = `
+    async function loadDivisions(
+        directorateId,
+        selectedId = ''
+    ) {
+
+        divisionSelect.innerHTML = `
             <option value="">
                 Loading...
             </option>
         `;
 
-                divisionSelect.disabled = true;
+        divisionSelect.disabled = true;
 
-                if (!directorateId) {
+        if (!directorateId) {
 
-                    divisionSelect.innerHTML = `
+            divisionSelect.innerHTML = `
                 <option value="">
                     -- Pilih Directorate Terlebih Dahulu --
                 </option>
             `;
 
-                    return;
+            return;
+        }
 
-                }
+        try {
 
-                try {
-
-                    const response = await fetch(
-                        `{{ route('master.department.divisions') }}?DirectorateID=${directorateId}`, {
-                            headers: {
-                                'Accept': 'application/json',
-                                'X-Requested-With': 'XMLHttpRequest'
-                            }
-                        }
-                    );
-
-                    if (!response.ok) {
-                        throw new Error(
-                            'Failed to load divisions.'
-                        );
+            const response = await fetch(
+                `{{ route('master.department.divisions') }}?DirectorateID=${directorateId}`,
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
+                }
+            );
 
-                    const data = await response.json();
+            if (!response.ok) {
+                throw new Error(
+                    'Failed to load divisions.'
+                );
+            }
 
-                    divisionSelect.innerHTML = `
+            const divisions =
+                await response.json();
+
+            divisionSelect.innerHTML = `
                 <option value="">
                     -- Pilih Division --
                 </option>
             `;
 
-                    data.forEach(function(item) {
+            divisions.forEach(function (division) {
 
-                        const option =
-                            document.createElement('option');
+                const option =
+                    document.createElement('option');
 
-                        option.value =
-                            item.DivisionID;
+                option.value =
+                    division.DivisionID;
 
-                        option.textContent =
-                            item.DivisionName;
+                option.textContent =
+                    division.DivisionName;
 
-                        if (
-                            String(item.DivisionID) ===
-                            String(selectedId)
-                        ) {
-                            option.selected = true;
-                        }
+                if (
+                    String(division.DivisionID) ===
+                    String(selectedId)
+                ) {
+                    option.selected = true;
+                }
 
-                        divisionSelect.appendChild(option);
+                divisionSelect.appendChild(option);
 
-                    });
+            });
 
-                    divisionSelect.disabled = false;
+            divisionSelect.disabled = false;
 
-                } catch (error) {
+        } catch (error) {
 
-                    console.error(error);
+            console.error(error);
 
-                    divisionSelect.innerHTML = `
+            divisionSelect.innerHTML = `
                 <option value="">
                     Gagal mengambil Division
                 </option>
             `;
 
-                }
-            }
+        }
 
-            companySelect.addEventListener(
-                'change',
-                function() {
+    }
 
-                    loadDirectorates(
-                        this.value,
-                        ''
-                    );
+    companySelect.addEventListener(
+        'change',
+        function () {
 
-                }
+            loadDirectorates(
+                this.value,
+                ''
             );
 
-            directorateSelect.addEventListener(
-                'change',
-                function() {
+        }
+    );
 
-                    loadDivisions(
-                        this.value,
-                        ''
-                    );
+    directorateSelect.addEventListener(
+        'change',
+        function () {
 
-                }
+            loadDivisions(
+                this.value,
+                ''
             );
 
-            /*
-             * Load existing hierarchy
-             */
+        }
+    );
 
-            if (companySelect.value) {
+    // Initial load saat Edit dibuka
 
-                loadDirectorates(
-                    companySelect.value,
-                    selectedDirectorate
-                ).then(function() {
+    if (companySelect.value) {
 
-                    if (directorateSelect.value) {
+        loadDirectorates(
+            companySelect.value,
+            selectedDirectorate
+        ).then(function () {
 
-                        loadDivisions(
-                            directorateSelect.value,
-                            selectedDivision
-                        );
+            if (directorateSelect.value) {
 
-                    }
-
-                });
+                loadDivisions(
+                    directorateSelect.value,
+                    selectedDivision
+                );
 
             }
 
         });
-    </script>
+
+    }
+
+});
+
+</script>
+
 @endpush

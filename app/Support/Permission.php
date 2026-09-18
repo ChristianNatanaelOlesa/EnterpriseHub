@@ -94,56 +94,88 @@ class Permission
             return collect();
         }
 
+        /*
+         * Ambil semua menu aktif.
+         */
         $menus = ScMenu::query()
             ->where('sc_menu.IsActive', true)
             ->whereNull('sc_menu.DeletedDate')
-            ->where(function ($query) use ($roleIds) {
-
-                $query
-                    ->whereNull('sc_menu.Route')
-                    ->orWhereExists(function ($subQuery) use ($roleIds) {
-
-                        $subQuery
-                            ->selectRaw('1')
-                            ->from('sc_role_menu')
-                            ->whereColumn(
-                                'sc_role_menu.MenuID',
-                                'sc_menu.MenuID'
-                            )
-                            ->whereIn(
-                                'sc_role_menu.RoleID',
-                                $roleIds
-                            )
-                            ->where(
-                                'sc_role_menu.IsActive',
-                                true
-                            )
-                            ->where(
-                                'sc_role_menu.CanOpen',
-                                true
-                            );
-
-                    });
-
-            })
             ->orderBy('sc_menu.SortOrder')
             ->orderBy('sc_menu.MenuID')
             ->get();
 
-        return $menus
-            ->filter(function ($menu) use ($menus) {
+        /*
+         * Ambil MenuID yang memiliki permission CanOpen
+         * untuk role user saat ini.
+         */
+        $allowedMenuIds = ScRoleMenu::query()
+            ->whereIn('RoleID', $roleIds)
+            ->where('IsActive', true)
+            ->where('CanOpen', true)
+            ->pluck('MenuID')
+            ->unique();
 
-                if (! $menu->ParentID) {
-                    return true;
-                }
+        /*
+         * Tentukan menu yang boleh ditampilkan.
+         *
+         * Child:
+         *   harus memiliki CanOpen.
+         *
+         * Parent:
+         *   boleh tampil jika:
+         *   - dirinya memiliki CanOpen, atau
+         *   - memiliki minimal satu child yang boleh tampil.
+         */
+        $visibleMenus = $menus->filter(function ($menu) use (
+            $allowedMenuIds,
+            $menus
+        ) {
 
-                return $menus->contains(
-                    'MenuID',
-                    $menu->ParentID
-                );
+            /*
+             * Menu yang memiliki permission langsung.
+             */
+            if ($allowedMenuIds->contains($menu->MenuID)) {
+                return true;
+            }
 
-            })
-            ->groupBy('ParentID');
+            /*
+             * Parent menu tanpa permission langsung,
+             * tetapi memiliki child yang boleh diakses.
+             */
+            return $menus->contains(function ($child) use (
+                $menu,
+                $allowedMenuIds
+            ) {
+
+                return $child->ParentID == $menu->MenuID
+                    && $allowedMenuIds->contains(
+                        $child->MenuID
+                    );
+
+            });
+
+        });
+
+        /*
+         * Pastikan parent dari menu yang visible
+         * juga ikut tersedia agar hierarchy tidak putus.
+         */
+        $visibleMenus = $visibleMenus->filter(function ($menu) use (
+            $visibleMenus
+        ) {
+
+            if (! $menu->ParentID) {
+                return true;
+            }
+
+            return $visibleMenus->contains(
+                'MenuID',
+                $menu->ParentID
+            );
+
+        });
+
+        return $visibleMenus->groupBy('ParentID');
     }
 
     public static function childMenus(

@@ -48,12 +48,8 @@ class StoreUserRequest extends FormRequest
                 'confirmed',
             ],
 
-            'roles' => [
-                'nullable',
-                'array',
-            ],
-
-            'roles.*' => [
+            'RoleID' => [
+                'required',
                 'integer',
                 'exists:sc_role,RoleID',
             ],

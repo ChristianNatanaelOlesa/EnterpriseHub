@@ -9,19 +9,15 @@ class DashboardController extends Controller
     public function index()
     {
         $companyCount = DB::table('ms_company')
-            ->whereNull('DeletedDate')
             ->count();
 
         $directorateCount = DB::table('ms_directorate')
-            ->whereNull('DeletedDate')
             ->count();
 
         $divisionCount = DB::table('ms_division')
-            ->whereNull('DeletedDate')
             ->count();
 
         $departmentCount = DB::table('ms_department')
-            ->whereNull('DeletedDate')
             ->count();
 
         $userCount = DB::table('sc_user')

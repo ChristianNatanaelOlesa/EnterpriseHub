@@ -12,12 +12,23 @@ class CompanyRepository extends BaseRepository
         $this->model = $model;
     }
 
-    public function getPaginated(int $perPage = 10)
+    public function search(?string $keyword = null, int $perPage = 10)
     {
         return $this->model
+            ->when($keyword, function ($query) use ($keyword) {
+
+                $query->where(function ($q) use ($keyword) {
+
+                    $q->where('CompanyCode', 'like', "%{$keyword}%")
+                        ->orWhere('CompanyName', 'like', "%{$keyword}%");
+
+                });
+
+            })
             ->whereNull('DeletedDate')
             ->orderBy('CompanyID')
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function findById(int $id)
@@ -26,38 +37,5 @@ class CompanyRepository extends BaseRepository
             ->where('CompanyID', $id)
             ->whereNull('DeletedDate')
             ->firstOrFail();
-    }
-
-    public function search(?string $search, int $perPage = 10)
-    {
-        return $this->model
-            ->whereNull('DeletedDate')
-            ->when($search, function ($query) use ($search) {
-
-                $query->where(function ($query) use ($search) {
-
-                    $query
-                        ->where(
-                            'CompanyCode',
-                            'like',
-                            "%{$search}%"
-                        )
-                        ->orWhere(
-                            'CompanyName',
-                            'like',
-                            "%{$search}%"
-                        )
-                        ->orWhere(
-                            'Email',
-                            'like',
-                            "%{$search}%"
-                        );
-
-                });
-
-            })
-            ->orderBy('CompanyID')
-            ->paginate($perPage)
-            ->withQueryString();
     }
 }

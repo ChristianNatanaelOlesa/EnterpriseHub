@@ -46,11 +46,71 @@ class MenuSeeder extends Seeder
             ],
 
             [
+                'Code' => 'MASTER_RELIGION',
+                'Name' => 'Religion',
+                'Route' => 'master.religion.index',
+                'Icon' => 'bi bi-person-heart',
+                'SortOrder' => 12,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_COUNTRY',
+                'Name' => 'Country',
+                'Route' => 'master.country.index',
+                'Icon' => 'bi bi-globe2',
+                'SortOrder' => 12,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_PROVINCE',
+                'Name' => 'Province',
+                'Route' => 'master.province.index',
+                'Icon' => 'bi bi-globe2',
+                'SortOrder' => 12,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_CITY',
+                'Name' => 'City',
+                'Route' => 'master.city.index',
+                'Icon' => 'bi bi-buildings',
+                'SortOrder' => 13,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_DISTRICT',
+                'Name' => 'District',
+                'Route' => 'master.district.index',
+                'Icon' => 'bi bi-map',
+                'SortOrder' => 14,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_VILLAGE',
+                'Name' => 'Village',
+                'Route' => 'master.village.index',
+                'Icon' => 'bi bi-pin-map',
+                'SortOrder' => 15,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
                 'Code' => 'MASTER_DIRECTORATE',
                 'Name' => 'Directorate',
                 'Route' => 'master.directorate.index',
                 'Icon' => 'bi bi-diagram-3',
-                'SortOrder' => 12,
+                'SortOrder' => 13,
                 'IsMenu' => true,
                 'IsActive' => true,
             ],
@@ -60,7 +120,7 @@ class MenuSeeder extends Seeder
                 'Name' => 'Division',
                 'Route' => 'master.division.index',
                 'Icon' => 'bi bi-diagram-2',
-                'SortOrder' => 13,
+                'SortOrder' => 14,
                 'IsMenu' => true,
                 'IsActive' => true,
             ],
@@ -70,7 +130,7 @@ class MenuSeeder extends Seeder
                 'Name' => 'Department',
                 'Route' => 'master.department.index',
                 'Icon' => 'bi bi-building-gear',
-                'SortOrder' => 14,
+                'SortOrder' => 15,
                 'IsMenu' => true,
                 'IsActive' => true,
             ],
@@ -146,6 +206,12 @@ class MenuSeeder extends Seeder
         DB::table('sc_menu')
             ->whereIn('Code', [
                 'MASTER_COMPANY',
+                'MASTER_COUNTRY',
+                'MASTER_PROVINCE',
+                'MASTER_CITY',
+                'MASTER_DISTRICT',
+                'MASTER_VILLAGE',
+                'MASTER_RELIGION',
                 'MASTER_DIRECTORATE',
                 'MASTER_DIVISION',
                 'MASTER_DEPARTMENT',

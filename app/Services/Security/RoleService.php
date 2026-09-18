@@ -39,14 +39,29 @@ class RoleService
         return $this->repository->getRolePermissions($roleId);
     }
 
-    public function store(array $data)
-    {
-        return DB::transaction(function () use ($data) {
+    public function store(
+        array $data,
+        array $permissions = []
+    ) {
+        return DB::transaction(function () use (
+            $data,
+            $permissions
+        ) {
 
-            $data['CreatedBy'] = auth()->user()->UserID;
+            $userId = auth()->user()->UserID;
+
+            $data['CreatedBy'] = $userId;
             $data['CreatedDate'] = now();
 
-            return $this->repository->create($data);
+            $role = $this->repository->create($data);
+
+            $this->repository->syncPermissions(
+                $role->RoleID,
+                $permissions,
+                $userId
+            );
+
+            return $role;
         });
     }
 

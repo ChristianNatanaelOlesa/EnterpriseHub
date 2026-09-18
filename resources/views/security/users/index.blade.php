@@ -12,13 +12,15 @@
                 User Management
             </h3>
 
-            <a href="{{ route('security.users.create') }}" class="btn btn-primary">
+            @if (\App\Support\Permission::canAdd('security.users.index'))
+                <a href="{{ route('security.users.create') }}" class="btn btn-primary">
 
-                <i class="bi bi-plus-lg"></i>
+                    <i class="bi bi-plus-lg"></i>
 
-                Add User
+                    Add User
 
-            </a>
+                </a>
+            @endif
 
         </div>
 
@@ -89,10 +91,9 @@
                                 <td>
 
                                     @forelse($user->roles as $role)
+
                                         <span class="badge text-bg-primary me-1">
-
                                             {{ $role->Name }}
-
                                         </span>
 
                                     @empty
@@ -100,6 +101,7 @@
                                         <span class="text-muted">
                                             No Role
                                         </span>
+
                                     @endforelse
 
                                 </td>
@@ -107,70 +109,99 @@
                                 <td>
 
                                     @if ($user->IsActive)
+
                                         <span class="badge text-bg-success">
                                             Active
                                         </span>
+
                                     @else
+
                                         <span class="badge text-bg-danger">
                                             Inactive
                                         </span>
+
                                     @endif
 
                                 </td>
 
                                 <td>
 
-                                    <a href="{{ route('security.users.edit', $user->UserID) }}"
-                                        class="btn btn-sm btn-warning" title="Edit">
+                                    @if (\App\Support\Permission::canEdit('security.users.index'))
 
-                                        <i class="bi bi-pencil-square"></i>
+                                        <a href="{{ route('security.users.edit', $user->UserID) }}"
+                                            class="btn btn-sm btn-warning"
+                                            title="Edit">
 
-                                    </a>
+                                            <i class="bi bi-pencil-square"></i>
 
-                                    <form action="{{ route('security.users.reset-password', $user->UserID) }}"
-                                        method="POST" class="d-inline">
+                                        </a>
 
-                                        @csrf
+                                        <form action="{{ route('security.users.reset-password', $user->UserID) }}"
+                                            method="POST"
+                                            class="d-inline">
 
-                                        <button type="submit" class="btn btn-sm btn-info" title="Reset Password"
-                                            onclick="return confirm('Reset password user ini menjadi password default?')">
+                                            @csrf
 
-                                            <i class="bi bi-key"></i>
+                                            <button type="submit"
+                                                class="btn btn-sm btn-info"
+                                                title="Reset Password"
+                                                onclick="return confirm('Reset password user ini menjadi password default?')">
 
-                                        </button>
+                                                <i class="bi bi-key"></i>
 
-                                    </form>
+                                            </button>
 
-                                    <form action="{{ route('security.users.destroy', $user->UserID) }}" method="POST"
-                                        class="d-inline">
+                                        </form>
 
-                                        @csrf
+                                        <form action="{{ route('security.users.toggle-status', $user->UserID) }}"
+                                            method="POST"
+                                            class="d-inline">
 
-                                        @method('DELETE')
+                                            @csrf
 
-                                        <button type="submit" class="btn btn-sm btn-danger" title="Delete"
-                                            onclick="return confirm('Yakin ingin menghapus user ini?')">
+                                            <button type="submit"
+                                                class="btn btn-sm {{ $user->IsActive ? 'btn-secondary' : 'btn-success' }}"
+                                                title="{{ $user->IsActive ? 'Deactivate' : 'Activate' }}">
 
-                                            <i class="bi bi-trash"></i>
+                                                <i class="bi {{ $user->IsActive ? 'bi-pause-fill' : 'bi-play-fill' }}"></i>
 
-                                        </button>
+                                            </button>
 
-                                    </form>
+                                        </form>
 
-                                    <form action="{{ route('security.users.toggle-status', $user->UserID) }}" method="POST"
-                                        class="d-inline">
+                                    @endif
 
-                                        @csrf
+                                    @if (\App\Support\Permission::canDelete('security.users.index'))
 
-                                        <button type="submit"
-                                            class="btn btn-sm {{ $user->IsActive ? 'btn-secondary' : 'btn-success' }}"
-                                            title="{{ $user->IsActive ? 'Deactivate' : 'Activate' }}">
+                                        <form action="{{ route('security.users.destroy', $user->UserID) }}"
+                                            method="POST"
+                                            class="d-inline">
 
-                                            <i class="bi {{ $user->IsActive ? 'bi-pause-fill' : 'bi-play-fill' }}"></i>
+                                            @csrf
 
-                                        </button>
+                                            @method('DELETE')
 
-                                    </form>
+                                            <button type="submit"
+                                                class="btn btn-sm btn-danger"
+                                                title="Delete"
+                                                onclick="return confirm('Yakin ingin menghapus user ini?')">
+
+                                                <i class="bi bi-trash"></i>
+
+                                            </button>
+
+                                        </form>
+
+                                    @endif
+
+                                    @if (
+                                        !\App\Support\Permission::canEdit('security.users.index')
+                                        && !\App\Support\Permission::canDelete('security.users.index')
+                                    )
+                                        <span class="text-muted">
+                                            -
+                                        </span>
+                                    @endif
 
                                 </td>
 

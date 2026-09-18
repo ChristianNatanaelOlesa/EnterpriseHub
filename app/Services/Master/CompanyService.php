@@ -50,13 +50,12 @@ class CompanyService
     {
         return DB::transaction(function () use ($id) {
 
-            return $this->repository->update($id, [
-
-                'IsActive' => false,
+            $data = [
                 'DeletedBy' => auth()->user()->UserID,
                 'DeletedDate' => now(),
+            ];
 
-            ]);
+            return $this->repository->update($id, $data);
         });
     }
 }

@@ -54,8 +54,8 @@
             Parent Menu
         </label>
 
-        <select
-            name="ParentID"
+        <select 
+            name="ParentID" 
             class="form-select @error('ParentID') is-invalid @enderror"
         >
 
@@ -65,8 +65,8 @@
 
             @foreach($parents as $parent)
 
-                <option
-                    value="{{ $parent->MenuID }}"
+                <option 
+                    value="{{ $parent->MenuID }}" 
                     @selected(
                         old(
                             'ParentID',

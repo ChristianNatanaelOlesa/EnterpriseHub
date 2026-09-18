@@ -20,40 +20,23 @@ class MsCompany extends BaseModel
 
         'CreatedBy',
         'CreatedDate',
-
         'UpdatedBy',
         'UpdatedDate',
-
         'DeletedBy',
         'DeletedDate',
     ];
 
     protected $casts = [
         'IsActive' => 'boolean',
+        'CreatedDate' => 'datetime',
+        'UpdatedDate' => 'datetime',
+        'DeletedDate' => 'datetime',
     ];
 
     public function directorates()
     {
         return $this->hasMany(
             MsDirectorate::class,
-            'CompanyID',
-            'CompanyID'
-        );
-    }
-
-    public function divisions()
-    {
-        return $this->hasMany(
-            MsDivision::class,
-            'CompanyID',
-            'CompanyID'
-        );
-    }
-
-    public function departments()
-    {
-        return $this->hasMany(
-            MsDepartment::class,
             'CompanyID',
             'CompanyID'
         );

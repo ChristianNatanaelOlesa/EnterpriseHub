@@ -39,6 +39,51 @@ class StoreRoleRequest extends FormRequest
                 'boolean',
             ],
 
+            'permissions' => [
+                'nullable',
+                'array',
+            ],
+
+            'permissions.*' => [
+                'nullable',
+                'array',
+            ],
+
+            'permissions.*.CanOpen' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanAdd' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanEdit' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanDelete' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanPrint' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanExport' => [
+                'nullable',
+                'boolean',
+            ],
+
+            'permissions.*.CanApprove' => [
+                'nullable',
+                'boolean',
+            ],
+
         ];
     }
 }

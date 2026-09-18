@@ -3,16 +3,52 @@
 namespace App\Models\Security;
 
 use App\Models\BaseModel;
-use App\Models\Security\ScRoleMenu;
 
 class ScMenu extends BaseModel
 {
     protected $table = 'sc_menu';
 
+    protected $primaryKey = 'MenuID';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
+    protected $fillable = [
+        'Code',
+        'Name',
+        'ParentID',
+        'SortOrder',
+        'Route',
+        'URL',
+        'Icon',
+        'IsActive',
+        'IsMenu',
+
+        'CreatedBy',
+        'CreatedDate',
+        'UpdatedBy',
+        'UpdatedDate',
+        'DeletedBy',
+        'DeletedDate',
+    ];
+
+    protected $casts = [
+        'MenuID' => 'integer',
+        'ParentID' => 'integer',
+        'SortOrder' => 'integer',
+        'IsActive' => 'boolean',
+        'IsMenu' => 'boolean',
+
+        'CreatedDate' => 'datetime',
+        'UpdatedDate' => 'datetime',
+        'DeletedDate' => 'datetime',
+    ];
+
     public function parent()
     {
         return $this->belongsTo(
-            ScMenu::class,
+            self::class,
             'ParentID',
             'MenuID'
         );
@@ -21,17 +57,8 @@ class ScMenu extends BaseModel
     public function children()
     {
         return $this->hasMany(
-            ScMenu::class,
+            self::class,
             'ParentID',
-            'MenuID'
-        );
-    }
-
-    public function role()
-    {
-        return $this->hasMany(
-            ScRoleMenu::class,
-            'MenuID',
             'MenuID'
         );
     }

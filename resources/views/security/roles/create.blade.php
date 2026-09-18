@@ -9,9 +9,7 @@
     <div class="card-header">
 
         <h3 class="card-title">
-
             Create Role
-
         </h3>
 
     </div>
@@ -23,7 +21,14 @@
 
         <div class="card-body">
 
-            @include('security.roles._form', ['mode' => 'create'])
+            @include('security.roles._form', [
+                'mode' => 'create',
+            ])
+
+            @include('security.roles._permissions', [
+                'menus' => $menus,
+                'permissions' => $permissions,
+            ])
 
         </div>
 
