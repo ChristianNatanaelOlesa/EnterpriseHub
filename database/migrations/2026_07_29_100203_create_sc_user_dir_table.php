@@ -16,13 +16,13 @@ return new class () extends Migration {
 
             $table->boolean('IsActive')->default(true);
 
-            $table->unsignedBigInteger('CreatedBy')->nullable();
-            $table->dateTime('CreatedDate')->useCurrent();
+            $table->string('InputUser', 50)->nullable();
+            $table->dateTime('InputDate')->useCurrent();
 
-            $table->unsignedBigInteger('UpdatedBy')->nullable();
-            $table->dateTime('UpdatedDate')->nullable();
+            $table->string('ModifUser', 50)->nullable();
+            $table->dateTime('ModifDate')->nullable();
 
-            $table->unsignedBigInteger('DeletedBy')->nullable();
+            $table->string('DeletedBy', 50)->nullable();
             $table->dateTime('DeletedDate')->nullable();
 
             $table->foreign('UserID')

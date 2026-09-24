@@ -33,13 +33,18 @@ class ReligionService
         return DB::transaction(function () use ($data) {
             $now = now();
 
-            $data['InputDate'] = $now;
-            $data['InputUser'] = Auth::user()?->username
-                ?? Auth::user()?->email
-                ?? 'SYSTEM';
+            $user = Auth::user();
 
-            $data['ModifDate'] = null;
-            $data['ModifUser'] = null;
+            $userName = $user?->Username
+                ?? $user?->username
+                ?? $user?->email
+                ?? 'Admin';
+
+            $data['InputDate'] = $now;
+            $data['InputUser'] = $userName;
+
+            $data['ModifDate'] = $now;
+            $data['ModifUser'] = $userName;
 
             return $this->repository->create($data);
         });
@@ -58,14 +63,40 @@ class ReligionService
                 ]);
             }
 
+            $user = Auth::user();
+
+            $userName = $user?->Username
+                ?? $user?->username
+                ?? $user?->email
+                ?? 'Admin';
+
+            $newId = $data['ReligionID'] ?? $id;
+
             $data['ModifDate'] = now();
-            $data['ModifUser'] = Auth::user()?->username
-                ?? Auth::user()?->email
-                ?? 'SYSTEM';
+            $data['ModifUser'] = $userName;
 
-            $this->repository->update($id, $data);
+            $updated = $this->repository->update($id, $data);
 
-            return $this->repository->find($id);
+            if (!$updated) {
+                throw ValidationException::withMessages([
+                    'ReligionID' => 'Failed to update religion data.',
+                ]);
+            }
+
+            /*
+             * ReligionID adalah Primary Key.
+             * Kalau ID berubah dari KAT -> CAT,
+             * jangan cari lagi menggunakan ID lama.
+             */
+            $updatedModel = $this->repository->find($newId);
+
+            if (!$updatedModel) {
+                throw ValidationException::withMessages([
+                    'ReligionID' => 'Religion data was updated but could not be retrieved.',
+                ]);
+            }
+
+            return $updatedModel;
         });
     }
 

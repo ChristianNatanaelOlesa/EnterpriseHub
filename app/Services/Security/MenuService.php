@@ -14,9 +14,9 @@ class MenuService
         $this->repository = $repository;
     }
 
-    public function getAll()
+    public function getAll(?string $search = null)
     {
-        return $this->repository->getAllMenus();
+        return $this->repository->getAllMenus(10, $search);
     }
 
     public function getParents()
@@ -33,8 +33,8 @@ class MenuService
     {
         return DB::transaction(function () use ($data) {
 
-            $data['CreatedBy'] = auth()->user()->UserID;
-            $data['CreatedDate'] = now();
+            $data['InputUser'] = auth()->user()->Username;
+            $data['InputDate'] = now();
 
             return $this->repository->create($data);
         });
@@ -44,8 +44,8 @@ class MenuService
     {
         return DB::transaction(function () use ($id, $data) {
 
-            $data['UpdatedBy'] = auth()->user()->UserID;
-            $data['UpdatedDate'] = now();
+            $data['ModifUser'] = auth()->user()->Username;
+            $data['ModifDate'] = now();
 
             return $this->repository->update($id, $data);
         });
@@ -58,7 +58,7 @@ class MenuService
             return $this->repository->update($id, [
 
                 'IsActive'    => false,
-                'DeletedBy'   => auth()->user()->UserID,
+                'DeletedBy'   => auth()->user()->Username,
                 'DeletedDate' => now(),
 
             ]);

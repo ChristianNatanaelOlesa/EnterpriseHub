@@ -9,16 +9,15 @@ class BlueprintMacros
     public static function register(): void
     {
         Blueprint::macro('auditColumns', function () {
-
             /** @var Blueprint $this */
 
-            $this->unsignedBigInteger('CreatedBy')->nullable();
-            $this->dateTime('CreatedDate')->useCurrent();
+            $this->dateTime('InputDate')->useCurrent();
+            $this->string('InputUser', 50)->default('Admin');
 
-            $this->unsignedBigInteger('UpdatedBy')->nullable();
-            $this->dateTime('UpdatedDate')->nullable();
+            $this->dateTime('ModifDate')->useCurrent();
+            $this->string('ModifUser', 50)->default('Admin');
 
-            $this->unsignedBigInteger('DeletedBy')->nullable();
+            $this->string('DeletedBy', 50)->nullable();
             $this->dateTime('DeletedDate')->nullable();
         });
     }

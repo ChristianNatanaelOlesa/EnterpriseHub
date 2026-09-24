@@ -13,7 +13,7 @@ class Permission
         string $permission,
         string $routeName
     ): bool {
-        $cacheKey = $permission.':'.$routeName;
+        $cacheKey = $permission . ':' . $routeName;
 
         if (array_key_exists($cacheKey, self::$cache)) {
             return self::$cache[$cacheKey];
@@ -26,6 +26,8 @@ class Permission
         $roleIds = auth()->user()
             ->roles()
             ->wherePivot('IsActive', true)
+            ->where('sc_role.IsActive', true)
+            ->whereNull('sc_role.DeletedDate')
             ->pluck('sc_role.RoleID');
 
         if ($roleIds->isEmpty()) {
@@ -39,7 +41,9 @@ class Permission
             ->whereHas('menu', function ($query) use ($routeName) {
                 $query
                     ->where('Route', $routeName)
-                    ->where('IsActive', true);
+                    ->where('IsActive', true)
+                    ->where('IsMenu', true)
+                    ->whereNull('DeletedDate');
             })
             ->exists();
     }
@@ -79,7 +83,14 @@ class Permission
         return self::can('CanApprove', $routeName);
     }
 
-    public static function menuTree()
+    /**
+     * Build the menu tree visible to the current user.
+     *
+     * MenuArea:
+     * - TOP     = Topside menu
+     * - SIDEBAR = User transaction menu
+     */
+    public static function menuTree(?string $menuArea = null)
     {
         if (! auth()->check()) {
             return collect();
@@ -88,26 +99,31 @@ class Permission
         $roleIds = auth()->user()
             ->roles()
             ->wherePivot('IsActive', true)
+            ->where('sc_role.IsActive', true)
+            ->whereNull('sc_role.DeletedDate')
             ->pluck('sc_role.RoleID');
 
         if ($roleIds->isEmpty()) {
             return collect();
         }
 
-        /*
-         * Ambil semua menu aktif.
-         */
-        $menus = ScMenu::query()
+        $menusQuery = ScMenu::query()
             ->where('sc_menu.IsActive', true)
+            ->where('sc_menu.IsMenu', true)
             ->whereNull('sc_menu.DeletedDate')
             ->orderBy('sc_menu.SortOrder')
-            ->orderBy('sc_menu.MenuID')
-            ->get();
+            ->orderBy('sc_menu.MenuID');
 
-        /*
-         * Ambil MenuID yang memiliki permission CanOpen
-         * untuk role user saat ini.
-         */
+        if ($menuArea !== null) {
+            $menusQuery->where('sc_menu.MenuArea', $menuArea);
+        }
+
+        $menus = $menusQuery->get();
+
+        if ($menus->isEmpty()) {
+            return collect();
+        }
+
         $allowedMenuIds = ScRoleMenu::query()
             ->whereIn('RoleID', $roleIds)
             ->where('IsActive', true)
@@ -116,66 +132,55 @@ class Permission
             ->unique();
 
         /*
-         * Tentukan menu yang boleh ditampilkan.
-         *
-         * Child:
-         *   harus memiliki CanOpen.
-         *
-         * Parent:
-         *   boleh tampil jika:
-         *   - dirinya memiliki CanOpen, atau
-         *   - memiliki minimal satu child yang boleh tampil.
+         * Start from menus explicitly granted CanOpen.
          */
-        $visibleMenus = $menus->filter(function ($menu) use (
-            $allowedMenuIds,
-            $menus
-        ) {
-
-            /*
-             * Menu yang memiliki permission langsung.
-             */
-            if ($allowedMenuIds->contains($menu->MenuID)) {
-                return true;
-            }
-
-            /*
-             * Parent menu tanpa permission langsung,
-             * tetapi memiliki child yang boleh diakses.
-             */
-            return $menus->contains(function ($child) use (
-                $menu,
-                $allowedMenuIds
-            ) {
-
-                return $child->ParentID == $menu->MenuID
-                    && $allowedMenuIds->contains(
-                        $child->MenuID
-                    );
-
-            });
-
-        });
+        $visibleIds = collect($allowedMenuIds)
+            ->filter(fn ($id) => $menus->contains('MenuID', $id))
+            ->values();
 
         /*
-         * Pastikan parent dari menu yang visible
-         * juga ikut tersedia agar hierarchy tidak putus.
+         * Add every ancestor required to keep the hierarchy intact.
+         *
+         * This is recursive by iteration, so a structure like:
+         *
+         * System
+         *   Master
+         *     Organization
+         *       Directorate
+         *
+         * still works when only Directorate has CanOpen.
          */
-        $visibleMenus = $visibleMenus->filter(function ($menu) use (
-            $visibleMenus
-        ) {
+        do {
+            $before = $visibleIds->count();
 
-            if (! $menu->ParentID) {
-                return true;
-            }
+            $parentIds = $menus
+                ->whereIn('MenuID', $visibleIds)
+                ->pluck('ParentID')
+                ->filter()
+                ->unique();
 
-            return $visibleMenus->contains(
-                'MenuID',
-                $menu->ParentID
-            );
+            $visibleIds = $visibleIds
+                ->merge($parentIds)
+                ->unique()
+                ->values();
 
-        });
+        } while ($visibleIds->count() > $before);
+
+        $visibleMenus = $menus
+            ->filter(fn ($menu) => $visibleIds->contains($menu->MenuID))
+            ->values();
 
         return $visibleMenus->groupBy('ParentID');
+    }
+
+    public static function topMenuTree()
+    {
+        return self::menuTree('TOP');
+    }
+
+    public static function sidebarMenuTree()
+    {
+        return self::menuTree('SIDEBAR');
     }
 
     public static function childMenus(
@@ -222,11 +227,9 @@ class Permission
         );
 
         foreach ($children as $child) {
-
             if (self::hasActiveMenu($child, $menuTree)) {
                 return true;
             }
-
         }
 
         return false;

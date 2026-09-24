@@ -11,29 +11,23 @@ class BaseModel extends Model
     protected static function booted(): void
     {
         static::creating(function ($model) {
-
             if (auth()->check()) {
-
-                $userId = auth()->user()->UserID;
-
-                if (empty($model->CreatedBy)) {
-                    $model->CreatedBy = $userId;
+                if (empty($model->InputUser)) {
+                    $model->InputUser = auth()->user()->Username;
                 }
             }
 
-            if (empty($model->CreatedDate)) {
-                $model->CreatedDate = now();
+            if (empty($model->InputDate)) {
+                $model->InputDate = now();
             }
         });
 
         static::updating(function ($model) {
-
             if (auth()->check()) {
-
-                $model->UpdatedBy = auth()->user()->UserID;
+                $model->ModifUser = auth()->user()->Username;
             }
 
-            $model->UpdatedDate = now();
+            $model->ModifDate = now();
         });
     }
 }

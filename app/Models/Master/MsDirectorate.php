@@ -16,11 +16,11 @@ class MsDirectorate extends BaseModel
         'DirectorateName',
         'IsActive',
 
-        'CreatedBy',
-        'CreatedDate',
+        'InputUser',
+        'InputDate',
 
-        'UpdatedBy',
-        'UpdatedDate',
+        'ModifUser',
+        'ModifDate',
 
         'DeletedBy',
         'DeletedDate',

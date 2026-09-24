@@ -28,10 +28,10 @@ return new class () extends Migration {
             $table->boolean('IsActive')->default(true);
 
             $table->dateTime('InputDate')->nullable();
-            $table->unsignedBigInteger('InputUser')->nullable();
+            $table->string('InputUser', 50)->nullable();
 
             $table->dateTime('ModifDate')->nullable();
-            $table->unsignedBigInteger('ModifUser')->nullable();
+            $table->string('ModifUser', 50)->nullable();
         });
     }
 

@@ -14,12 +14,20 @@ class RoleRepository extends BaseRepository
         $this->model = $model;
     }
 
-    public function getPaginated(int $perPage = 10)
+    public function getPaginated(int $perPage = 10, ?string $search = null)
     {
         return $this->model
             ->whereNull('DeletedDate')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('Code', 'like', "%{$search}%")
+                        ->orWhere('Name', 'like', "%{$search}%")
+                        ->orWhere('Description', 'like', "%{$search}%");
+                });
+            })
             ->orderBy('RoleID')
-            ->paginate($perPage);
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function getActiveRoles()
@@ -40,7 +48,9 @@ class RoleRepository extends BaseRepository
     {
         return DB::table('sc_menu')
             ->where('IsActive', true)
+            ->where('IsMenu', true)
             ->whereNull('DeletedDate')
+            ->orderByRaw("CASE WHEN MenuArea = 'TOP' THEN 1 ELSE 2 END")
             ->orderBy('SortOrder')
             ->orderBy('MenuID')
             ->get();
@@ -58,7 +68,7 @@ class RoleRepository extends BaseRepository
     public function syncPermissions(
         int $roleId,
         array $permissions,
-        int $userId
+        string $username
     ): void {
         $now = now();
 
@@ -75,8 +85,8 @@ class RoleRepository extends BaseRepository
                 'CanExport' => $canOpen && ! empty($permission['CanExport']),
                 'CanApprove' => $canOpen && ! empty($permission['CanApprove']),
                 'IsActive' => true,
-                'UpdatedBy' => $userId,
-                'UpdatedDate' => $now,
+                'ModifUser' => $username,
+                'ModifDate' => $now,
             ];
 
             $existing = ScRoleMenu::query()
@@ -85,17 +95,14 @@ class RoleRepository extends BaseRepository
                 ->first();
 
             if ($existing) {
-
                 $existing->update($values);
-
             } else {
-
                 ScRoleMenu::create(array_merge(
                     [
                         'RoleID' => $roleId,
                         'MenuID' => $menuId,
-                        'CreatedBy' => $userId,
-                        'CreatedDate' => $now,
+                        'InputUser' => $username,
+                        'InputDate' => $now,
                     ],
                     $values
                 ));
@@ -106,7 +113,6 @@ class RoleRepository extends BaseRepository
             ->where('RoleID', $roleId);
 
         if (! empty($permissions)) {
-
             $query->whereNotIn(
                 'MenuID',
                 array_keys($permissions)
@@ -122,8 +128,8 @@ class RoleRepository extends BaseRepository
             'CanExport' => false,
             'CanApprove' => false,
             'IsActive' => false,
-            'UpdatedBy' => $userId,
-            'UpdatedDate' => $now,
+            'ModifUser' => $username,
+            'ModifDate' => $now,
         ]);
     }
 }

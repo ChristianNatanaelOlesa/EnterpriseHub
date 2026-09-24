@@ -20,7 +20,10 @@ class UserSeeder extends Seeder
                 'Email' => 'administrator@enterprisehub.com',
                 'PhoneNumber' => '123456789',
                 'IsActive' => true,
-                'UpdatedDate' => now(),
+                'InputUser' => 'admin',
+                'InputDate' => now(),
+                'ModifUser' => 'admin',
+                'ModifDate' => now(),
             ]
         );
     }

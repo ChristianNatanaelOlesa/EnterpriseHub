@@ -15,9 +15,9 @@ class UserService
         $this->repository = $repository;
     }
 
-    public function getAll()
+    public function getAll(?string $search = null)
     {
-        return $this->repository->getPaginated(10);
+        return $this->repository->getPaginated(10, $search);
     }
 
     public function findById(int $id)
@@ -43,18 +43,18 @@ class UserService
             unset($data['RoleID']);
 
             $data['Password'] = Hash::make(
-                $data['Password']
+                $data['Username'] . '!23'
             );
 
-            $data['CreatedBy'] = auth()->user()->UserID;
-            $data['CreatedDate'] = now();
+            $data['InputUser'] = auth()->user()->Username;
+            $data['InputDate'] = now();
 
             $user = $this->repository->create($data);
 
             $this->repository->syncRole(
                 $user->UserID,
                 $roleId,
-                auth()->user()->UserID
+                auth()->user()->Username
             );
 
             return $user;
@@ -69,8 +69,8 @@ class UserService
 
             unset($data['RoleID']);
 
-            $data['UpdatedBy'] = auth()->user()->UserID;
-            $data['UpdatedDate'] = now();
+            $data['ModifUser'] = auth()->user()->Username;
+            $data['ModifDate'] = now();
 
             $user = $this->repository->update(
                 $id,
@@ -80,7 +80,7 @@ class UserService
             $this->repository->syncRole(
                 $id,
                 $roleId,
-                auth()->user()->UserID
+                auth()->user()->Username
             );
 
             return $user;
@@ -93,7 +93,7 @@ class UserService
 
             return $this->repository->update($id, [
                 'IsActive' => false,
-                'DeletedBy' => auth()->user()->UserID,
+                'DeletedBy' => auth()->user()->Username,
                 'DeletedDate' => now(),
             ]);
         });
@@ -103,10 +103,12 @@ class UserService
     {
         return DB::transaction(function () use ($id) {
 
+            $user = $this->repository->findById($id);
+
             return $this->repository->update($id, [
-                'Password' => Hash::make('admin123'),
-                'UpdatedBy' => auth()->user()->UserID,
-                'UpdatedDate' => now(),
+                'Password' => Hash::make($user->Username . '!23'),
+                'ModifUser' => auth()->user()->Username,
+                'ModifDate' => now(),
             ]);
         });
     }
@@ -121,8 +123,8 @@ class UserService
                 $user->UserID,
                 [
                     'IsActive' => ! $user->IsActive,
-                    'UpdatedBy' => auth()->user()->UserID,
-                    'UpdatedDate' => now(),
+                    'ModifUser' => auth()->user()->Username,
+                    'ModifDate' => now(),
                 ]
             );
         });

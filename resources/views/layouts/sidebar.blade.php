@@ -1,37 +1,22 @@
-<aside class="app-sidebar bg-body-secondary shadow" data-bs-theme="dark">
+@php
+    $sidebarMenuTree = \App\Support\Permission::sidebarMenuTree();
+    $sidebarMenus = $sidebarMenuTree->get(null, collect());
+@endphp
 
-    <div class="sidebar-brand">
+<aside id="ehSidebar"
+       class="eh-sidebar">
 
-        <a href="{{ route('dashboard') }}" class="brand-link">
-
-            <span class="brand-text fw-light">
-                EnterpriseHub
-            </span>
-
-        </a>
-
+    <div class="eh-sidebar-title">
+        My Workspace
     </div>
 
-    <div class="sidebar-wrapper">
+    <nav class="eh-sidebar-menu">
 
-        @php
-            $menuTree = \App\Support\Permission::menuTree();
-            $rootMenus = $menuTree->get(null, collect());
-        @endphp
+        @include('layouts.partials.sidebar-menu', [
+            'menus' => $sidebarMenus,
+            'menuTree' => $sidebarMenuTree,
+        ])
 
-        <nav class="mt-2">
-
-            <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
-
-                @include('layouts.partials.sidebar-menu', [
-                    'menus' => $rootMenus,
-                    'menuTree' => $menuTree,
-                ])
-
-            </ul>
-
-        </nav>
-
-    </div>
+    </nav>
 
 </aside>

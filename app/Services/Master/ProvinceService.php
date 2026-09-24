@@ -27,7 +27,7 @@ class ProvinceService
     public function create(array $data)
     {
         $data['InputDate'] = now();
-        $data['InputUser'] = Auth::user()->UserID;
+        $data['InputUser'] = Auth::user()->Username;
         $data['IsActive'] = $data['IsActive'] ?? true;
 
         return $this->repository->create($data);
@@ -36,13 +36,19 @@ class ProvinceService
     public function update(string $id, array $data)
     {
         $data['ModifDate'] = now();
-        $data['ModifUser'] = Auth::user()->UserID;
+        $data['ModifUser'] = Auth::user()->Username;
 
         return $this->repository->update($id, $data);
     }
 
     public function delete(string $id)
     {
-        return $this->repository->delete($id);
+        return $this->repository->update($id, [
+            'IsActive' => false,
+            'ModifUser' => Auth::user()->Username,
+            'ModifDate' => now(),
+            'DeletedBy' => Auth::user()->Username,
+            'DeletedDate' => now(),
+        ]);
     }
 }

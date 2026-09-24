@@ -14,9 +14,9 @@ class RoleService
         $this->repository = $repository;
     }
 
-    public function getAll()
+    public function getAll(?string $search = null)
     {
-        return $this->repository->getPaginated(10);
+        return $this->repository->getPaginated(10, $search);
     }
 
     public function getActiveRoles()
@@ -48,17 +48,17 @@ class RoleService
             $permissions
         ) {
 
-            $userId = auth()->user()->UserID;
+            $username = auth()->user()->Username;
 
-            $data['CreatedBy'] = $userId;
-            $data['CreatedDate'] = now();
+            $data['InputUser'] = $username;
+            $data['InputDate'] = now();
 
             $role = $this->repository->create($data);
 
             $this->repository->syncPermissions(
                 $role->RoleID,
                 $permissions,
-                $userId
+                $username
             );
 
             return $role;
@@ -76,10 +76,10 @@ class RoleService
             $permissions
         ) {
 
-            $userId = auth()->user()->UserID;
+            $username = auth()->user()->Username;
 
-            $data['UpdatedBy'] = $userId;
-            $data['UpdatedDate'] = now();
+            $data['ModifUser'] = $username;
+            $data['ModifDate'] = now();
 
             $role = $this->repository->update(
                 $id,
@@ -89,7 +89,7 @@ class RoleService
             $this->repository->syncPermissions(
                 $id,
                 $permissions,
-                $userId
+                $username
             );
 
             return $role;
@@ -103,7 +103,7 @@ class RoleService
             return $this->repository->update($id, [
 
                 'IsActive' => false,
-                'DeletedBy' => auth()->user()->UserID,
+                'DeletedBy' => auth()->user()->Username,
                 'DeletedDate' => now(),
 
             ]);

@@ -23,6 +23,7 @@
                 @include('security.users._form', [
                     'mode' => 'create',
                     'roles' => $roles,
+                    'employeeForms' => $employeeForms,
                     'userRoleIds' => [],
                 ])
 

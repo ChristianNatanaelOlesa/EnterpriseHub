@@ -15,11 +15,11 @@ class ScUserRole extends BaseModel
         'RoleID',
         'IsActive',
 
-        'CreatedBy',
-        'CreatedDate',
+        'InputUser',
+        'InputDate',
 
-        'UpdatedBy',
-        'UpdatedDate',
+        'ModifUser',
+        'ModifDate',
 
         'DeletedBy',
         'DeletedDate',

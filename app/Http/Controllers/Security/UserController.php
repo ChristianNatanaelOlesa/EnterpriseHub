@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Security;
 
 use App\Http\Controllers\Controller;
+use App\Models\EForm\TrEmpForm;
 use App\Http\Requests\Security\StoreUserRequest;
 use App\Http\Requests\Security\UpdateUserRequest;
 use App\Services\Security\RoleService;
 use App\Services\Security\UserService;
+use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
@@ -22,9 +24,9 @@ class UserController extends Controller
         $this->roleService = $roleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->getAll();
+        $users = $this->userService->getAll($request->input('search'));
 
         return view(
             'security.users.index',
@@ -36,9 +38,21 @@ class UserController extends Controller
     {
         $roles = $this->roleService->getActiveRoles();
 
+        $employeeForms = TrEmpForm::query()
+            ->select([
+                'EmpFormID',
+                'FirstName',
+                'LastName',
+                'MobileNo',
+                'Email',
+            ])
+            ->orderBy('FirstName')
+            ->orderBy('LastName')
+            ->get();
+
         return view(
             'security.users.create',
-            compact('roles')
+            compact('roles', 'employeeForms')
         );
     }
 

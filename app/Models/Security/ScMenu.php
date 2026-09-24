@@ -3,6 +3,8 @@
 namespace App\Models\Security;
 
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ScMenu extends BaseModel
 {
@@ -17,6 +19,7 @@ class ScMenu extends BaseModel
     protected $fillable = [
         'Code',
         'Name',
+        'MenuArea',
         'ParentID',
         'SortOrder',
         'Route',
@@ -25,10 +28,10 @@ class ScMenu extends BaseModel
         'IsActive',
         'IsMenu',
 
-        'CreatedBy',
-        'CreatedDate',
-        'UpdatedBy',
-        'UpdatedDate',
+        'InputUser',
+        'InputDate',
+        'ModifUser',
+        'ModifDate',
         'DeletedBy',
         'DeletedDate',
     ];
@@ -40,12 +43,12 @@ class ScMenu extends BaseModel
         'IsActive' => 'boolean',
         'IsMenu' => 'boolean',
 
-        'CreatedDate' => 'datetime',
-        'UpdatedDate' => 'datetime',
+        'InputDate' => 'datetime',
+        'ModifDate' => 'datetime',
         'DeletedDate' => 'datetime',
     ];
 
-    public function parent()
+    public function parent(): BelongsTo
     {
         return $this->belongsTo(
             self::class,
@@ -54,7 +57,7 @@ class ScMenu extends BaseModel
         );
     }
 
-    public function children()
+    public function children(): HasMany
     {
         return $this->hasMany(
             self::class,

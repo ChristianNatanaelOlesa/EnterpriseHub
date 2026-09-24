@@ -28,7 +28,7 @@ class UserRoleRepository
     public function sync(
         int $userId,
         array $roleIds,
-        int $actorId
+        string $username
     ): void {
         $now = now();
 
@@ -50,8 +50,8 @@ class UserRoleRepository
 
                 $record->update([
                     'IsActive' => true,
-                    'UpdatedBy' => $actorId,
-                    'UpdatedDate' => $now,
+                    'ModifUser' => $username,
+                    'ModifDate' => $now,
                     'DeletedBy' => null,
                     'DeletedDate' => null,
                 ]);
@@ -62,8 +62,8 @@ class UserRoleRepository
                     'UserID' => $userId,
                     'RoleID' => $roleId,
                     'IsActive' => true,
-                    'CreatedBy' => $actorId,
-                    'CreatedDate' => $now,
+                    'InputUser' => $username,
+                    'InputDate' => $now,
                 ]);
 
             }
@@ -74,9 +74,9 @@ class UserRoleRepository
             ->whereNotIn('RoleID', $roleIds ?: [0])
             ->update([
                 'IsActive' => false,
-                'UpdatedBy' => $actorId,
-                'UpdatedDate' => $now,
-                'DeletedBy' => $actorId,
+                'ModifUser' => $username,
+                'ModifDate' => $now,
+                'DeletedBy' => $username,
                 'DeletedDate' => $now,
             ]);
     }

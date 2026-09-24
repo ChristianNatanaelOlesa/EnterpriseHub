@@ -18,18 +18,18 @@ class MsCompany extends BaseModel
         'Email',
         'IsActive',
 
-        'CreatedBy',
-        'CreatedDate',
-        'UpdatedBy',
-        'UpdatedDate',
+        'InputUser',
+        'InputDate',
+        'ModifUser',
+        'ModifDate',
         'DeletedBy',
         'DeletedDate',
     ];
 
     protected $casts = [
         'IsActive' => 'boolean',
-        'CreatedDate' => 'datetime',
-        'UpdatedDate' => 'datetime',
+        'InputDate' => 'datetime',
+        'ModifDate' => 'datetime',
         'DeletedDate' => 'datetime',
     ];
 

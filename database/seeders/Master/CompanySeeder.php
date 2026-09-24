@@ -19,7 +19,10 @@ class CompanySeeder extends Seeder
                 'Phone' => '021000000',
                 'Email' => 'admin@enterprisehub.local',
                 'IsActive' => true,
-                'UpdatedDate' => now(),
+                'InputUser' => 'admin',
+                'InputDate' => now(),
+                'ModifUser' => 'admin',
+                'ModifDate' => now(),
             ]
         );
     }

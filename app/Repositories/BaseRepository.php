@@ -44,7 +44,7 @@ abstract class BaseRepository
         $model->update([
             'IsActive' => false,
             'DeletedBy' => auth()->check()
-                ? auth()->user()->UserID
+                ? auth()->user()->Username
                 : null,
             'DeletedDate' => now(),
         ]);

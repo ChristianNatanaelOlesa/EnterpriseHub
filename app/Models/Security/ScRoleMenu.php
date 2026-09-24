@@ -25,11 +25,11 @@ class ScRoleMenu extends BaseModel
 
         'IsActive',
 
-        'CreatedBy',
-        'CreatedDate',
+        'InputUser',
+        'InputDate',
 
-        'UpdatedBy',
-        'UpdatedDate',
+        'ModifUser',
+        'ModifDate',
 
         'DeletedBy',
         'DeletedDate',

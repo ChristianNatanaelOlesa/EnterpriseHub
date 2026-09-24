@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Security\StoreMenuRequest;
 use App\Http\Requests\Security\UpdateMenuRequest;
 use App\Services\Security\MenuService;
+use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
@@ -16,9 +17,9 @@ class MenuController extends Controller
         $this->menuService = $menuService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $menus = $this->menuService->getAll();
+        $menus = $this->menuService->getAll($request->input('search'));
 
         return view('security.menus.index', compact('menus'));
     }

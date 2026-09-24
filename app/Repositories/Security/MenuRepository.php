@@ -12,13 +12,27 @@ class MenuRepository extends BaseRepository
         $this->model = $model;
     }
 
-    public function getAllMenus()
+    public function getAllMenus(int $perPage = 10, ?string $search = null)
     {
         return $this->model
+            ->with('parent')
             ->whereNull('DeletedDate')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('Code', 'like', "%{$search}%")
+                        ->orWhere('Name', 'like', "%{$search}%")
+                        ->orWhere('Route', 'like', "%{$search}%")
+                        ->orWhere('URL', 'like', "%{$search}%")
+                        ->orWhereHas('parent', function ($parentQuery) use ($search) {
+                            $parentQuery->where('Name', 'like', "%{$search}%")
+                                ->orWhere('Code', 'like', "%{$search}%");
+                        });
+                });
+            })
             ->orderBy('SortOrder')
             ->orderBy('Name')
-            ->paginate(10);
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function getParentMenus()

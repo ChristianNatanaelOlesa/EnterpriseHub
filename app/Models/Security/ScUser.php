@@ -16,6 +16,7 @@ class ScUser extends Authenticatable
     public $timestamps = false;
 
     protected $fillable = [
+        'EmpFormID',
         'Username',
         'FullName',
         'Password',
@@ -25,10 +26,10 @@ class ScUser extends Authenticatable
         'Photo',
         'LastLogin',
         'IsActive',
-        'CreatedBy',
-        'CreatedDate',
-        'UpdatedBy',
-        'UpdatedDate',
+        'InputUser',
+        'InputDate',
+        'ModifUser',
+        'ModifDate',
         'DeletedBy',
         'DeletedDate',
     ];
@@ -45,6 +46,11 @@ class ScUser extends Authenticatable
     public function getAuthIdentifierName()
     {
         return 'Username';
+    }
+
+    public function employeeForm()
+    {
+        return $this->belongsTo(\App\Models\EForm\TrEmpForm::class, 'EmpFormID', 'EmpFormID');
     }
 
     public function roles()

@@ -28,7 +28,7 @@ class CountryService
     {
         return DB::transaction(function () use ($data) {
 
-            $data['InputUser'] = auth()->user()->UserID;
+            $data['InputUser'] = auth()->user()->Username;
             $data['InputDate'] = now();
 
             return $this->repository->create($data);
@@ -39,7 +39,7 @@ class CountryService
     {
         return DB::transaction(function () use ($id, $data) {
 
-            $data['ModifUser'] = auth()->user()->UserID;
+            $data['ModifUser'] = auth()->user()->Username;
             $data['ModifDate'] = now();
 
             return $this->repository->update($id, $data);
@@ -52,8 +52,10 @@ class CountryService
 
             $data = [
                 'IsActive' => false,
-                'ModifUser' => auth()->user()->UserID,
+                'ModifUser' => auth()->user()->Username,
                 'ModifDate' => now(),
+                'DeletedBy' => auth()->user()->Username,
+                'DeletedDate' => now(),
             ];
 
             return $this->repository->update($id, $data);

@@ -14,6 +14,12 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'EmpFormID' => [
+                'required',
+                'string',
+                'max:13',
+                'exists:Tr_EmpForm,EmpFormID',
+            ],
 
             'Username' => [
                 'required',
@@ -38,14 +44,7 @@ class StoreUserRequest extends FormRequest
             'PhoneNumber' => [
                 'nullable',
                 'string',
-                'max:20',
-            ],
-
-            'Password' => [
-                'required',
-                'string',
-                'min:6',
-                'confirmed',
+                'max:30',
             ],
 
             'RoleID' => [
@@ -58,7 +57,6 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'boolean',
             ],
-
         ];
     }
 }

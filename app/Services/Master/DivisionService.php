@@ -30,8 +30,8 @@ class DivisionService
 
             unset($data['CompanyID']);
 
-            $data['CreatedBy'] = auth()->user()->UserID;
-            $data['CreatedDate'] = now();
+            $data['InputUser'] = auth()->user()->Username;
+            $data['InputDate'] = now();
 
             return $this->repository->create($data);
         });
@@ -43,8 +43,8 @@ class DivisionService
 
             unset($data['CompanyID']);
 
-            $data['UpdatedBy'] = auth()->user()->UserID;
-            $data['UpdatedDate'] = now();
+            $data['ModifUser'] = auth()->user()->Username;
+            $data['ModifDate'] = now();
 
             return $this->repository->update($id, $data);
         });
@@ -58,7 +58,7 @@ class DivisionService
                 $id,
                 [
                     'IsActive' => false,
-                    'DeletedBy' => auth()->user()->UserID,
+                    'DeletedBy' => auth()->user()->Username,
                     'DeletedDate' => now(),
                 ]
             );

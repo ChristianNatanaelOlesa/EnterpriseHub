@@ -17,7 +17,10 @@ class RoleSeeder extends Seeder
                 'Name' => 'Super Administrator',
                 'Description' => 'Full access to all modules and features.',
                 'IsActive' => true,
-                'UpdatedDate' => now(),
+                'InputUser' => 'admin',
+                'InputDate' => now(),
+                'ModifUser' => 'admin',
+                'ModifDate' => now(),
             ]
         );
     }

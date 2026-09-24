@@ -1,6 +1,5 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "bootstrap-icons/font/bootstrap-icons.css";
-@import "admin-lte/dist/css/adminlte.min.css";
 
 /*
 |--------------------------------------------------------------------------
@@ -8,8 +7,21 @@
 |--------------------------------------------------------------------------
 */
 
+:root {
+    --eh-bg: #f3f6fa;
+    --eh-surface: #ffffff;
+    --eh-border: #e3e8ef;
+    --eh-text: #172033;
+    --eh-muted: #697386;
+    --eh-blue: #2563eb;
+    --eh-green: #16845b;
+    --eh-amber: #c47a00;
+    --eh-cyan: #087f9c;
+}
+
 body {
-    background: #f4f6f9;
+    background: var(--eh-bg);
+    color: var(--eh-text);
 }
 
 .sidebar {
@@ -20,37 +32,596 @@ body {
     min-height: calc(100vh - 56px);
 }
 
+/* --------------------------------------------------------------------------
+| Dashboard
+|-------------------------------------------------------------------------- */
 
-/*
-|--------------------------------------------------------------------------
+.eh-page-title {
+    color: var(--eh-text);
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -.02em;
+}
+
+.eh-page-subtitle {
+    color: var(--eh-muted);
+    font-size: .9rem;
+}
+
+.section-heading h5 {
+    color: var(--eh-text);
+    font-size: .95rem;
+    font-weight: 700;
+}
+
+.eh-stat-card {
+    position: relative;
+    min-height: 112px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1.1rem 1.15rem;
+    overflow: hidden;
+    background: var(--eh-surface);
+    border: 1px solid var(--eh-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(31, 41, 55, .04);
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.eh-stat-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 4px;
+}
+
+.eh-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(31, 41, 55, .08);
+}
+
+.eh-stat-blue::before { background: var(--eh-blue); }
+.eh-stat-green::before { background: var(--eh-green); }
+.eh-stat-amber::before { background: var(--eh-amber); }
+.eh-stat-cyan::before { background: var(--eh-cyan); }
+
+.eh-stat-icon,
+.eh-info-icon,
+.eh-quick-icon {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+}
+
+.eh-stat-icon {
+    width: 46px;
+    height: 46px;
+    font-size: 1.25rem;
+}
+
+.eh-stat-blue .eh-stat-icon { background: #eaf1ff; color: var(--eh-blue); }
+.eh-stat-green .eh-stat-icon { background: #e8f6f0; color: var(--eh-green); }
+.eh-stat-amber .eh-stat-icon { background: #fff4df; color: var(--eh-amber); }
+.eh-stat-cyan .eh-stat-icon { background: #e6f7fb; color: var(--eh-cyan); }
+
+.eh-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.eh-stat-label {
+    margin-bottom: .2rem;
+    color: var(--eh-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.eh-stat-value {
+    color: var(--eh-text);
+    font-size: 1.75rem;
+    line-height: 1;
+    font-weight: 700;
+}
+
+.eh-info-card {
+    min-height: 108px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--eh-surface);
+    border: 1px solid var(--eh-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(31, 41, 55, .04);
+}
+
+.eh-info-label {
+    display: block;
+    margin-bottom: .3rem;
+    color: var(--eh-muted);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.eh-info-value {
+    display: block;
+    color: var(--eh-text);
+    font-size: 1.7rem;
+    line-height: 1;
+}
+
+.eh-info-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 1.2rem;
+}
+
+.eh-icon-blue { background: #eaf1ff; color: var(--eh-blue); }
+.eh-icon-green { background: #e8f6f0; color: var(--eh-green); }
+.eh-icon-amber { background: #fff4df; color: var(--eh-amber); }
+.eh-icon-cyan { background: #e6f7fb; color: var(--eh-cyan); }
+
+.eh-panel {
+    overflow: hidden;
+    background: var(--eh-surface);
+    border: 1px solid var(--eh-border);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(31, 41, 55, .04);
+}
+
+.eh-panel-header {
+    padding: 1.1rem 1.2rem;
+    border-bottom: 1px solid var(--eh-border);
+}
+
+.eh-panel-header h5 {
+    color: var(--eh-text);
+    font-size: .95rem;
+    font-weight: 700;
+}
+
+.eh-panel-header p {
+    color: var(--eh-muted);
+    font-size: .8rem;
+}
+
+.eh-panel-body {
+    padding: 1.2rem;
+}
+
+.eh-quick-link {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    padding: .75rem;
+    color: var(--eh-text);
+    text-decoration: none;
+    border: 1px solid var(--eh-border);
+    border-radius: 10px;
+    transition: border-color .15s ease, background-color .15s ease, transform .15s ease;
+}
+
+.eh-quick-link:hover {
+    color: var(--eh-text);
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+}
+
+.eh-quick-icon {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+}
+
+.eh-quick-link > span:nth-child(2) {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.eh-quick-link strong {
+    font-size: .82rem;
+    font-weight: 700;
+}
+
+.eh-quick-link small {
+    margin-top: .15rem;
+    color: var(--eh-muted);
+    font-size: .72rem;
+}
+
+.eh-quick-link > .bi-arrow-right {
+    color: #9aa4b2;
+    font-size: .9rem;
+}
+
+/* --------------------------------------------------------------------------
 | Pagination
-|--------------------------------------------------------------------------
-*/
+|-------------------------------------------------------------------------- */
 
 .pagination {
     margin-bottom: 0;
 }
 
 .pagination .page-link {
-    background-color: #212529;
-    color: #f8f9fa;
-    border-color: #495057;
+    background-color: #ffffff;
+    color: #344054;
+    border-color: #dfe4ea;
 }
 
 .pagination .page-link:hover {
-    background-color: #343a40;
-    color: #ffffff;
-    border-color: #6c757d;
+    background-color: #f3f6fa;
+    color: var(--eh-blue);
+    border-color: #dfe4ea;
 }
 
 .pagination .page-item.active .page-link {
-    background-color: #0d6efd;
+    background-color: var(--eh-blue);
     color: #ffffff;
-    border-color: #0d6efd;
+    border-color: var(--eh-blue);
 }
 
 .pagination .page-item.disabled .page-link {
-    background-color: #1b1f22;
-    color: #6c757d;
-    border-color: #343a40;
+    background-color: #ffffff;
+    color: #adb5bd;
+    border-color: #dfe4ea;
+}
+
+
+/* --------------------------------------------------------------------------
+| EnterpriseHub Modules / Master / E-Form
+| Keep application pages light and readable. Dashboard accents stay intact.
+|-------------------------------------------------------------------------- */
+
+:root {
+    --eh-page-bg: #f4f7fb;
+    --eh-card-bg: #ffffff;
+    --eh-card-border: #e2e8f0;
+    --eh-heading: #172033;
+    --eh-body-text: #344054;
+    --eh-muted-readable: #667085;
+}
+
+body {
+    background-color: var(--eh-page-bg) !important;
+    color: var(--eh-body-text) !important;
+}
+
+/* Module cards: never use the dark Bootstrap surface here. */
+.eh-content .card,
+.eh-content .card.card,
+.eh-content .card-body,
+.eh-content .card-header,
+.eh-content .card-footer {
+    background-color: var(--eh-card-bg) !important;
+    color: var(--eh-body-text) !important;
+}
+
+.eh-content .card {
+    border: 1px solid var(--eh-card-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, .045) !important;
+}
+
+.eh-content .card-header {
+    border-bottom: 1px solid var(--eh-card-border) !important;
+    font-weight: 650;
+}
+
+.eh-content .card-body {
+    border-radius: 0 0 12px 12px;
+}
+
+/* Page titles and helper text */
+.eh-content h1,
+.eh-content h2,
+.eh-content h3,
+.eh-content h4,
+.eh-content h5,
+.eh-content h6 {
+    color: var(--eh-heading) !important;
+}
+
+.eh-content .text-muted,
+.eh-content small.text-muted,
+.eh-content .form-text {
+    color: var(--eh-muted-readable) !important;
+}
+
+.eh-content .form-text {
+    margin-top: .5rem;
+    font-size: .78rem;
+}
+
+/* Search / filter areas */
+.eh-content .input-group-text {
+    background-color: #f8fafc !important;
+    color: #667085 !important;
+    border-color: #d9e0ea !important;
+}
+
+.eh-content .form-control,
+.eh-content .form-select {
+    background-color: #fff !important;
+    color: #27364d !important;
+    border-color: #d9e0ea !important;
+}
+
+.eh-content .form-control::placeholder {
+    color: #98a2b3 !important;
+    opacity: 1;
+}
+
+.eh-content .form-control:focus,
+.eh-content .form-select:focus {
+    background-color: #fff !important;
+}
+
+.eh-content .form-label,
+.eh-content label {
+    color: #475467;
+}
+
+/* Tables */
+.eh-content .table {
+    --bs-table-bg: #fff;
+    --bs-table-color: #344054;
+    --bs-table-hover-bg: #f7faff;
+    color: #344054 !important;
+    background-color: #fff !important;
+}
+
+.eh-content .table > :not(caption) > * > * {
+    color: #344054 !important;
+    background-color: #fff;
+    border-color: #e4e9f0 !important;
+}
+
+.eh-content .table thead th,
+.eh-content .table-light > th,
+.eh-content .table-light > td,
+.eh-content .table-light th,
+.eh-content .table-light td {
+    background-color: #f6f8fb !important;
+    color: #344054 !important;
+    border-color: #dfe5ee !important;
+}
+
+.eh-content .table tbody tr:hover > * {
+    background-color: #f7faff !important;
+}
+
+.eh-content .table a {
+    color: #3157d5;
+}
+
+.eh-content .table a:hover {
+    color: #2444b4;
+}
+
+/* Empty states should remain visible on white tables. */
+.eh-content .text-center.text-muted,
+.eh-content td.text-muted {
+    color: #667085 !important;
+}
+
+/* Pagination */
+.eh-content .pagination .page-link {
+    background-color: #fff !important;
+    color: #475467 !important;
+    border-color: #dfe5ee !important;
+}
+
+.eh-content .pagination .page-item.active .page-link {
+    background-color: #3157d5 !important;
+    color: #fff !important;
+    border-color: #3157d5 !important;
+}
+
+.eh-content .pagination .page-link:hover {
+    background-color: #f2f5ff !important;
+    color: #3157d5 !important;
+}
+
+/* Form actions */
+.eh-content .btn-secondary {
+    color: #344054 !important;
+    background-color: #eef2f6 !important;
+    border-color: #d8dee8 !important;
+}
+
+.eh-content .btn-secondary:hover {
+    background-color: #e2e8f0 !important;
+    border-color: #cbd5e1 !important;
+}
+
+/* Alerts stay soft instead of becoming heavy blocks. */
+.eh-content .alert {
+    color: #344054;
+}
+
+/* Horizontal separators used by create/edit forms */
+.eh-content hr {
+    border-color: #e2e8f0;
+    opacity: 1;
+}
+
+
+/* --------------------------------------------------------------------------
+| Data Tables / Master Tables
+| Inspired by AdminLTE 4's clean data-table treatment.
+| Keep tables light, airy and readable; avoid heavy black surfaces and
+| excessive cell borders.
+|-------------------------------------------------------------------------- */
+
+.eh-content .table-responsive {
+    overflow-x: auto;
+    border-radius: 8px;
+}
+
+.eh-content .table {
+    width: 100%;
+    margin-bottom: 0;
+    font-size: .875rem;
+    border-collapse: separate;
+    border-spacing: 0;
+    color: #344054 !important;
+    background: #fff !important;
+}
+
+.eh-content .table > :not(caption) > * > * {
+    padding: .72rem .7rem;
+    vertical-align: middle;
+    color: #344054 !important;
+    background: #fff !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid #e6eaf0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    box-shadow: none !important;
+}
+
+/* Neutralize Bootstrap .table-bordered's heavy grid while retaining the
+   class for compatibility with existing module views. */
+.eh-content .table.table-bordered > :not(caption) > * > * {
+    border-left: 0 !important;
+    border-right: 0 !important;
+}
+
+.eh-content .table thead th,
+.eh-content .table thead td {
+    padding-top: .65rem;
+    padding-bottom: .65rem;
+    background: #fff !important;
+    color: #1f2937 !important;
+    border-top: 0 !important;
+    border-bottom: 1px solid #d8dee8 !important;
+    font-size: .78rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* AdminLTE-like zebra rows, with a very subtle hover state. */
+.eh-content .table tbody tr:nth-child(even) > * {
+    background: #f7f8fa !important;
+}
+
+.eh-content .table tbody tr:hover > * {
+    background: #eef5ff !important;
+}
+
+.eh-content .table tbody td {
+    line-height: 1.45;
+}
+
+.eh-content .table tbody tr:last-child > * {
+    border-bottom-color: transparent !important;
+}
+
+/* Keep action columns compact. */
+.eh-content .table td:last-child:has(.btn),
+.eh-content .table th:last-child {
+    white-space: nowrap;
+}
+
+.eh-content .table .btn.btn-sm {
+    min-width: 32px;
+    min-height: 32px;
+    padding: .28rem .48rem;
+    border-radius: 6px;
+}
+
+/* Search/filter blocks should visually belong to the page, not look like
+   dark panels. */
+.eh-content .card.mb-3 .card-body,
+.eh-content > .container-fluid > .card .card-body {
+    background: #fff !important;
+}
+
+.eh-content .input-group .btn,
+.eh-content form .btn {
+    border-radius: 6px;
+}
+
+/* Make primary actions visually consistent with the blue accent. */
+.eh-content .btn-primary {
+    background-color: #2563eb;
+    border-color: #2563eb;
+}
+
+.eh-content .btn-primary:hover,
+.eh-content .btn-primary:focus {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+/* Status badges: compact like AdminLTE rather than oversized pills. */
+.eh-content .badge {
+    padding: .28rem .5rem;
+    font-size: .72rem;
+    font-weight: 700;
+    border-radius: 5px;
+}
+
+
+/* Flash message toast popup */
+.eh-toast-container {
+    position: fixed;
+    top: 72px;
+    right: 20px;
+    z-index: 2000;
+    width: min(420px, calc(100vw - 40px));
+    pointer-events: none;
+}
+
+.eh-toast-container .eh-toast {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    margin: 0 0 .75rem;
+    padding: .8rem 1rem;
+    border-radius: .55rem;
+    border: 1px solid rgba(0, 0, 0, .08);
+    box-shadow: 0 .5rem 1.25rem rgba(16, 24, 40, .14);
+    opacity: 0;
+    transform: translateY(-8px);
+    transition: opacity .18s ease, transform .18s ease;
+    pointer-events: auto;
+}
+
+.eh-toast-container .eh-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.eh-toast-container .alert-success {
+    background: #ecfdf3;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.eh-toast-container .alert-danger {
+    background: #fef2f2;
+    color: #b91c1c;
+    border-color: #fecaca;
+}
+
+.eh-toast-container .btn-close {
+    margin-left: auto;
+    padding: .35rem;
+}
+
+@media (max-width: 576px) {
+    .eh-toast-container {
+        top: 64px;
+        right: 12px;
+        width: calc(100vw - 24px);
+    }
 }

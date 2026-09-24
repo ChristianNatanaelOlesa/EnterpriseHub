@@ -1,0 +1,4 @@
+<?php
+namespace App\Http\Requests\Master;
+use Illuminate\Foundation\Http\FormRequest;
+class StoreAssetRequest extends FormRequest{public function authorize():bool{return true;}public function rules():array{return ['AssTypeID'=>['required','string','exists:ms_asset_type,AssTypeID'],'AssetDesc'=>['required','string'],'Brand'=>['required','string','max:150'],'Model'=>['required','string','max:150'],'SerialNo'=>['required','string','max:150'],'Color'=>['required','string','max:100'],'Specification'=>['required','string'],'Notes'=>['nullable','string'],'VendorID'=>['nullable','string','max:50'],'PurchaseDate'=>['nullable','date'],'CcyID'=>['required','string','exists:ms_currency,CcyID'],'ExchRate'=>['nullable','numeric','min:0'],'AcqCost'=>['required','numeric','min:0'],'AcqCostIDR'=>['nullable','numeric','min:0'],'IsWarranty'=>['required','boolean'],'WarrantyDate'=>['nullable','date'],'IsISO'=>['required','boolean'],'IsActive'=>['required','boolean']];}}

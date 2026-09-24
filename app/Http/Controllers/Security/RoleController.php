@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Security\StoreRoleRequest;
 use App\Http\Requests\Security\UpdateRoleRequest;
 use App\Services\Security\RoleService;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
@@ -16,9 +17,9 @@ class RoleController extends Controller
         $this->roleService = $roleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $roles = $this->roleService->getAll();
+        $roles = $this->roleService->getAll($request->input('search'));
 
         return view(
             'security.roles.index',

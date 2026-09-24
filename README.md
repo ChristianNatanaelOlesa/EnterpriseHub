@@ -1,59 +1,298 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# EnterpriseHub
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+EnterpriseHub adalah aplikasi internal berbasis **Laravel 12** untuk pengelolaan proses, master data, security, dan berbagai transaksi IT/Employee.
 
-## About Laravel
+## Technology Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Laravel 12
+- PHP 8.2
+- MySQL
+- Bootstrap 5
+- Vite
+- Blade
+- Alpine.js
+- Laravel Breeze
+- XAMPP
+- Git / GitHub
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Structure
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+EnterpriseHub menggunakan pola aplikasi:
 
-## Learning Laravel
+```text
+Model
+  ↓
+Repository
+  ↓
+Service
+  ↓
+Controller
+  ↓
+Request
+  ↓
+Blade View
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Routing dipisahkan berdasarkan area:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+```text
+routes/
+├── master.php
+├── security.php
+└── transaction.php
+```
 
-## Laravel Sponsors
+## Modules
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Security
 
-### Premium Partners
+Module security yang sudah dibuat:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Login / Authentication
+- User Management
+- Role Management
+- Menu Management
+- User Role
+- Role Menu / Permission
+- Forgot Password
+- Reset Password
+- Remember Me
 
-## Contributing
+Permission menggunakan konsep `CanOpen`, `CanAdd`, `CanEdit`, `CanDelete`, dan permission lain sesuai kebutuhan menu.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+### Master
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+#### Organization / Regional Master
 
-## Security Vulnerabilities
+- Company
+- Country
+- Province
+- City
+- District
+- Village
+- Directorate
+- Division
+- Department
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Employee / HR Master
 
-## License
+- Religion
+- Job Level
+- Job Title
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+#### IT Master
+
+- Email Group
+- Code of Conduct (COC)
+- Asset Group
+- Asset Type
+- Currency
+- Asset
+
+#### Code of Conduct
+
+COC yang sudah tersedia:
+
+- COC Employee Equipment
+- COC Employee VPN Access
+- COC Employee Email
+- COC Employee Software
+- COC Employee Network
+- COC Employee Network Drive
+
+---
+
+### Transaction
+
+Transaction yang sudah dibuat / sedang dikembangkan:
+
+#### Employee Form
+
+- Employee Form Request
+- Employee Form History
+- Employee Form Action
+
+#### Employee IT / Access
+
+- Employee Network
+- Employee IT Area
+- Employee Email
+- Employee Email Detail
+- Employee Application
+- Employee Equipment
+- Employee Infra
+- Employee Network Drive
+- Employee Software
+
+## Employee Equipment
+
+Module yang sedang dikembangkan menggunakan table `Tr_EmpEquip`.
+
+Konsep utama:
+
+- Satu request dapat memilih lebih dari satu asset.
+- Asset dipilih menggunakan checklist.
+- Satu asset menghasilkan satu record `Tr_EmpEquip`.
+- `EmpEquipID` menggunakan format:
+
+```text
+EQP + YYYY + MM + "-" + sequence
+```
+
+Contoh:
+
+```text
+EQP202609-001
+EQP202609-002
+EQP202609-003
+```
+
+Asset dapat difilter berdasarkan **Asset Type** agar data yang ditampilkan tidak terlalu banyak.
+
+Checklist asset yang sudah dipilih tetap disimpan ketika user berpindah Asset Type.
+
+## UI Standard
+
+EnterpriseHub menggunakan standard tampilan berdasarkan jenis module.
+
+### Master & Security
+
+Menggunakan pola:
+
+- Search
+- Pagination
+- Action per row
+- Edit
+- Delete
+- Create / Add di bagian atas
+
+### Transaction
+
+Menggunakan pola:
+
+- Search Everything
+- Select row
+- Pagination
+- Create
+- Update
+- Delete di bagian bawah grid
+
+Transaction menggunakan Employee Form Request sebagai referensi tampilan.
+
+## Audit
+
+Module master menggunakan field audit:
+
+```text
+InputUser
+InputDate
+ModifUser
+ModifDate
+DeletedBy
+DeletedDate
+```
+
+Soft delete menggunakan `DeletedBy` dan `DeletedDate`.
+
+Default audit user:
+
+```text
+Admin
+```
+
+## Database
+
+Database utama:
+
+```text
+enterprisehub
+```
+
+Database menggunakan MySQL.
+
+## Development
+
+Install dependency:
+
+```bash
+composer install
+npm install
+```
+
+Build frontend:
+
+```bash
+npm run build
+```
+
+Development:
+
+```bash
+npm run dev
+```
+
+Laravel:
+
+```bash
+php artisan serve
+```
+
+Migration:
+
+```bash
+php artisan migrate
+```
+
+Seed:
+
+```bash
+php artisan db:seed
+```
+
+## Git
+
+Branch utama:
+
+```text
+master
+```
+
+Untuk menyimpan seluruh progress project:
+
+```bash
+git status
+git add -A
+git status
+git commit -m "Continue EnterpriseHub development"
+git push origin master
+```
+
+Setelah push:
+
+```bash
+git status
+```
+
+Target:
+
+```text
+nothing to commit, working tree clean
+```
+
+## Current Development Status
+
+EnterpriseHub sudah memiliki foundation untuk:
+
+- Authentication & Security
+- Role & Permission
+- Master Data
+- Regional Master Indonesia
+- Employee Form
+- Employee IT Request
+- Code of Conduct
+- Asset Management
+- Employee Equipment
+
+Development berikutnya akan melanjutkan module transaction dan workflow yang terkait dengan proses Employee / IT.

@@ -43,10 +43,10 @@ class DepartmentService
                 $data['DirectorateID']
             );
 
-            $data['CreatedBy'] =
-                auth()->user()->UserID;
+            $data['InputUser'] =
+                auth()->user()->Username;
 
-            $data['CreatedDate'] = now();
+            $data['InputDate'] = now();
 
             return $this->repository->create($data);
         });
@@ -70,10 +70,10 @@ class DepartmentService
                 $data['DirectorateID']
             );
 
-            $data['UpdatedBy'] =
-                auth()->user()->UserID;
+            $data['ModifUser'] =
+                auth()->user()->Username;
 
-            $data['UpdatedDate'] = now();
+            $data['ModifDate'] = now();
 
             return $this->repository->update(
                 $id,
@@ -90,7 +90,7 @@ class DepartmentService
                 $id,
                 [
                     'IsActive' => false,
-                    'DeletedBy' => auth()->user()->UserID,
+                    'DeletedBy' => auth()->user()->Username,
                     'DeletedDate' => now(),
                 ]
             );

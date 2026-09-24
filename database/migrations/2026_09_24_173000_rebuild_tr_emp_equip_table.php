@@ -1,0 +1,8 @@
+<?php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+return new class extends Migration{
+ public function up():void{Schema::dropIfExists('Tr_EmpEquip');Schema::create('Tr_EmpEquip',function(Blueprint $t){$t->string('EmpEquipID',13)->primary();$t->string('EmpFormID',13);$t->string('ReqDivID',50);$t->string('ReqUser',50);$t->date('ReqDate');$t->string('ReqType',20)->default('Permanent');$t->string('Purpose',3000);$t->string('AssetID',50);$t->date('DateFrom');$t->date('DateUntil')->default('1900-01-01');$t->boolean('IsGiven')->default(false);$t->date('GivenDate')->default('1900-01-01');$t->string('GivenNote',1000)->default('-');$t->boolean('IsReturn')->default(false);$t->date('ReturnDate')->default('1900-01-01');$t->string('ReturnNote',1000)->default('-');$t->string('CocID',6)->default('COC001');$t->boolean('IsConfirm')->default(false);$t->string('QRAppCoc',200)->default('-');$t->string('Status',20)->default('DRAFT');$t->string('InputUser',50)->default('Admin');$t->dateTime('InputDate')->useCurrent();$t->string('ModifUser',50)->default('Admin');$t->dateTime('ModifDate')->useCurrent();$t->index('EmpFormID');$t->index('ReqDivID');$t->index('AssetID');$t->index('DateFrom');$t->index('Status');$t->foreign('EmpFormID')->references('EmpFormID')->on('tr_empform')->restrictOnDelete()->cascadeOnUpdate();$t->foreign('AssetID')->references('AssetID')->on('ms_asset')->restrictOnDelete()->cascadeOnUpdate();$t->foreign('CocID')->references('CocID')->on('ms_coc')->restrictOnDelete()->cascadeOnUpdate();});}
+ public function down():void{Schema::dropIfExists('Tr_EmpEquip');}
+};

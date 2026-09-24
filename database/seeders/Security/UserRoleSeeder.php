@@ -28,7 +28,7 @@ class UserRoleSeeder extends Seeder
             ],
             [
                 'IsActive' => true,
-                'UpdatedDate' => now(),
+                'ModifDate' => now(),
             ]
         );
     }
