@@ -18,32 +18,15 @@
 
         <div class="card-body">
 
-            <form
-                method="POST"
-                action="{{ route('master.religion.store') }}"
-            >
+            <form method="POST" action="{{ route('master.religion.store') }}">
 
                 @csrf
 
-                <x-form.input
-                    label="Religion ID"
-                    name="ReligionID"
-                    :value="old('ReligionID')"
-                    required="true"
-                />
+                <x-form.input label="Religion ID" name="ReligionID" :value="old('ReligionID')" required="true" />
 
-                <x-form.input
-                    label="Religion"
-                    name="Religion"
-                    :value="old('Religion')"
-                    required="true"
-                />
+                <x-form.input label="Religion" name="Religion" :value="old('Religion')" required="true" />
 
-                <x-form.checkbox
-                    label="Active"
-                    name="IsActive"
-                    checked="true"
-                />
+                <x-form.checkbox label="Active" name="IsActive" checked="true" />
 
                 <div class="mt-3">
 
@@ -51,10 +34,7 @@
                         Save
                     </button>
 
-                    <a
-                        href="{{ route('master.religion.index') }}"
-                        class="btn btn-secondary"
-                    >
+                    <a href="{{ route('master.religion.index') }}" class="btn btn-secondary">
                         Cancel
                     </a>
 

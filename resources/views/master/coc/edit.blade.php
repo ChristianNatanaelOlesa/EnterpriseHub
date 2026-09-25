@@ -4,162 +4,131 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <div>
-        <h4 class="mb-1">Edit Code Of Conduct</h4>
-        <div class="text-muted small">Update Code Of Conduct master data</div>
-    </div>
-
-    <a href="{{ route('master.coc.index') }}" class="btn btn-outline-secondary">
-        <i class="bi bi-arrow-left me-1"></i>Back
-    </a>
-</div>
-
-@if ($errors->any())
-    <div class="alert alert-danger">
-        <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-@endif
-
-@if (session('error'))
-    <div class="alert alert-danger">{{ session('error') }}</div>
-@endif
-
-<form
-    method="POST"
-    action="{{ route('master.coc.update', $data->CocID) }}"
-    enctype="multipart/form-data"
->
-    @csrf
-    @method('PUT')
-
-    <div class="card">
-        <div class="card-header">
-            <strong>FORM : CODE OF CONDUCT</strong>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <h4 class="mb-1">Edit Code Of Conduct</h4>
+            <div class="text-muted small">Update Code Of Conduct master data</div>
         </div>
 
-        <div class="card-body">
-            <div class="row">
+        <a href="{{ route('master.coc.index') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back
+        </a>
+    </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">Coc ID</label>
-                    <input
-                        type="text"
-                        class="form-control readonly-field"
-                        value="{{ $data->CocID }}"
-                        readonly
-                    >
-                </div>
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul class="mb-0">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">
-                        Name <span class="text-danger">*</span>
-                    </label>
-                    <input
-                        type="text"
-                        name="Name"
-                        class="form-control @error('Name') is-invalid @enderror"
-                        value="{{ old('Name', $data->Name) }}"
-                        maxlength="200"
-                        required
-                    >
-                    @error('Name')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+    @if (session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
 
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">
-                        Description <span class="text-danger">*</span>
-                    </label>
-                    <textarea
-                        name="Description"
-                        rows="3"
-                        maxlength="1000"
-                        class="form-control @error('Description') is-invalid @enderror"
-                        required
-                    >{{ old('Description', $data->Description) }}</textarea>
-                    @error('Description')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+    <form method="POST" action="{{ route('master.coc.update', $data->CocID) }}" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
 
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">
-                        Contents <span class="text-danger">*</span>
-                    </label>
-                    <textarea
-                        name="Contents"
-                        rows="10"
-                        class="form-control @error('Contents') is-invalid @enderror"
-                        required
-                    >{{ old('Contents', $data->Contents) }}</textarea>
-                    @error('Contents')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+        <div class="card">
+            <div class="card-header">
+                <strong>FORM : CODE OF CONDUCT</strong>
+            </div>
 
-                <div class="col-md-12 mb-3">
-                    <label class="form-label">Current File</label>
+            <div class="card-body">
+                <div class="row">
 
-                    @if($data->FileLoc)
-                        <div class="mb-2">
-                            <a
-                                href="{{ route('master.coc.download', $data->CocID) }}"
-                                class="btn btn-sm btn-outline-primary"
-                            >
-                                <i class="bi bi-download me-1"></i>Download Current File
-                            </a>
-                        </div>
-                    @else
-                        <div class="text-muted small mb-2">
-                            No file uploaded.
-                        </div>
-                    @endif
-
-                    <label class="form-label">Replace File</label>
-                    <input
-                        type="file"
-                        name="File"
-                        class="form-control @error('File') is-invalid @enderror"
-                        accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
-                    >
-                    <div class="form-text">
-                        Leave empty to keep the current file. Maximum 10 MB.
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Coc ID</label>
+                        <input type="text" class="form-control readonly-field" value="{{ $data->CocID }}" readonly>
                     </div>
 
-                    @error('File')
-                        <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
-                </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">
+                            Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" name="Name" class="form-control @error('Name') is-invalid @enderror"
+                            value="{{ old('Name', $data->Name) }}" maxlength="200" required>
+                        @error('Name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                            Description <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="Description" rows="3" maxlength="1000"
+                            class="form-control @error('Description') is-invalid @enderror" required>{{ old('Description', $data->Description) }}</textarea>
+                        @error('Description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">
+                            Contents <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="Contents" rows="10" class="form-control @error('Contents') is-invalid @enderror" required>{{ old('Contents', $data->Contents) }}</textarea>
+                        @error('Contents')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="col-md-12 mb-3">
+                        <label class="form-label">Current File</label>
+
+                        @if ($data->FileLoc)
+                            <div class="mb-2">
+                                <a href="{{ route('master.coc.download', $data->CocID) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-download me-1"></i>Download Current File
+                                </a>
+                            </div>
+                        @else
+                            <div class="text-muted small mb-2">
+                                No file uploaded.
+                            </div>
+                        @endif
+
+                        <label class="form-label">Replace File</label>
+                        <input type="file" name="File" class="form-control @error('File') is-invalid @enderror"
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt">
+                        <div class="form-text">
+                            Leave empty to keep the current file. Maximum 10 MB.
+                        </div>
+
+                        @error('File')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="d-flex justify-content-end gap-2 mt-3">
-        <a href="{{ route('master.coc.index') }}" class="btn btn-secondary">
-            Cancel
-        </a>
+        <div class="d-flex justify-content-end gap-2 mt-3">
+            <a href="{{ route('master.coc.index') }}" class="btn btn-secondary">
+                Cancel
+            </a>
 
-        <button type="submit" class="btn btn-primary">
-            <i class="bi bi-save me-1"></i>Update
-        </button>
-    </div>
-</form>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-save me-1"></i>Update
+            </button>
+        </div>
+    </form>
 
 @endsection
 
 @push('styles')
-<style>
-    .readonly-field {
-        background-color: #f1f3f5 !important;
-        color: #495057 !important;
-        cursor: not-allowed;
-    }
-</style>
+    <style>
+        .readonly-field {
+            background-color: #f1f3f5 !important;
+            color: #495057 !important;
+            cursor: not-allowed;
+        }
+    </style>
 @endpush

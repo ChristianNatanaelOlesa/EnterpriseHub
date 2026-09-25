@@ -1,31 +1,88 @@
 <?php
+
 namespace App\Http\Requests\EForm;
+
 use Illuminate\Foundation\Http\FormRequest;
+
 class StoreEmpITAreaRequest extends FormRequest
 {
-    public function authorize(): bool { return true; }
-    public function rules(): array { return [
-            'EmpFormID' => ['required','string','size:13','exists:Tr_EmpForm,EmpFormID'],
-            'SourceType' => ['required','string','max:200'],
-            'EmailOnTablet' => ['boolean'],
-            'EmailOnPhone' => ['boolean'],
-            'Fingerprint' => ['boolean'],
-            'CCTV' => ['boolean'],
-            'Firewall' => ['boolean'],
-            'ExternalDrive' => ['boolean'],
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'ReqType' => [
+                'required',
+                'string',
+                'in:Permanent,Temporary',
+            ],
+            'DateFrom' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
+            'DateUntil' => [
+                'required',
+                'date_format:Y-m-d',
+            ],
             'DataCenter' => ['boolean'],
-            'Status' => ['required','string','max:200'],
-        ]; }
-    public function attributes(): array { return [
-            'EmpFormID' => 'Employee Form ID',
-            'SourceType' => 'Source Type',
-            'EmailOnTablet' => 'Email on Tablet',
-            'EmailOnPhone' => 'Email on Phone',
-            'Fingerprint' => 'Fingerprint',
-            'CCTV' => 'CCTV',
-            'Firewall' => 'Firewall',
-            'ExternalDrive' => 'External Drive',
+            'FingerPrint' => ['boolean'],
+            'Firewall' => ['boolean'],
+            'CCTV' => ['boolean'],
+            'ExtDrive' => ['boolean'],
+            'Purpose' => [
+                'required',
+                'string',
+            ],
+            'Notes' => [
+                'nullable',
+                'string',
+            ],
+        ];
+    }
+
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if (
+                $this->input('ReqType') === 'Permanent'
+                && $this->input('DateUntil') !== '1900-01-01'
+            ) {
+                $validator->errors()->add(
+                    'DateUntil',
+                    'Date Until untuk Permanent harus 01/01/1900.'
+                );
+            }
+
+            if (
+                $this->input('ReqType') === 'Temporary'
+                && $this->input('DateFrom')
+                && $this->input('DateUntil')
+                && $this->input('DateUntil') < $this->input('DateFrom')
+            ) {
+                $validator->errors()->add(
+                    'DateUntil',
+                    'Date Until tidak boleh lebih kecil dari Date From.'
+                );
+            }
+        });
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'ReqType' => 'Request Type',
+            'DateFrom' => 'Date From',
+            'DateUntil' => 'Date Until',
             'DataCenter' => 'Data Center',
-            'Status' => 'Status',
-        ]; }
+            'FingerPrint' => 'Finger Print',
+            'Firewall' => 'Firewall',
+            'CCTV' => 'CCTV',
+            'ExtDrive' => 'External Drive',
+            'Purpose' => 'Purpose',
+            'Notes' => 'Notes',
+        ];
+    }
 }

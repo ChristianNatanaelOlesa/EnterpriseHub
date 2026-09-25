@@ -8,20 +8,15 @@
 
         </label>
 
-        <input
-            type="text"
-            name="Code"
-            value="{{ old('Code', $role->Code ?? '') }}"
+        <input type="text" name="Code" value="{{ old('Code', $role->Code ?? '') }}"
             class="form-control @error('Code') is-invalid @enderror">
 
         @error('Code')
-
             <div class="invalid-feedback">
 
                 {{ $message }}
 
             </div>
-
         @enderror
 
     </div>
@@ -34,20 +29,15 @@
 
         </label>
 
-        <input
-            type="text"
-            name="Name"
-            value="{{ old('Name', $role->Name ?? '') }}"
+        <input type="text" name="Name" value="{{ old('Name', $role->Name ?? '') }}"
             class="form-control @error('Name') is-invalid @enderror">
 
         @error('Name')
-
             <div class="invalid-feedback">
 
                 {{ $message }}
 
             </div>
-
         @enderror
 
     </div>
@@ -64,19 +54,14 @@
 
         </label>
 
-        <textarea
-            name="Description"
-            rows="3"
-            class="form-control @error('Description') is-invalid @enderror">{{ old('Description', $role->Description ?? '') }}</textarea>
+        <textarea name="Description" rows="3" class="form-control @error('Description') is-invalid @enderror">{{ old('Description', $role->Description ?? '') }}</textarea>
 
         @error('Description')
-
             <div class="invalid-feedback">
 
                 {{ $message }}
 
             </div>
-
         @enderror
 
     </div>
@@ -93,19 +78,15 @@
 
         </label>
 
-        <select
-            name="IsActive"
-            class="form-select">
+        <select name="IsActive" class="form-select">
 
-            <option value="1"
-                {{ old('IsActive', $role->IsActive ?? 1) == 1 ? 'selected' : '' }}>
+            <option value="1" {{ old('IsActive', $role->IsActive ?? 1) == 1 ? 'selected' : '' }}>
 
                 Active
 
             </option>
 
-            <option value="0"
-                {{ old('IsActive', $role->IsActive ?? 1) == 0 ? 'selected' : '' }}>
+            <option value="0" {{ old('IsActive', $role->IsActive ?? 1) == 0 ? 'selected' : '' }}>
 
                 Inactive
 

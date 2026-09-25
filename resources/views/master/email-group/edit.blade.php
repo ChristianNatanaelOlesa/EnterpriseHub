@@ -28,16 +28,11 @@
                     <label for="DivisionID" class="form-label">
                         Division <span class="text-danger">*</span>
                     </label>
-                    <select
-                        id="DivisionID"
-                        name="DivisionID"
-                        class="form-select @error('DivisionID') is-invalid @enderror"
-                        required
-                    >
+                    <select id="DivisionID" name="DivisionID" class="form-select @error('DivisionID') is-invalid @enderror"
+                        required>
                         <option value="">-- Pilih Division --</option>
                         @foreach ($divisions as $division)
-                            <option value="{{ $division->DivisionID }}"
-                                @selected(old('DivisionID', $data->DivisionID ?? '') == $division->DivisionID)>
+                            <option value="{{ $division->DivisionID }}" @selected(old('DivisionID', $data->DivisionID ?? '') == $division->DivisionID)>
                                 {{ $division->DivisionName }}
                             </option>
                         @endforeach
@@ -47,41 +42,21 @@
                     @enderror
                 </div>
 
-                <x-form.input
-                    label="Email"
-                    name="Email"
-                    type="email"
-                    :value="old('Email', $data->Email)"
-                    required="true"
-                />
+                <x-form.input label="Email" name="Email" type="email" :value="old('Email', $data->Email)" required="true" />
 
                 <div class="mb-3">
                     <label for="Description" class="form-label">
                         Description <span class="text-danger">*</span>
                     </label>
-                    <textarea
-                        id="Description"
-                        name="Description"
-                        class="form-control"
-                        rows="4"
-                        required
-                    >{{ old('Description', $data->Description) }}</textarea>
+                    <textarea id="Description" name="Description" class="form-control" rows="4" required>{{ old('Description', $data->Description) }}</textarea>
                     @error('Description')
                         <div class="text-danger small mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <x-form.checkbox
-                    label="Email Group"
-                    name="IsGroup"
-                    :checked="$data->IsGroup"
-                />
+                <x-form.checkbox label="Email Group" name="IsGroup" :checked="$data->IsGroup" />
 
-                <x-form.checkbox
-                    label="Active"
-                    name="IsActive"
-                    :checked="$data->IsActive"
-                />
+                <x-form.checkbox label="Active" name="IsActive" :checked="$data->IsActive" />
 
                 <div class="mt-3">
                     <button type="submit" class="btn btn-primary">Update</button>

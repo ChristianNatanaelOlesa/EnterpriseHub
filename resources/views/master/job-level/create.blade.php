@@ -1,16 +1,19 @@
 @extends('layouts.app')
 @section('title', 'Tambah Job Level')
 @section('content')
-<x-alert />
-<x-card>
-    <div class="card-header"><h5 class="mb-0">Tambah Job Level</h5></div>
-    <div class="card-body">
-        <form method="POST" action="{{ route('master.job-level.store') }}">
-            @csrf
-            <x-form.input label="Job Level" name="JobLevel" :value="old('JobLevel')" required="true" />
-            <x-form.checkbox label="Active" name="IsActive" checked="true" />
-            <div class="mt-3"><button type="submit" class="btn btn-primary">Save</button> <a href="{{ route('master.job-level.index') }}" class="btn btn-secondary">Cancel</a></div>
-        </form>
-    </div>
-</x-card>
+    <x-alert />
+    <x-card>
+        <div class="card-header">
+            <h5 class="mb-0">Tambah Job Level</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('master.job-level.store') }}">
+                @csrf
+                <x-form.input label="Job Level" name="JobLevel" :value="old('JobLevel')" required="true" />
+                <x-form.checkbox label="Active" name="IsActive" checked="true" />
+                <div class="mt-3"><button type="submit" class="btn btn-primary">Save</button> <a
+                        href="{{ route('master.job-level.index') }}" class="btn btn-secondary">Cancel</a></div>
+            </form>
+        </div>
+    </x-card>
 @endsection

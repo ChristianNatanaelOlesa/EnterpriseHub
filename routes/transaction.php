@@ -10,6 +10,7 @@ use App\Http\Controllers\EForm\EmpInfraController;
 use App\Http\Controllers\EForm\EmpITAreaController;
 use App\Http\Controllers\EForm\EmpNetDriveController;
 use App\Http\Controllers\EForm\EmpSoftwareController;
+use App\Http\Controllers\EForm\EmpSharingFolderController;
 
 Route::middleware('auth')->group(function () {
 
@@ -317,4 +318,34 @@ Route::middleware('auth')->group(function () {
     Route::delete('/employee-software/{employeeSoftware}', [EmpSoftwareController::class, 'destroy'])
         ->middleware('permission:employee-software.index,CanDelete')
         ->name('employee-software.destroy');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Employee Sharing Folder
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/employee-sharing-folder', [EmpSharingFolderController::class, 'index'])
+    ->middleware('permission:employee-sharing-folder.index,CanOpen')
+    ->name('employee-sharing-folder.index');
+
+    Route::get('/employee-sharing-folder/create', [EmpSharingFolderController::class, 'create'])
+        ->middleware('permission:employee-sharing-folder.index,CanAdd')
+        ->name('employee-sharing-folder.create');
+
+    Route::post('/employee-sharing-folder', [EmpSharingFolderController::class, 'store'])
+        ->middleware('permission:employee-sharing-folder.index,CanAdd')
+        ->name('employee-sharing-folder.store');
+
+    Route::get('/employee-sharing-folder/{employeeSharingFolder}/edit', [EmpSharingFolderController::class, 'edit'])
+        ->middleware('permission:employee-sharing-folder.index,CanEdit')
+        ->name('employee-sharing-folder.edit');
+
+    Route::put('/employee-sharing-folder/{employeeSharingFolder}', [EmpSharingFolderController::class, 'update'])
+        ->middleware('permission:employee-sharing-folder.index,CanEdit')
+        ->name('employee-sharing-folder.update');
+
+    Route::delete('/employee-sharing-folder/{employeeSharingFolder}', [EmpSharingFolderController::class, 'destroy'])
+        ->middleware('permission:employee-sharing-folder.index,CanDelete')
+        ->name('employee-sharing-folder.destroy');
 });

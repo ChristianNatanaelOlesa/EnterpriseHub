@@ -7,35 +7,168 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class EmpNetworkRepository
 {
-    public function __construct(protected TrEmpNetwork $model) {}
-
-    public function getAll(?string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function __construct(protected TrEmpNetwork $model)
     {
-        return $this->model->newQuery()->with('empForm')
-            ->when($search, function ($query) use ($search) {
-                $like = "%{$search}%";
-                $query->where(function ($q) use ($like) {
-                    $q->where('EmpNetworkID', 'like', $like)
-                      ->orWhere('EmpFormID', 'like', $like)
-                      ->orWhereHas('empForm', function ($eq) use ($like) {
-                          $eq->where('FirstName','like',$like)->orWhere('LastName','like',$like)->orWhere('NIP','like',$like);
-                      });
-                    $q->orWhere('SourceType', 'like', $like);
-                    $q->orWhere('Status', 'like', $like);
-                });
-            })
-            ->orderByDesc('InputDate')->paginate($perPage)->withQueryString();
+    }
+
+    public function getAll(
+        ?string $search = null,
+        int $perPage = 10
+    ): LengthAwarePaginator {
+        return $this->model
+            ->newQuery()
+            ->with([
+                'empForm',
+                'division',
+            ])
+            ->when(
+                $search !== null && trim($search) !== '',
+                function ($query) use ($search) {
+                    $keyword = '%' . trim($search) . '%';
+
+                    $query->where(function ($q) use ($keyword) {
+                        $q->where(
+                            'EmpNetworkID',
+                            'like',
+                            $keyword
+                        )
+                            ->orWhere(
+                                'EmpFormID',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'ReqDivID',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'ReqUser',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'ReqType',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'Purpose',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'Notes',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'CocID',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhere(
+                                'Status',
+                                'like',
+                                $keyword
+                            )
+                            ->orWhereRaw(
+                                "DATE_FORMAT(ReqDate, '%Y-%m-%d') LIKE ?",
+                                [$keyword]
+                            )
+                            ->orWhereRaw(
+                                "DATE_FORMAT(DateFrom, '%Y-%m-%d') LIKE ?",
+                                [$keyword]
+                            )
+                            ->orWhereRaw(
+                                "DATE_FORMAT(DateUntil, '%Y-%m-%d') LIKE ?",
+                                [$keyword]
+                            )
+                            ->orWhereHas(
+                                'empForm',
+                                function ($employee) use ($keyword) {
+                                    $employee
+                                        ->where(
+                                            'FirstName',
+                                            'like',
+                                            $keyword
+                                        )
+                                        ->orWhere(
+                                            'LastName',
+                                            'like',
+                                            $keyword
+                                        )
+                                        ->orWhere(
+                                            'NIP',
+                                            'like',
+                                            $keyword
+                                        );
+                                }
+                            )
+                            ->orWhereHas(
+                                'division',
+                                function ($division) use ($keyword) {
+                                    $division
+                                        ->where(
+                                            'DivisionName',
+                                            'like',
+                                            $keyword
+                                        )
+                                        ->orWhere(
+                                            'DivisionCode',
+                                            'like',
+                                            $keyword
+                                        );
+                                }
+                            );
+                    });
+                }
+            )
+            ->orderByDesc('InputDate')
+            ->orderByDesc('EmpNetworkID')
+            ->paginate($perPage)
+            ->withQueryString();
     }
 
     public function find(string $id): ?TrEmpNetwork
-    { return $this->model->newQuery()->with('empForm')->find($id); }
+    {
+        return $this->model
+            ->newQuery()
+            ->with([
+                'empForm',
+                'division',
+            ])
+            ->find($id);
+    }
 
     public function create(array $data): TrEmpNetwork
-    { return $this->model->newQuery()->create($data); }
+    {
+        return $this->model
+            ->newQuery()
+            ->create($data);
+    }
 
-    public function update(string $id, array $data): bool
-    { $model=$this->find($id); return $model ? $model->update($data) : false; }
+    public function update(
+        string $id,
+        array $data
+    ): bool {
+        $model = $this->model
+            ->newQuery()
+            ->find($id);
+
+        return $model
+            ? $model->update($data)
+            : false;
+    }
 
     public function delete(string $id): bool
-    { $model=$this->find($id); return $model ? $model->delete() : false; }
+    {
+        $model = $this->model
+            ->newQuery()
+            ->find($id);
+
+        return $model
+            ? $model->delete()
+            : false;
+    }
 }

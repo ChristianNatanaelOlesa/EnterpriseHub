@@ -14,32 +14,15 @@
 
         <div class="card-body">
 
-            <form
-                method="POST"
-                action="{{ route('master.country.store') }}"
-            >
+            <form method="POST" action="{{ route('master.country.store') }}">
 
                 @csrf
 
-                <x-form.input
-                    label="Country ID"
-                    name="CountryID"
-                    :value="old('CountryID')"
-                    required="true"
-                />
+                <x-form.input label="Country ID" name="CountryID" :value="old('CountryID')" required="true" />
 
-                <x-form.input
-                    label="Country"
-                    name="Country"
-                    :value="old('Country')"
-                    required="true"
-                />
+                <x-form.input label="Country" name="Country" :value="old('Country')" required="true" />
 
-                <x-form.checkbox
-                    label="Active"
-                    name="IsActive"
-                    checked="true"
-                />
+                <x-form.checkbox label="Active" name="IsActive" checked="true" />
 
                 <div class="mt-3">
 
@@ -47,10 +30,7 @@
                         Save
                     </button>
 
-                    <a
-                        href="{{ route('master.country.index') }}"
-                        class="btn btn-secondary"
-                    >
+                    <a href="{{ route('master.country.index') }}" class="btn btn-secondary">
                         Cancel
                     </a>
 

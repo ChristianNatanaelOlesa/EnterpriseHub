@@ -18,6 +18,7 @@ use App\Http\Controllers\Master\AssetController;
 use App\Http\Controllers\Master\AssetGroupController;
 use App\Http\Controllers\Master\AssetTypeController;
 use App\Http\Controllers\Master\CurrencyController;
+use App\Http\Controllers\Master\FolderPathController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])
@@ -301,5 +302,36 @@ Route::middleware(['auth'])
             ->middlewareFor('edit', 'permission:master.asset.index,CanEdit')
             ->middlewareFor('update', 'permission:master.asset.index,CanEdit')
             ->middlewareFor('destroy', 'permission:master.asset.index,CanDelete');
+
+        /*
+        |--------------------------------------------------------------------------
+        | Master Folder Share
+        |--------------------------------------------------------------------------
+        */
+
+        Route::get('/folder-path', [FolderPathController::class, 'index'])
+    ->middleware('permission:master.folder-path.index,CanOpen')
+    ->name('master.folder-path.index');
+
+        Route::get('/folder-path/create', [FolderPathController::class, 'create'])
+            ->middleware('permission:master.folder-path.index,CanAdd')
+            ->name('master.folder-path.create');
+
+        Route::post('/folder-path', [FolderPathController::class, 'store'])
+            ->middleware('permission:master.folder-path.index,CanAdd')
+            ->name('master.folder-path.store');
+
+        Route::get('/folder-path/{folder_path}/edit', [FolderPathController::class, 'edit'])
+            ->middleware('permission:master.folder-path.index,CanEdit')
+            ->name('master.folder-path.edit');
+
+        Route::put('/folder-path/{folder_path}', [FolderPathController::class, 'update'])
+            ->middleware('permission:master.folder-path.index,CanEdit')
+            ->name('master.folder-path.update');
+
+        Route::delete('/folder-path/{folder_path}', [FolderPathController::class, 'destroy'])
+            ->middleware('permission:master.folder-path.index,CanDelete')
+            ->name('master.folder-path.destroy');
+
 
     });

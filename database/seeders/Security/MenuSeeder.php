@@ -1,23 +1,13 @@
 <?php
 
-
-
 namespace Database\Seeders\Security;
 
-
-
 use Illuminate\Database\Seeder;
-
 use Illuminate\Support\Facades\DB;
 
-
-
 class MenuSeeder extends Seeder
-
 {
-
     public function run(): void
-
     {
 
         $menus = [
@@ -862,6 +852,32 @@ class MenuSeeder extends Seeder
 
             ],
 
+            [
+                'Code' => 'MASTER_FOLDER',
+                'Name' => 'Folder Management',
+                'MenuArea' => 'SIDEBAR',
+                'ParentID' => null,
+                'Route' => null,
+                'URL' => null,
+                'Icon' => 'bi bi-folder',
+                'SortOrder' => 6,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
+            [
+                'Code' => 'MASTER_FOLDER_PATH',
+                'Name' => 'Folder Path',
+                'MenuArea' => 'SIDEBAR',
+                'ParentID' => null,
+                'Route' => 'master.folder-path.index',
+                'URL' => null,
+                'Icon' => 'bi bi-folder2',
+                'SortOrder' => 1,
+                'IsMenu' => true,
+                'IsActive' => true,
+            ],
+
         ];
 
 
@@ -869,9 +885,7 @@ class MenuSeeder extends Seeder
         foreach ($menus as $menu) {
 
             DB::table('sc_menu')->updateOrInsert(
-
                 ['Code' => $menu['Code']],
-
                 array_merge($menu, [
 
                     'ModifUser' => 'Admin',
@@ -879,7 +893,6 @@ class MenuSeeder extends Seeder
                     'ModifDate' => now(),
 
                 ])
-
             );
 
         }

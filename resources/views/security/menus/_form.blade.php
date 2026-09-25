@@ -6,14 +6,8 @@
             Code
         </label>
 
-        <input
-            type="text"
-            name="Code"
-            class="form-control @error('Code') is-invalid @enderror"
-            value="{{ old('Code', $menu->Code ?? '') }}"
-            maxlength="30"
-            required
-        >
+        <input type="text" name="Code" class="form-control @error('Code') is-invalid @enderror"
+            value="{{ old('Code', $menu->Code ?? '') }}" maxlength="30" required>
 
         @error('Code')
             <div class="invalid-feedback">
@@ -30,14 +24,8 @@
             Name
         </label>
 
-        <input
-            type="text"
-            name="Name"
-            class="form-control @error('Name') is-invalid @enderror"
-            value="{{ old('Name', $menu->Name ?? '') }}"
-            maxlength="100"
-            required
-        >
+        <input type="text" name="Name" class="form-control @error('Name') is-invalid @enderror"
+            value="{{ old('Name', $menu->Name ?? '') }}" maxlength="100" required>
 
         @error('Name')
             <div class="invalid-feedback">
@@ -54,31 +42,18 @@
             Parent Menu
         </label>
 
-        <select 
-            name="ParentID" 
-            class="form-select @error('ParentID') is-invalid @enderror"
-        >
+        <select name="ParentID" class="form-select @error('ParentID') is-invalid @enderror">
 
             <option value="">
                 -- No Parent --
             </option>
 
-            @foreach($parents as $parent)
-
-                <option 
-                    value="{{ $parent->MenuID }}" 
-                    @selected(
-                        old(
-                            'ParentID',
-                            $menu->ParentID ?? ''
-                        ) == $parent->MenuID
-                    )
-                >
+            @foreach ($parents as $parent)
+                <option value="{{ $parent->MenuID }}" @selected(old('ParentID', $menu->ParentID ?? '') == $parent->MenuID)>
 
                     {{ $parent->Name }}
 
                 </option>
-
             @endforeach
 
         </select>
@@ -98,14 +73,8 @@
             Sort Order
         </label>
 
-        <input
-            type="number"
-            name="SortOrder"
-            class="form-control"
-            value="{{ old('SortOrder', $menu->SortOrder ?? 0) }}"
-            min="0"
-            required
-        >
+        <input type="number" name="SortOrder" class="form-control"
+            value="{{ old('SortOrder', $menu->SortOrder ?? 0) }}" min="0" required>
 
     </div>
 
@@ -116,14 +85,8 @@
             Route
         </label>
 
-        <input
-            type="text"
-            name="Route"
-            class="form-control"
-            value="{{ old('Route', $menu->Route ?? '') }}"
-            maxlength="255"
-            placeholder="security.users.index"
-        >
+        <input type="text" name="Route" class="form-control" value="{{ old('Route', $menu->Route ?? '') }}"
+            maxlength="255" placeholder="security.users.index">
 
     </div>
 
@@ -134,14 +97,8 @@
             URL
         </label>
 
-        <input
-            type="text"
-            name="URL"
-            class="form-control"
-            value="{{ old('URL', $menu->URL ?? '') }}"
-            maxlength="255"
-            placeholder="/security/users"
-        >
+        <input type="text" name="URL" class="form-control" value="{{ old('URL', $menu->URL ?? '') }}"
+            maxlength="255" placeholder="/security/users">
 
     </div>
 
@@ -152,14 +109,8 @@
             Icon
         </label>
 
-        <input
-            type="text"
-            name="Icon"
-            class="form-control"
-            value="{{ old('Icon', $menu->Icon ?? '') }}"
-            maxlength="100"
-            placeholder="bi bi-people"
-        >
+        <input type="text" name="Icon" class="form-control" value="{{ old('Icon', $menu->Icon ?? '') }}"
+            maxlength="100" placeholder="bi bi-people">
 
     </div>
 
@@ -172,19 +123,9 @@
 
         <div class="form-check form-switch mt-2">
 
-            <input
-                type="hidden"
-                name="IsActive"
-                value="0"
-            >
+            <input type="hidden" name="IsActive" value="0">
 
-            <input
-                type="checkbox"
-                name="IsActive"
-                value="1"
-                class="form-check-input"
-                @checked(old('IsActive', $menu->IsActive ?? true))
-            >
+            <input type="checkbox" name="IsActive" value="1" class="form-check-input" @checked(old('IsActive', $menu->IsActive ?? true))>
 
             <label class="form-check-label">
                 Active
@@ -203,19 +144,9 @@
 
         <div class="form-check form-switch mt-2">
 
-            <input
-                type="hidden"
-                name="IsMenu"
-                value="0"
-            >
+            <input type="hidden" name="IsMenu" value="0">
 
-            <input
-                type="checkbox"
-                name="IsMenu"
-                value="1"
-                class="form-check-input"
-                @checked(old('IsMenu', $menu->IsMenu ?? true))
-            >
+            <input type="checkbox" name="IsMenu" value="1" class="form-check-input" @checked(old('IsMenu', $menu->IsMenu ?? true))>
 
             <label class="form-check-label">
                 Display as Menu
