@@ -11,53 +11,54 @@ class DivisionSeeder extends Seeder
     public function run(): void
     {
         $directorates = DB::table('ms_directorate')
-            ->pluck('DirectorateID', 'DirectorateCode');
+            ->pluck('DirID', 'DirID');
 
         $rows = [
-            ['DivisionCode' => 'ADV', 'DirectorateCode' => 'OTH', 'DivisionName' => 'Corporate Advisor', 'IsActive' => false],
-            ['DivisionCode' => 'BOC', 'DirectorateCode' => 'BOM', 'DivisionName' => 'Board Of Commissioner', 'IsActive' => false],
-            ['DivisionCode' => 'BOD', 'DirectorateCode' => 'BOM', 'DivisionName' => 'Board Of Director', 'IsActive' => true],
-            ['DivisionCode' => 'BSA', 'DirectorateCode' => 'SUP', 'DivisionName' => 'Business Analyst & Strategy Development', 'IsActive' => true],
-            ['DivisionCode' => 'CAC', 'DirectorateCode' => 'PRD', 'DivisionName' => 'Corporate Actuaries', 'IsActive' => true],
-            ['DivisionCode' => 'CMP', 'DirectorateCode' => 'PRD', 'DivisionName' => 'Risk Management & Compliance', 'IsActive' => true],
-            ['DivisionCode' => 'COM', 'DirectorateCode' => 'CCO', 'DivisionName' => 'Committee', 'IsActive' => false],
-            ['DivisionCode' => 'CSC', 'DirectorateCode' => 'PRD', 'DivisionName' => 'Corporate Secretary', 'IsActive' => true],
-            ['DivisionCode' => 'DPS', 'DirectorateCode' => 'SSB', 'DivisionName' => 'Sharia Supervisory Board', 'IsActive' => false],
-            ['DivisionCode' => 'FAS', 'DirectorateCode' => 'SUP', 'DivisionName' => 'Finance Accounting & Sharia', 'IsActive' => true],
-            ['DivisionCode' => 'GAC', 'DirectorateCode' => 'GRI', 'DivisionName' => 'Claim Service & Loss Adjusting - General', 'IsActive' => true],
-            ['DivisionCode' => 'GCP', 'DirectorateCode' => 'GRI', 'DivisionName' => 'Client Services & Post Acquisition Support - General', 'IsActive' => true],
-            ['DivisionCode' => 'GMC', 'DirectorateCode' => 'GRI', 'DivisionName' => 'Facultative - General', 'IsActive' => true],
-            ['DivisionCode' => 'GRC', 'DirectorateCode' => 'PRD', 'DivisionName' => 'Legal', 'IsActive' => true],
-            ['DivisionCode' => 'GSA', 'DirectorateCode' => 'CSL', 'DivisionName' => 'General Sharia Admin & Claim', 'IsActive' => false],
-            ['DivisionCode' => 'GSU', 'DirectorateCode' => 'GRI', 'DivisionName' => 'General Sharia Underwriting', 'IsActive' => false],
-            ['DivisionCode' => 'GUW', 'DirectorateCode' => 'GRI', 'DivisionName' => 'Treaty, Retrocession & Risk Management', 'IsActive' => true],
-            ['DivisionCode' => 'HTC', 'DirectorateCode' => 'PRD', 'DivisionName' => 'HC GA', 'IsActive' => true],
-            ['DivisionCode' => 'IAU', 'DirectorateCode' => 'PRD', 'DivisionName' => 'Internal Auditor (Unit)', 'IsActive' => true],
-            ['DivisionCode' => 'INT', 'DirectorateCode' => 'SUP', 'DivisionName' => 'Information Technology', 'IsActive' => true],
-            ['DivisionCode' => 'INV', 'DirectorateCode' => 'SUP', 'DivisionName' => 'Investment', 'IsActive' => true],
-            ['DivisionCode' => 'LAC', 'DirectorateCode' => 'LRI', 'DivisionName' => 'Client Services & Post Acquisition Support - Life', 'IsActive' => true],
-            ['DivisionCode' => 'LMC', 'DirectorateCode' => 'LRI', 'DivisionName' => 'Claim Services & Loss Adjusting - Life', 'IsActive' => true],
-            ['DivisionCode' => 'LRS', 'DirectorateCode' => 'LRI', 'DivisionName' => 'Sharia Reinsurance Unit', 'IsActive' => true],
-            ['DivisionCode' => 'LTC', 'DirectorateCode' => 'LRI', 'DivisionName' => 'Life Technical II', 'IsActive' => false],
-            ['DivisionCode' => 'LTL', 'DirectorateCode' => 'LRI', 'DivisionName' => 'Technical & Operation Life', 'IsActive' => true],
-            ['DivisionCode' => 'TAC', 'DirectorateCode' => 'SUP', 'DivisionName' => 'Technical Accounting & Collection', 'IsActive' => true],
-            ['DivisionCode' => 'UNK', 'DirectorateCode' => 'UNK', 'DivisionName' => 'Unknown', 'IsActive' => false],
+            ['DivID' => 'ADV', 'DirID' => 'OTH', 'Division' => 'Corporate Advisor', 'IsActive' => false],
+            ['DivID' => 'BOC', 'DirID' => 'BOM', 'Division' => 'Board Of Commissioner', 'IsActive' => false],
+            ['DivID' => 'BOD', 'DirID' => 'BOM', 'Division' => 'Board Of Director', 'IsActive' => true],
+            ['DivID' => 'BSA', 'DirID' => 'SUP', 'Division' => 'Business Analyst & Strategy Development', 'IsActive' => true],
+            ['DivID' => 'CAC', 'DirID' => 'PRD', 'Division' => 'Corporate Actuaries', 'IsActive' => true],
+            ['DivID' => 'CMP', 'DirID' => 'PRD', 'Division' => 'Risk Management & Compliance', 'IsActive' => true],
+            ['DivID' => 'COM', 'DirID' => 'CCO', 'Division' => 'Committee', 'IsActive' => false],
+            ['DivID' => 'CSC', 'DirID' => 'PRD', 'Division' => 'Corporate Secretary', 'IsActive' => true],
+            ['DivID' => 'DPS', 'DirID' => 'SSB', 'Division' => 'Sharia Supervisory Board', 'IsActive' => false],
+            ['DivID' => 'FAS', 'DirID' => 'SUP', 'Division' => 'Finance Accounting & Sharia', 'IsActive' => true],
+            ['DivID' => 'GAC', 'DirID' => 'GRI', 'Division' => 'Claim Service & Loss Adjusting - General', 'IsActive' => true],
+            ['DivID' => 'GCP', 'DirID' => 'GRI', 'Division' => 'Client Services & Post Acquisition Support - General', 'IsActive' => true],
+            ['DivID' => 'GMC', 'DirID' => 'GRI', 'Division' => 'Facultative - General', 'IsActive' => true],
+            ['DivID' => 'GRC', 'DirID' => 'PRD', 'Division' => 'Legal', 'IsActive' => true],
+            ['DivID' => 'GSA', 'DirID' => 'CSL', 'Division' => 'General Sharia Admin & Claim', 'IsActive' => false],
+            ['DivID' => 'GSU', 'DirID' => 'GRI', 'Division' => 'General Sharia Underwriting', 'IsActive' => false],
+            ['DivID' => 'GUW', 'DirID' => 'GRI', 'Division' => 'Treaty, Retrocession & Risk Management', 'IsActive' => true],
+            ['DivID' => 'HTC', 'DirID' => 'PRD', 'Division' => 'HC GA', 'IsActive' => true],
+            ['DivID' => 'IAU', 'DirID' => 'PRD', 'Division' => 'Internal Auditor (Unit)', 'IsActive' => true],
+            ['DivID' => 'INT', 'DirID' => 'SUP', 'Division' => 'Information Technology', 'IsActive' => true],
+            ['DivID' => 'INV', 'DirID' => 'SUP', 'Division' => 'Investment', 'IsActive' => true],
+            ['DivID' => 'LAC', 'DirID' => 'LRI', 'Division' => 'Client Services & Post Acquisition Support - Life', 'IsActive' => true],
+            ['DivID' => 'LMC', 'DirID' => 'LRI', 'Division' => 'Claim Services & Loss Adjusting - Life', 'IsActive' => true],
+            ['DivID' => 'LRS', 'DirID' => 'LRI', 'Division' => 'Sharia Reinsurance Unit', 'IsActive' => true],
+            ['DivID' => 'LTC', 'DirID' => 'LRI', 'Division' => 'Life Technical II', 'IsActive' => false],
+            ['DivID' => 'LTL', 'DirID' => 'LRI', 'Division' => 'Technical & Operation Life', 'IsActive' => true],
+            ['DivID' => 'TAC', 'DirID' => 'SUP', 'Division' => 'Technical Accounting & Collection', 'IsActive' => true],
+            ['DivID' => 'UNK', 'DirID' => 'UNK', 'Division' => 'Unknown', 'IsActive' => false],
         ];
 
         foreach ($rows as $row) {
-            $directorateId = $directorates[$row['DirectorateCode']] ?? null;
+            $directorateId = $directorates[$row['DirID']] ?? null;
 
             if ($directorateId === null) {
                 throw new RuntimeException(
-                    "Directorate dengan code {$row['DirectorateCode']} belum tersedia."
+                    "Directorate dengan code {$row['DirID']} belum tersedia."
                 );
             }
 
             DB::table('ms_division')->updateOrInsert(
-                ['DivisionCode' => $row['DivisionCode']],
+                ['DivID' => $row['DivID']],
                 [
-                    'DirectorateID' => $directorateId,
-                    'DivisionName' => $row['DivisionName'],
+                    'DirID' => $directorateId,
+                    'Division' => $row['Division'],
+                    'Description' => $row['Division'],
                     'IsActive' => $row['IsActive'],
                     'InputUser' => 'Admin',
                     'InputDate' => now(),

@@ -4,15 +4,14 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Ms_FolderPath', function (Blueprint $table) {
+        Schema::create('ms_folderpath', function (Blueprint $table) {
             $table->string('FolderPathID', 10)->primary();
             $table->string('FolderName', 150);
             $table->string('FolderPath', 500)->unique();
-            $table->string('ParentFolderPathID', 10)->nullable();
+            $table->string('ParentFolderID', 10)->nullable();
 
             $table->boolean('IsActive')->default(true);
 
@@ -24,11 +23,11 @@ return new class extends Migration
             $table->string('DeletedBy', 50)->nullable();
             $table->dateTime('DeletedDate')->nullable();
 
-            $table->index('ParentFolderPathID');
+            $table->index('ParentFolderID', 'ms_folderpath_parentfolderid_index');
 
-            $table->foreign('ParentFolderPathID')
-                ->references('FolderPathID')
-                ->on('Ms_FolderPath')
+            $table->foreign('ParentFolderID', 'ms_folderpath_parentfolderid_foreign')
+                ->references('ParentFolderID')
+                ->on('ms_parentfolder')
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
         });
@@ -36,6 +35,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('Ms_FolderPath');
+        Schema::dropIfExists('ms_folderpath');
     }
 };

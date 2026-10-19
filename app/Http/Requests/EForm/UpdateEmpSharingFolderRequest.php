@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\EForm;
 
+use App\Models\Master\MsFolderPath;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -19,15 +20,9 @@ class UpdateEmpSharingFolderRequest extends FormRequest
             'DateFrom' => ['required', 'date_format:Y-m-d'],
             'DateUntil' => ['required', 'date_format:Y-m-d'],
 
-            'FolderRequestType' => [
-                'required',
-                'in:Existing,New',
-            ],
+            'FolderRequestType' => ['required', 'in:Existing,New'],
 
-            'AccessType' => [
-                'required',
-                'in:Read,ReadWrite',
-            ],
+            'AccessType' => ['required', 'in:Read,ReadWrite'],
 
             'FolderPathIDs' => [
                 'required_if:FolderRequestType,Existing',
@@ -53,6 +48,9 @@ class UpdateEmpSharingFolderRequest extends FormRequest
                 'nullable',
                 'string',
                 'max:150',
+                // Windows folder names cannot contain these characters.
+                'not_regex:/[<>:"\\\/|?*]/',
+                'not_regex:/[. ]$/',
             ],
 
             'Purpose' => ['required', 'string'],
@@ -83,6 +81,35 @@ class UpdateEmpSharingFolderRequest extends FormRequest
                 $validator->errors()->add(
                     'DateUntil',
                     'Date Until tidak boleh lebih kecil dari Date From.'
+                );
+            }
+
+            if ($this->input('FolderRequestType') !== 'New') {
+                return;
+            }
+
+            $parentId = $this->input('ParentFolderPathID');
+            $folderName = trim((string) $this->input('NewFolderName'));
+
+            if (!$parentId || $folderName === '') {
+                return;
+            }
+
+            $parent = MsFolderPath::query()
+                ->where('FolderPathID', $parentId)
+                ->where('IsActive', true)
+                ->first();
+
+            if (!$parent) {
+                return;
+            }
+
+            $requestedPath = rtrim($parent->FolderPath, '\\') . '\\' . $folderName;
+
+            if (MsFolderPath::query()->where('FolderPath', $requestedPath)->exists()) {
+                $validator->errors()->add(
+                    'NewFolderName',
+                    'Folder tersebut sudah terdaftar pada Folder Path Master.'
                 );
             }
         });

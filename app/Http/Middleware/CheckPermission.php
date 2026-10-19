@@ -13,7 +13,7 @@ class CheckPermission
         Request $request,
         Closure $next,
         string $routeName,
-        string $permission = 'CanOpen'
+        string $permission = 'View'
     ): Response {
         if (! auth()->check()) {
             return redirect()->route('login');

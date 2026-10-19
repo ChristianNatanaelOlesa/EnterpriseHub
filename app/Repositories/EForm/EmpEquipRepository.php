@@ -5,15 +5,28 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class EmpEquipRepository
 {
     public function __construct(protected TrEmpEquip $model) {}
-    public function getAll(?string $search=null,int $perPage=10):LengthAwarePaginator
+    public function getAll(?string $search=null,int $perPage=10,?string $empFormId=null):LengthAwarePaginator
     {
-        return $this->model->newQuery()->with(['empForm','asset.assetType'])
+        $query = $this->model->newQuery()->with(['empForm','asset.assetType'])
             ->when($search,function($query)use($search){$like="%{$search}%";$query->where(function($q)use($like){
-                $q->where('EmpEquipID','like',$like)->orWhere('EmpFormID','like',$like)->orWhere('ReqDivID','like',$like)->orWhere('ReqUser','like',$like)->orWhere('ReqType','like',$like)->orWhere('Purpose','like',$like)->orWhere('AssetID','like',$like)->orWhere('Status','like',$like)
+                $q->where('EmpEquipID','like',$like)->orWhere('EmpFormID','like',$like)->orWhere('ReqType','like',$like)->orWhere('Purpose','like',$like)->orWhere('AssetID','like',$like)->orWhere('Status','like',$like)
                 ->orWhereHas('asset',function($a)use($like){$a->where('AssetDesc','like',$like)->orWhere('Brand','like',$like)->orWhere('Model','like',$like)->orWhere('SerialNo','like',$like)->orWhereHas('assetType',fn($t)=>$t->where('AssetType','like',$like));})
                 ->orWhereHas('empForm',function($e)use($like){$e->where('FirstName','like',$like)->orWhere('LastName','like',$like)->orWhere('NIP','like',$like);})
                 ->orWhereRaw("DATE_FORMAT(ReqDate,'%Y-%m-%d') LIKE ?",[$like])->orWhereRaw("DATE_FORMAT(DateFrom,'%Y-%m-%d') LIKE ?",[$like])->orWhereRaw("DATE_FORMAT(DateUntil,'%Y-%m-%d') LIKE ?",[$like]);
-            });})->orderByDesc('InputDate')->orderByDesc('EmpEquipID')->paginate($perPage)->withQueryString();
+            });});
+
+        if ($empFormId !== null) {
+            $query->orderByRaw(
+                "CASE WHEN Status = 'DRAFT' AND EmpFormID = ? THEN 1 " .
+                "WHEN Status = 'WAITING_APPROVAL' THEN 2 " .
+                "WHEN Status IN ('APPROVED', 'COMPLETED') THEN 3 " .
+                "WHEN Status IN ('REJECTED', 'CANCELLED') THEN 4 " .
+                "ELSE 5 END",
+                [$empFormId]
+            );
+        }
+
+        return $query->orderByDesc('InputDate')->orderByDesc('EmpEquipID')->paginate($perPage)->withQueryString();
     }
     public function find(string $id):?TrEmpEquip{return $this->model->newQuery()->with(['empForm','asset.assetType'])->find($id);}
     public function create(array $data):TrEmpEquip{return $this->model->newQuery()->create($data);}

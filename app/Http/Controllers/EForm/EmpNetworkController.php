@@ -22,7 +22,8 @@ class EmpNetworkController extends Controller
     {
         $data = $this->service->getAll(
             $request->input('search'),
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
         return view(
@@ -49,7 +50,7 @@ class EmpNetworkController extends Controller
         |
         | Tr_EmpFormHist.DivID
         |          ↓
-        | Ms_Division.DivisionID
+        | Ms_Division.DivID
         |
         |--------------------------------------------------------------------------
         */
@@ -62,7 +63,7 @@ class EmpNetworkController extends Controller
                     'ms_division as div',
                     'efh.DivID',
                     '=',
-                    'div.DivisionID'
+                    'div.DivID'
                 )
                 ->where(
                     'efh.EmpFormID',
@@ -71,15 +72,13 @@ class EmpNetworkController extends Controller
                 ->orderByDesc('efh.EffectiveDate')
                 ->orderByDesc('efh.InputDate')
                 ->select([
-                    'efh.DivID as ReqDivID',
-                    'div.DivisionID',
-                    'div.DivisionCode',
-                    'div.DivisionName',
+                    'div.DivID',
+                    'div.DivID',
+                    'div.Division',
                 ])
                 ->first();
         }
 
-        $reqDivID = $employeeHistory?->ReqDivID;
 
         $division = $employeeHistory;
 
@@ -87,7 +86,6 @@ class EmpNetworkController extends Controller
             'eform.employee-network.create',
             [
                 'empFormID' => $empFormID,
-                'reqDivID'  => $reqDivID,
                 'division'  => $division,
             ]
         );
@@ -123,10 +121,6 @@ class EmpNetworkController extends Controller
         |--------------------------------------------------------------------------
         |
         | Employee Network
-        |      ↓
-        | ReqDivID
-        |      ↓
-        | Ms_Division.DivisionID
         |
         |--------------------------------------------------------------------------
         */
@@ -136,13 +130,13 @@ class EmpNetworkController extends Controller
 
             $division = DB::table('ms_division')
                 ->where(
-                    'DivisionID',
+                    'DivID',
                     $data->ReqDivID
                 )
                 ->select([
-                    'DivisionID',
-                    'DivisionCode',
-                    'DivisionName',
+                    'DivID',
+                    'DivID',
+                    'Division',
                 ])
                 ->first();
         }

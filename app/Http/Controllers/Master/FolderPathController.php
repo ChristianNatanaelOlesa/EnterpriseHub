@@ -6,13 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Master\StoreFolderPathRequest;
 use App\Http\Requests\Master\UpdateFolderPathRequest;
 use App\Services\Master\FolderPathService;
+use App\Services\Master\ParentFolderService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class FolderPathController extends Controller
 {
-    public function __construct(protected FolderPathService $service)
+    public function __construct(protected FolderPathService $service, protected ParentFolderService $parentService)
     {
     }
 
@@ -29,7 +30,7 @@ class FolderPathController extends Controller
     public function create(): View
     {
         return view('master.folder-path.create', [
-            'parents' => $this->service->activeList(),
+            'parents' => $this->parentService->activeList(),
         ]);
     }
 
@@ -50,8 +51,7 @@ class FolderPathController extends Controller
 
         return view('master.folder-path.edit', [
             'data' => $data,
-            'parents' => $this->service->activeList()
-                ->where('FolderPathID', '!=', $folder_path),
+            'parents' => $this->parentService->activeList(),
         ]);
     }
 

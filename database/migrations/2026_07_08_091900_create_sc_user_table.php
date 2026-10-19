@@ -11,17 +11,17 @@ return new class () extends Migration {
 
             $Table->bigIncrements('UserID');
 
+            $Table->string('EmpFormID', 13)->unique();
+
             $Table->string('Username', 50)->unique();
 
             $Table->string('FullName', 100);
 
             $Table->string('Password', 255);
 
-            $Table->unsignedBigInteger('RoleID')->nullable();
+            $Table->string('Email', 100);
 
-            $Table->string('Email', 100)->nullable();
-
-            $Table->string('PhoneNumber', 30)->nullable();
+            $Table->string('PhoneNumber', 30);
 
             $Table->string('Photo', 255)->nullable();
 
@@ -29,7 +29,11 @@ return new class () extends Migration {
 
             $Table->boolean('IsActive')->default(true);
 
+            $Table->rememberToken();
+
             $Table->auditColumns();
+
+            $Table->index('EmpFormID', 'sc_user_empformid_index');
         });
     }
 

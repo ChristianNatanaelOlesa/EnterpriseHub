@@ -153,6 +153,8 @@
 
                             @forelse ($data as $item)
                                 <tr class="employee-network-row" data-id="{{ $item->EmpNetworkID }}"
+                                    data-emp-form-id="{{ $item->EmpFormID }}"
+                                    data-status="{{ strtoupper((string) ($item->Status ?? 'DRAFT')) }}"
                                     style="cursor: pointer;">
 
 
@@ -199,7 +201,7 @@
 
                                     <td>
 
-                                        {{ $item->division?->DivisionName ?? '-' }}
+                                        {{ $item->division?->Division ?? '-' }}
 
                                     </td>
 
@@ -397,9 +399,100 @@
 
             @endcanDelete
 
+            <button type="button" id="btnDetail" class="btn btn-outline-primary" disabled>
+                <i class="bi bi-eye me-1"></i>Detail
+            </button>
+
+            {{-- Workflow action: requester may submit draft/revision-required transactions. --}}
+            @canEdit('employee-network.index')
+            <form method="POST" action="{{ route('workflow.request-approval') }}" id="requestApprovalForm"
+                class="d-inline">
+                @csrf
+                <input type="hidden" name="process_id" value="EMPLOYEE_NETWORK">
+                <input type="hidden" name="module" value="EMPLOYEE_NETWORK">
+                <input type="hidden" name="transaction_id" id="approvalTransactionId">
+                <button type="submit" id="btnRequestApproval" class="btn btn-success" disabled>
+                    <i class="bi bi-send me-1"></i>Request Approval
+                </button>
+            </form>
+            @endcanEdit
+
         </div>
 
     </div>
+
+
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('requestApprovalForm');
+            const idInput = document.getElementById('approvalTransactionId');
+            const button = document.getElementById('btnRequestApproval');
+            if (!form || !idInput || !button) return;
+            const rows = document.querySelectorAll('.employee-network-row');
+            const currentUser = @json(auth()->user()->EmpFormID ?? '');
+            rows.forEach(row => row.addEventListener('click', function() {
+                const id = row.dataset.id || row.dataset.transactionId || '';
+                const status = (row.dataset.status || 'DRAFT').toUpperCase();
+                const requester = row.dataset.empFormId || '';
+                idInput.value = id;
+                button.disabled = !(id && requester === currentUser && ['DRAFT', 'REVISION_REQUIRED']
+                    .includes(status));
+            }));
+        });
+    </script>
+
+
+    <div class="modal fade" id="transactionRowDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content bg-white text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0" id="transactionRowDetailContent"></dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr[data-id], tbody tr[data-transaction-id]');
+            const detailButton = document.getElementById('btnDetail');
+            const modalElement = document.getElementById('transactionRowDetailModal');
+            const content = document.getElementById('transactionRowDetailContent');
+            let selectedRow = null;
+            if (!detailButton || !modalElement || !content) return;
+            rows.forEach(function(row) {
+                row.addEventListener('click', function() {
+                    selectedRow = row;
+                    detailButton.disabled = false;
+                });
+            });
+            detailButton.addEventListener('click', function() {
+                if (!selectedRow) return;
+                content.replaceChildren();
+                const headers = Array.from(selectedRow.closest('table').querySelectorAll('thead th'));
+                const cells = Array.from(selectedRow.querySelectorAll('td'));
+                headers.forEach(function(header, index) {
+                    if (!cells[index]) return;
+                    const label = header.textContent.trim();
+                    const value = cells[index].innerText.trim() || '-';
+                    if (!label || label === '#') return;
+                    const dt = document.createElement('dt');
+                    dt.className = 'col-sm-4 text-muted mb-2';
+                    dt.textContent = label;
+                    const dd = document.createElement('dd');
+                    dd.className = 'col-sm-8 mb-2';
+                    dd.textContent = value;
+                    content.append(dt, dd);
+                });
+                bootstrap.Modal.getOrCreateInstance(modalElement).show();
+            });
+        });
+    </script>
 
 @endsection
 
@@ -411,8 +504,8 @@
 @push('styles')
     <style>
         /* =========================================================
-                   TABLE
-                ========================================================= */
+                                   TABLE
+                                ========================================================= */
 
         .employee-network-table th,
         .employee-network-table td {
@@ -431,8 +524,8 @@
 
 
         /* =========================================================
-                   STATUS BADGE
-                ========================================================= */
+                                   STATUS BADGE
+                                ========================================================= */
 
         .employee-network-table .status-badge {
 
@@ -463,8 +556,8 @@
 
 
         /* =========================================================
-                   ROW SELECTOR
-                ========================================================= */
+                                   ROW SELECTOR
+                                ========================================================= */
 
         .employee-network-row.table-primary .row-selector i {
 

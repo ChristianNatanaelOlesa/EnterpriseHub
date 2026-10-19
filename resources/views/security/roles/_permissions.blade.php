@@ -1,267 +1,76 @@
 <div class="card mt-4">
-
-    <div class="card-header d-flex justify-content-between align-items-center">
-
-        <h5 class="mb-0">
-            Hak Akses Menu
-        </h5>
-
-        <div class="form-check">
-
-            <input type="checkbox" class="form-check-input" id="checkAllPermissions">
-
-            <label class="form-check-label" for="checkAllPermissions">
-                Pilih Semua
-            </label>
-
-        </div>
-
+    <div class="card-header">
+        <h5 class="mb-0">Permission per Menu</h5>
     </div>
+    <div class="card-body">
+        <p class="text-muted mb-3">
+            Pilih tindakan secara eksplisit. Permission ditampilkan per menu agar daftar lebih ringkas.
+            Akses menu tanpa permission View tidak memberikan akses halaman atau tindakan backend.
+        </p>
 
-    <div class="card-body p-0">
-
-        <div class="table-responsive">
-
-            <table class="table table-bordered table-hover mb-0 align-middle">
-
-                <thead>
-
-                    <tr>
-
-                        <th>
-                            Menu
-                        </th>
-
-                        <th class="text-center">
-                            Buka
-                        </th>
-
-                        <th class="text-center">
-                            Tambah
-                        </th>
-
-                        <th class="text-center">
-                            Edit
-                        </th>
-
-                        <th class="text-center">
-                            Hapus
-                        </th>
-
-                        <th class="text-center">
-                            Cetak
-                        </th>
-
-                        <th class="text-center">
-                            Ekspor
-                        </th>
-
-                        <th class="text-center">
-                            Setujui
-                        </th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody>
-
-                    @forelse($menus as $menu)
-
-                        @php
-                            $permission = $permissions->get($menu->MenuID);
-                            $isParent = is_null($menu->ParentID);
-                        @endphp
-
-                        <tr>
-
-                            <td>
-
-                                @if ($isParent)
-                                    <strong>
-
-                                        <i class="bi bi-folder me-1"></i>
-
-                                        {{ $menu->Name }}
-
-                                    </strong>
-                                @else
-                                    <span class="ms-4 text-muted">
-                                        ↳
-                                    </span>
-
-                                    {{ $menu->Name }}
-                                @endif
-
-                                <small class="text-muted ms-1">
-                                    ({{ $menu->Code }})
-                                </small>
-
-                            </td>
-
-                            @foreach (['CanOpen', 'CanAdd', 'CanEdit', 'CanDelete', 'CanPrint', 'CanExport', 'CanApprove'] as $permissionName)
-                                <td class="text-center">
-
-                                    <input type="checkbox" class="form-check-input permission-checkbox"
-                                        data-menu-id="{{ $menu->MenuID }}" data-permission="{{ $permissionName }}"
-                                        name="permissions[{{ $menu->MenuID }}][{{ $permissionName }}]" value="1"
-                                        @checked(old("permissions.{$menu->MenuID}.{$permissionName}", $permission?->{$permissionName} ?? false))>
-
-                                </td>
-                            @endforeach
-
-                        </tr>
-
-                    @empty
-
-                        <tr>
-
-                            <td colspan="8" class="text-center py-4 text-muted">
-                                Tidak ada menu yang tersedia.
-                            </td>
-
-                        </tr>
-                    @endforelse
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const allCheckbox = document.getElementById(
-                'checkAllPermissions'
-            );
-
-            const checkboxes = document.querySelectorAll(
-                '.permission-checkbox'
-            );
-
-
-            /*
-             * Update status checkbox "Pilih Semua"
-             */
-            function updateAllState() {
-
-                if (!checkboxes.length) {
-                    return;
-                }
-
-                const checkedCount =
-                    document.querySelectorAll(
-                        '.permission-checkbox:checked'
-                    ).length;
-
-                allCheckbox.checked =
-                    checkedCount === checkboxes.length;
-
-                allCheckbox.indeterminate =
-                    checkedCount > 0 &&
-                    checkedCount < checkboxes.length;
+        @php
+            $selected = old('menu_permissions', isset($selectedPermissions) ? $selectedPermissions->keys()->all() : []);
+            $permissionGroups = [
+                'Transaction' => [],
+                'Security' => [],
+                'Master' => [],
+            ];
+            foreach ($menuPermissions->groupBy('MenuID') as $menuItems) {
+                $prefix = substr((string) $menuItems->first()->MenuID, 0, 2);
+                $category = in_array($prefix, ['03', '04', '05'], true)
+                    ? 'Master'
+                    : (in_array($prefix, ['01', '02', '06'], true) ? 'Security' : 'Transaction');
+                $permissionGroups[$category][] = $menuItems;
             }
+        @endphp
 
+        <div class="d-flex justify-content-end gap-2 mb-3">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-check-all-permissions>
+                <i class="bi bi-check2-square"></i> Checklist semua
+            </button>
+            <button type="button" class="btn btn-sm btn-outline-secondary" data-uncheck-all-permissions>
+                Hapus checklist
+            </button>
+        </div>
 
-            /*
-             * Pilih semua permission
-             */
-            allCheckbox.addEventListener(
-                'change',
-                function() {
+        @foreach (['Transaction', 'Security', 'Master'] as $category)
+            <details class="border rounded mb-3" @if ($category === 'Transaction') open @endif>
+                <summary class="px-3 py-2 fw-semibold bg-light">
+                    {{ $category }} <span class="text-muted fw-normal">({{ count($permissionGroups[$category]) }} menu)</span>
+                </summary>
+                <div class="table-responsive p-2">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead><tr><th scope="col" style="width:35%">Menu</th><th scope="col">Permission</th></tr></thead>
+                        <tbody>
+                            @forelse ($permissionGroups[$category] as $items)
+                                @php $menu = $items->first(); @endphp
+                                <tr>
+                                    <td><div class="fw-semibold">{{ $menu->MenuName }}</div><small class="text-muted">{{ $menu->MenuID }}</small></td>
+                                    <td><div class="d-flex flex-wrap align-items-center column-gap-3 row-gap-2">
+                                        @foreach ($items as $item)
+                                            <label class="form-check form-check-inline mb-0">
+                                                <input class="form-check-input menu-permission-check" type="checkbox" name="menu_permissions[]" value="{{ $item->MenuPermissionID }}" @checked(in_array($item->MenuPermissionID, $selected))>
+                                                <span class="form-check-label">{{ $item->PermissionName }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div></td>
+                                </tr>
+                            @empty
+                                <tr><td colspan="2" class="text-center text-muted">Belum ada permission untuk kategori ini.</td></tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </details>
+        @endforeach
 
-                    checkboxes.forEach(function(checkbox) {
-
-                        checkbox.checked =
-                            allCheckbox.checked;
-
-                    });
-
-                }
-            );
-
-
-            /*
-             * Logic masing-masing permission
-             */
-            checkboxes.forEach(function(checkbox) {
-
-                checkbox.addEventListener(
-                    'change',
-                    function() {
-
-                        const menuId =
-                            this.dataset.menuId;
-
-                        const permission =
-                            this.dataset.permission;
-
-
-                        /*
-                         * Jika Buka dimatikan,
-                         * seluruh permission menu dimatikan.
-                         */
-                        if (
-                            permission === 'CanOpen' &&
-                            !this.checked
-                        ) {
-
-                            document
-                                .querySelectorAll(
-                                    `.permission-checkbox[data-menu-id="${menuId}"]`
-                                )
-                                .forEach(function(item) {
-
-                                    item.checked = false;
-
-                                });
-
-                        }
-
-
-                        /*
-                         * Jika permission lain diaktifkan,
-                         * otomatis Buka ikut aktif.
-                         */
-                        if (
-                            permission !== 'CanOpen' &&
-                            this.checked
-                        ) {
-
-                            const openCheckbox =
-                                document.querySelector(
-                                    `.permission-checkbox[data-menu-id="${menuId}"][data-permission="CanOpen"]`
-                                );
-
-                            if (openCheckbox) {
-
-                                openCheckbox.checked = true;
-
-                            }
-
-                        }
-
-
-                        updateAllState();
-
-                    }
-                );
-
+        <script>
+            document.querySelector('[data-check-all-permissions]')?.addEventListener('click', () => {
+                document.querySelectorAll('.menu-permission-check').forEach((checkbox) => checkbox.checked = true);
             });
-
-
-            /*
-             * Initial state
-             */
-            updateAllState();
-
-        });
-    </script>
-@endpush
+            document.querySelector('[data-uncheck-all-permissions]')?.addEventListener('click', () => {
+                document.querySelectorAll('.menu-permission-check').forEach((checkbox) => checkbox.checked = false);
+            });
+        </script>
+    </div>
+</div>

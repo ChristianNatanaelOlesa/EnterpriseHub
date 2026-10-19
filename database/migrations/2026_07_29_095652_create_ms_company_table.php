@@ -9,15 +9,17 @@ return new class () extends Migration {
     {
         Schema::create('ms_company', function (Blueprint $table) {
 
-            $table->id('CompanyID');
+            $table->string('CompID', 3)->primary();
 
-            $table->string('CompanyCode', 20)->unique();
+            $table->string('Company', 100);
 
-            $table->string('CompanyName', 100);
+            $table->text('Description');
 
-            $table->string('Address')->nullable();
+            $table->string('Address');
 
-            $table->string('Phone', 30)->nullable();
+            $table->string('Phone1', 30);
+
+            $table->string('Phone2', 30)->default("-");
 
             $table->string('Email', 100)->nullable();
 

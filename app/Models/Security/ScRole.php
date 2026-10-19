@@ -10,11 +10,15 @@ class ScRole extends Model
 
     protected $primaryKey = 'RoleID';
 
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public $timestamps = false;
 
     protected $fillable = [
-        'Code',
-        'Name',
+        'RoleID',
+        'Role',
         'Description',
         'IsActive',
         'InputUser',
@@ -25,13 +29,9 @@ class ScRole extends Model
         'DeletedDate',
     ];
 
-    public function menus()
+    public function menuPermissions()
     {
-        return $this->hasMany(
-            ScRoleMenu::class,
-            'RoleID',
-            'RoleID'
-        );
+        return $this->hasMany(ScRolePermission::class, 'RoleID', 'RoleID');
     }
 
     public function users()

@@ -9,19 +9,11 @@ return new class () extends Migration {
     {
         Schema::create('ms_job_title', function (Blueprint $table) {
             $table->id('JobTitleID');
-            $table->string('JobTitle', 200);
+            $table->string('JobTitle', 200)->unique();
             $table->boolean('IsActive')->default(true);
 
-            $table->dateTime('InputDate')->useCurrent();
-            $table->string('InputUser', 50)->default('Admin');
+            $table->auditColumns();
 
-            $table->dateTime('ModifDate')->useCurrent();
-            $table->string('ModifUser', 50)->default('Admin');
-
-            $table->string('DeletedBy', 50)->nullable();
-            $table->dateTime('DeletedDate')->nullable();
-
-            $table->unique('JobTitle');
             $table->index('IsActive');
         });
     }

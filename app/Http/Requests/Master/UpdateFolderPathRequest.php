@@ -24,12 +24,11 @@ class UpdateFolderPathRequest extends FormRequest
                 'max:500',
                 Rule::unique('Ms_FolderPath', 'FolderPath')->ignore($id, 'FolderPathID'),
             ],
-            'ParentFolderPathID' => [
+            'ParentFolderID' => [
                 'nullable',
                 'string',
                 'max:10',
-                Rule::exists('Ms_FolderPath', 'FolderPathID'),
-                Rule::notIn([$id]),
+                Rule::exists('Ms_ParentFolder', 'ParentFolderID'),
             ],
             'IsActive' => ['nullable', 'boolean'],
         ];

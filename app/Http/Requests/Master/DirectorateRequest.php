@@ -17,25 +17,25 @@ class DirectorateRequest extends FormRequest
         $directorateId = $this->route('directorate');
 
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
                 'integer',
-                'exists:ms_company,CompanyID',
+                'exists:ms_company,CompID',
             ],
 
-            'DirectorateCode' => [
+            'DirID' => [
                 'required',
                 'max:20',
                 Rule::unique(
                     'ms_directorate',
-                    'DirectorateCode'
+                    'DirID'
                 )->ignore(
                     $directorateId,
-                    'DirectorateID'
+                    'DirID'
                 ),
             ],
 
-            'DirectorateName' => [
+            'Directorate' => [
                 'required',
                 'max:200',
             ],

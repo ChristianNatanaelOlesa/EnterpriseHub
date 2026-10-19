@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Create User')
+@section('title', 'User Access - Create Account')
 
 @section('content')
 
@@ -9,7 +9,7 @@
         <div class="card-header">
 
             <h3 class="card-title">
-                Create User
+                User Access - Create Account
             </h3>
 
         </div>

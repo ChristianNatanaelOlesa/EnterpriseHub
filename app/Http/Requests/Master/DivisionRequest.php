@@ -17,25 +17,25 @@ class DivisionRequest extends FormRequest
         $divisionId = $this->route('division');
 
         return [
-            'DirectorateID' => [
+            'DirID' => [
                 'required',
                 'integer',
-                'exists:ms_directorate,DirectorateID',
+                'exists:ms_directorate,DirID',
             ],
 
-            'DivisionCode' => [
+            'DivID' => [
                 'required',
                 'max:20',
                 Rule::unique(
                     'ms_division',
-                    'DivisionCode'
+                    'DivID'
                 )->ignore(
                     $divisionId,
-                    'DivisionID'
+                    'DivID'
                 ),
             ],
 
-            'DivisionName' => [
+            'Division' => [
                 'required',
                 'max:200',
             ],

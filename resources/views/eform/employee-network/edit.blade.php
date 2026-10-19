@@ -95,7 +95,7 @@
                                 Request User
                             </label>
 
-                            <input type="text" class="form-control" value="{{ $data->ReqUser ?? '-' }}" readonly>
+                            <input type="text" class="form-control" value="{{ $data->EmpFormID ?? '-' }}" readonly>
 
                         </div>
 
@@ -107,10 +107,9 @@
                                 Division
                             </label>
 
-                            <input type="text" class="form-control" value="{{ $division?->DivisionName ?? '-' }}"
+                            <input type="text" class="form-control" value="{{ $division?->Division ?? '-' }}"
                                 readonly>
 
-                            <input type="hidden" name="ReqDivID" value="{{ $data->ReqDivID }}">
 
                         </div>
 

@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -177,6 +178,7 @@
 
     @stack('styles')
 </head>
+
 <body class="eh-auth-page" data-bs-theme="light">
     <main class="eh-auth-shell">
         <div class="eh-auth-brand">
@@ -193,4 +195,5 @@
         </div>
     </main>
 </body>
+
 </html>

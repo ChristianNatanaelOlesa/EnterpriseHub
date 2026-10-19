@@ -17,16 +17,16 @@ class UpdateDirectorateRequest extends FormRequest
         $directorateId = $this->route('directorate');
 
         if (is_object($directorateId)) {
-            $directorateId = $directorateId->DirectorateID;
+            $directorateId = $directorateId->DirID;
         }
 
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
                 'integer',
                 Rule::exists(
                     'ms_company',
-                    'CompanyID'
+                    'CompID'
                 )->where(function ($query) {
                     $query->where(
                         'IsActive',
@@ -39,20 +39,20 @@ class UpdateDirectorateRequest extends FormRequest
                 }),
             ],
 
-            'DirectorateCode' => [
+            'DirID' => [
                 'required',
                 'string',
                 'max:30',
                 Rule::unique(
                     'ms_directorate',
-                    'DirectorateCode'
+                    'DirID'
                 )->ignore(
                     $directorateId,
-                    'DirectorateID'
+                    'DirID'
                 ),
             ],
 
-            'DirectorateName' => [
+            'Directorate' => [
                 'required',
                 'string',
                 'max:100',

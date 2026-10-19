@@ -17,14 +17,14 @@ class DirectorateRepository extends BaseRepository
         return $this->model
             ->with('company')
             ->whereNull('DeletedDate')
-            ->orderBy('DirectorateID')
+            ->orderBy('DirID')
             ->paginate($perPage);
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->model
-            ->where('DirectorateID', $id)
+            ->where('DirID', $id)
             ->whereNull('DeletedDate')
             ->firstOrFail();
     }
@@ -40,12 +40,12 @@ class DirectorateRepository extends BaseRepository
 
                     $query
                         ->where(
-                            'DirectorateCode',
+                            'DirID',
                             'like',
                             "%{$search}%"
                         )
                         ->orWhere(
-                            'DirectorateName',
+                            'Directorate',
                             'like',
                             "%{$search}%"
                         )
@@ -54,7 +54,7 @@ class DirectorateRepository extends BaseRepository
                             function ($query) use ($search) {
 
                                 $query->where(
-                                    'CompanyName',
+                                    'Company',
                                     'like',
                                     "%{$search}%"
                                 );
@@ -65,7 +65,7 @@ class DirectorateRepository extends BaseRepository
                 });
 
             })
-            ->orderBy('DirectorateID')
+            ->orderBy('DirID')
             ->paginate($perPage)
             ->withQueryString();
     }

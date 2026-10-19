@@ -29,23 +29,23 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID" id="CompanyID" class="form-select @error('CompanyID') is-invalid @enderror">
+                    <select name="CompID" id="CompID" class="form-select @error('CompID') is-invalid @enderror">
 
                         <option value="">
                             -- Pilih Company --
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}" @selected(old('CompanyID') == $company->CompanyID)>
-                                {{ $company->CompanyCode }}
+                            <option value="{{ $company->CompID }}" @selected(old('CompID') == $company->CompID)>
+                                {{ $company->CompID }}
                                 -
-                                {{ $company->CompanyName }}
+                                {{ $company->Company }}
                             </option>
                         @endforeach
 
                     </select>
 
-                    @error('CompanyID')
+                    @error('CompID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -62,8 +62,8 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DirectorateID" id="DirectorateID"
-                        class="form-select @error('DirectorateID') is-invalid @enderror" disabled>
+                    <select name="DirID" id="DirID"
+                        class="form-select @error('DirID') is-invalid @enderror" disabled>
 
                         <option value="">
                             -- Pilih Company Terlebih Dahulu --
@@ -71,7 +71,7 @@
 
                     </select>
 
-                    @error('DirectorateID')
+                    @error('DirID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -88,11 +88,11 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DivisionCode"
-                        class="form-control @error('DivisionCode') is-invalid @enderror" value="{{ old('DivisionCode') }}"
+                    <input type="text" name="DivID"
+                        class="form-control @error('DivID') is-invalid @enderror" value="{{ old('DivID') }}"
                         maxlength="20">
 
-                    @error('DivisionCode')
+                    @error('DivID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -109,11 +109,11 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DivisionName"
-                        class="form-control @error('DivisionName') is-invalid @enderror" value="{{ old('DivisionName') }}"
+                    <input type="text" name="Division"
+                        class="form-control @error('Division') is-invalid @enderror" value="{{ old('Division') }}"
                         maxlength="200">
 
-                    @error('DivisionName')
+                    @error('Division')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -165,10 +165,10 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             const companySelect =
-                document.getElementById('CompanyID');
+                document.getElementById('CompID');
 
             const directorateSelect =
-                document.getElementById('DirectorateID');
+                document.getElementById('DirID');
 
             if (!companySelect || !directorateSelect) {
                 return;
@@ -198,7 +198,7 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.division.directorates') }}?CompanyID=${companyId}`, {
+                        `{{ route('master.division.directorates') }}?CompID=${companyId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -224,10 +224,10 @@
                             document.createElement('option');
 
                         option.value =
-                            directorate.DirectorateID;
+                            directorate.DirID;
 
                         option.textContent =
-                            directorate.DirectorateName;
+                            directorate.Directorate;
 
                         directorateSelect.appendChild(option);
 

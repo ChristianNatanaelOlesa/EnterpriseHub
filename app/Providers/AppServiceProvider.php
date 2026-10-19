@@ -5,6 +5,9 @@ namespace App\Providers;
 use App\Interfaces\Master\ICompanyRepository;
 use App\Repositories\Master\CompanyRepository;
 use App\Support\Permission;
+use App\Models\Workflow\WfInstanceStep;
+use App\Enums\WorkflowStatus;
+use Illuminate\Support\Facades\View;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Blade;
@@ -42,5 +45,22 @@ class AppServiceProvider extends ServiceProvider
         Blade::if('canPrint', fn (string $routeName) => Permission::canPrint($routeName));
         Blade::if('canExport', fn (string $routeName) => Permission::canExport($routeName));
         Blade::if('canApprove', fn (string $routeName) => Permission::canApprove($routeName));
+        Blade::if('canPermission', fn (string $permission, string $routeName) => Permission::can($permission, $routeName));
+
+        View::composer('layouts.navbar', function ($view) {
+            $pendingApprovalCount = 0;
+
+            if (auth()->check()) {
+                $pendingApprovalCount = WfInstanceStep::query()
+                    ->where('Status', 'ACTIVE')
+                    ->where('ApproverUserID', (int) auth()->user()->UserID)
+                    ->whereHas('instance', function ($query) {
+                        $query->where('Status', WorkflowStatus::WAITING_APPROVAL->value);
+                    })
+                    ->count();
+            }
+
+            $view->with('pendingApprovalCount', $pendingApprovalCount);
+        });
     }
 }

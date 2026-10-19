@@ -9,13 +9,11 @@ return new class () extends Migration {
     {
         Schema::create('sc_role', function (Blueprint $Table) {
 
-            $Table->id('RoleID');
+            $Table->string('RoleID', 5)->primary();
 
-            $Table->string('Code', 30)->unique();
+            $Table->string('Role', 100);
 
-            $Table->string('Name', 100);
-
-            $Table->string('Description', 255)->nullable();
+            $Table->text('Description');
 
             $Table->boolean('IsActive')->default(true);
 

@@ -3,6 +3,7 @@
 namespace App\Services\EForm;
 
 use App\Models\EForm\TrEmpInfra;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use App\Repositories\EForm\EmpInfraRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -18,11 +19,13 @@ class EmpInfraService
 
     public function getAll(
         ?string $search = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?string $empFormId = null
     ): LengthAwarePaginator {
         return $this->repository->getAll(
             $search,
-            $perPage
+            $perPage,
+            $empFormId
         );
     }
 
@@ -96,8 +99,6 @@ class EmpInfraService
             unset(
                 $data['EmpInfraID'],
                 $data['EmpFormID'],
-                $data['ReqDivID'],
-                $data['ReqUser'],
                 $data['ReqDate'],
                 $data['CocID'],
                 $data['IsConfirm'],
@@ -151,7 +152,7 @@ class EmpInfraService
     {
         $prefix = 'EIN' . date('Ym', strtotime($dateFrom)) . '-';
 
-        $ids = TrEmpInfra::query()
+        $ids = TrEmpInfra::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpInfraID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpInfraID');

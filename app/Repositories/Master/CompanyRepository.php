@@ -19,22 +19,22 @@ class CompanyRepository extends BaseRepository
 
                 $query->where(function ($q) use ($keyword) {
 
-                    $q->where('CompanyCode', 'like', "%{$keyword}%")
-                        ->orWhere('CompanyName', 'like', "%{$keyword}%");
+                    $q->where('CompID', 'like', "%{$keyword}%")
+                        ->orWhere('Company', 'like', "%{$keyword}%");
 
                 });
 
             })
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyID')
+            ->orderBy('CompID')
             ->paginate($perPage)
             ->withQueryString();
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->model
-            ->where('CompanyID', $id)
+            ->where('CompID', $id)
             ->whereNull('DeletedDate')
             ->firstOrFail();
     }

@@ -8,12 +8,17 @@ class MsDivision extends BaseModel
 {
     protected $table = 'ms_division';
 
-    protected $primaryKey = 'DivisionID';
+    protected $primaryKey = 'DivID';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'DirectorateID',
-        'DivisionCode',
-        'DivisionName',
+        'DivID',
+        'DirID',
+        'Division',
+        'Description',
         'IsActive',
         'InputUser',
         'InputDate',
@@ -24,7 +29,6 @@ class MsDivision extends BaseModel
     ];
 
     protected $casts = [
-        'DirectorateID' => 'integer',
         'IsActive' => 'boolean',
     ];
 
@@ -32,8 +36,8 @@ class MsDivision extends BaseModel
     {
         return $this->belongsTo(
             MsDirectorate::class,
-            'DirectorateID',
-            'DirectorateID'
+            'DirID',
+            'DirID'
         );
     }
 }

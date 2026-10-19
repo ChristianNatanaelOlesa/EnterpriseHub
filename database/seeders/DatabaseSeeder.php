@@ -2,6 +2,9 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\AssetMasterSeeder;
+use Database\Seeders\Master\CocSeeder;
+use Database\Seeders\Master\EmailGroupSeeder;
 use Database\Seeders\Master\CitySeeder;
 use Database\Seeders\Master\CompanySeeder;
 use Database\Seeders\Master\CountrySeeder;
@@ -12,16 +15,16 @@ use Database\Seeders\Master\DirectorateSeeder;
 use Database\Seeders\Master\JobLevelSeeder;
 use Database\Seeders\Master\JobTitleSeeder;
 use Database\Seeders\Master\ProvinceSeeder;
+use Database\Seeders\Master\ReligionSeeder;
 use Database\Seeders\Master\VillageSeeder;
 use Database\Seeders\Security\MenuSeeder;
-use Database\Seeders\Security\RoleMenuSeeder;
+use Database\Seeders\Security\NormalizedSecuritySeeder;
+use Database\Seeders\Security\MenuPermissionSeeder;
+use Database\Seeders\Security\RolePermissionSeeder;
 use Database\Seeders\Security\RoleSeeder;
-use Database\Seeders\Security\UserCompanySeeder;
-use Database\Seeders\Security\UserDepartmentSeeder;
-use Database\Seeders\Security\UserDirectorateSeeder;
-use Database\Seeders\Security\UserDivisionSeeder;
-use Database\Seeders\Security\UserRoleSeeder;
 use Database\Seeders\Security\UserSeeder;
+use Database\Seeders\EForm\EmployeeFormSeeder;
+use Database\Seeders\UniversalWorkflowSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -45,17 +48,26 @@ class DatabaseSeeder extends Seeder
             // Master - job
             JobLevelSeeder::class,
             JobTitleSeeder::class,
+            ReligionSeeder::class,
+
+            // Master - IT / application
+            AssetMasterSeeder::class,
+            CocSeeder::class,
+            EmailGroupSeeder::class,
+
+            // Employee records must exist before their Sc_User accounts are synced.
+            EmployeeFormSeeder::class,
 
             // Security
             RoleSeeder::class,
             MenuSeeder::class,
-            RoleMenuSeeder::class,
+            NormalizedSecuritySeeder::class,
+            MenuPermissionSeeder::class,
+            RolePermissionSeeder::class,
             UserSeeder::class,
-            UserRoleSeeder::class,
-            UserCompanySeeder::class,
-            UserDirectorateSeeder::class,
-            UserDivisionSeeder::class,
-            UserDepartmentSeeder::class,
+
+            // Universal workflow engine
+            UniversalWorkflowSeeder::class,
         ]);
     }
 }

@@ -81,19 +81,19 @@
                             <tr>
 
                                 <td>
-                                    {{ $division->directorate?->company?->CompanyName ?? '-' }}
+                                    {{ $division->directorate?->company?->Company ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $division->directorate?->DirectorateName ?? '-' }}
+                                    {{ $division->directorate?->Directorate ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $division->DivisionCode }}
+                                    {{ $division->DivID }}
                                 </td>
 
                                 <td>
-                                    {{ $division->DivisionName }}
+                                    {{ $division->Division }}
                                 </td>
 
                                 <td>
@@ -114,7 +114,7 @@
 
                                     @canEdit('master.division.index')
 
-                                    <a href="{{ route('master.division.edit', $division->DivisionID) }}"
+                                    <a href="{{ route('master.division.edit', $division->DivID) }}"
                                         class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                         Edit
@@ -125,7 +125,7 @@
                                     @canDelete('master.division.index')
 
                                     <form method="POST"
-                                        action="{{ route('master.division.destroy', $division->DivisionID) }}"
+                                        action="{{ route('master.division.destroy', $division->DivID) }}"
                                         class="d-inline">
 
                                         @csrf

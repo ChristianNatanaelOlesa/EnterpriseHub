@@ -24,7 +24,7 @@ class RoleService
         return $this->repository->getActiveRoles();
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->repository->findById($id);
     }
@@ -34,30 +34,33 @@ class RoleService
         return $this->repository->getMenus();
     }
 
-    public function getRolePermissions(int $roleId)
+    public function getRolePermissions(string $roleId)
     {
         return $this->repository->getRolePermissions($roleId);
     }
 
+    public function getMenuPermissions()
+    {
+        return $this->repository->getMenuPermissions();
+    }
+
     public function store(
         array $data,
-        array $permissions = []
+        array $menuPermissions = []
     ) {
-        return DB::transaction(function () use (
-            $data,
-            $permissions
-        ) {
+        return DB::transaction(function () use ($data, $menuPermissions) {
 
             $username = auth()->user()->Username;
 
             $data['InputUser'] = $username;
             $data['InputDate'] = now();
+            $data['RoleID'] = SecurityIdGenerator::nextRoleId();
 
             $role = $this->repository->create($data);
 
-            $this->repository->syncPermissions(
+            $this->repository->syncRolePermissions(
                 $role->RoleID,
-                $permissions,
+                $menuPermissions,
                 $username
             );
 
@@ -66,15 +69,11 @@ class RoleService
     }
 
     public function update(
-        int $id,
+        string $id,
         array $data,
-        array $permissions = []
+        array $menuPermissions = []
     ) {
-        return DB::transaction(function () use (
-            $id,
-            $data,
-            $permissions
-        ) {
+        return DB::transaction(function () use ($id, $data, $menuPermissions) {
 
             $username = auth()->user()->Username;
 
@@ -86,9 +85,9 @@ class RoleService
                 $data
             );
 
-            $this->repository->syncPermissions(
+            $this->repository->syncRolePermissions(
                 $id,
-                $permissions,
+                $menuPermissions,
                 $username
             );
 
@@ -96,7 +95,7 @@ class RoleService
         });
     }
 
-    public function delete(int $id)
+    public function delete(string $id)
     {
         return DB::transaction(function () use ($id) {
 
@@ -109,4 +108,5 @@ class RoleService
             ]);
         });
     }
+
 }

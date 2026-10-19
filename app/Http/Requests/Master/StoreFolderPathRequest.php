@@ -17,11 +17,11 @@ class StoreFolderPathRequest extends FormRequest
         return [
             'FolderName' => ['required', 'string', 'max:150'],
             'FolderPath' => ['required', 'string', 'max:500', 'unique:Ms_FolderPath,FolderPath'],
-            'ParentFolderPathID' => [
+            'ParentFolderID' => [
                 'nullable',
                 'string',
                 'max:10',
-                Rule::exists('Ms_FolderPath', 'FolderPathID'),
+                Rule::exists('Ms_ParentFolder', 'ParentFolderID'),
             ],
             'IsActive' => ['nullable', 'boolean'],
         ];

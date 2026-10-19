@@ -37,10 +37,38 @@
         <div class="col-md-6 mb-3">
 
             <label class="form-label">
-                Employee Form ID
+                User ID
             </label>
 
-            <input type="text" value="{{ $user->EmpFormID ?? '' }}" class="form-control" readonly>
+            <input type="text" name="UserID" id="UserID" value="{{ $user->UserID ?? '' }}"
+                class="form-control" readonly>
+
+        </div>
+
+        <div class="col-md-6 mb-3">
+
+            <label class="form-label">
+                Employee Form ID <span class="text-danger">*</span>
+            </label>
+
+            <select name="EmpFormID" id="EmpFormID" class="form-select @error('EmpFormID') is-invalid @enderror" required>
+
+                <option value="">-- Pilih Employee --</option>
+
+                @foreach ($employeeForms as $employee)
+                    <option value="{{ $employee->EmpFormID }}"
+                        @selected(old('EmpFormID', $user->EmpFormID ?? '') == $employee->EmpFormID)>
+                        {{ $employee->EmpFormID }} - {{ trim(($employee->FirstName ?? '') . ' ' . ($employee->LastName ?? '')) }}
+                    </option>
+                @endforeach
+
+            </select>
+
+            @error('EmpFormID')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
 
         </div>
     @endif
@@ -96,7 +124,8 @@
         </label>
 
         <input type="email" name="Email" id="Email" value="{{ old('Email', $user->Email ?? '') }}"
-            class="form-control @error('Email') is-invalid @enderror" @if ($mode === 'create') readonly @endif>
+            class="form-control @error('Email') is-invalid @enderror"
+            @if ($mode === 'create') readonly @endif>
 
         @error('Email')
             <div class="invalid-feedback">
@@ -147,62 +176,60 @@
     </div>
 @endif
 
+@php
+    $selectedRoleIds = collect(old('RoleIDs', $userRoleIds ?? []))
+        ->map(fn ($id) => (string) $id)
+        ->all();
+@endphp
+
 <div class="row">
-
-    <div class="col-md-6 mb-3">
-
+    <div class="col-md-8 mb-3">
         <label class="form-label">
             Role <span class="text-danger">*</span>
         </label>
 
-        <select name="RoleID" class="form-select @error('RoleID') is-invalid @enderror">
+        <div class="border rounded p-3 @error('RoleIDs') border-danger @enderror">
+            @forelse ($roles as $role)
+                <div class="form-check mb-2">
+                    <input
+                        class="form-check-input"
+                        type="checkbox"
+                        name="RoleIDs[]"
+                        id="RoleID_{{ $role->RoleID }}"
+                        value="{{ $role->RoleID }}"
+                        @checked(in_array((string) $role->RoleID, $selectedRoleIds, true))
+                    >
+                    <label class="form-check-label" for="RoleID_{{ $role->RoleID }}">
+                        <strong>{{ $role->RoleID }}</strong> - {{ $role->Role }}
+                        @if (!empty($role->Description))
+                            <small class="d-block text-muted">{{ $role->Description }}</small>
+                        @endif
+                    </label>
+                </div>
+            @empty
+                <span class="text-muted">Belum ada role aktif.</span>
+            @endforelse
+        </div>
+        <small class="text-muted">Pilih satu atau beberapa role. Hak akses user merupakan gabungan izin dari seluruh role aktif yang dipilih.</small>
 
-            <option value="">
-                -- Pilih Role --
-            </option>
-
-            @foreach ($roles as $role)
-                <option value="{{ $role->RoleID }}" @selected(old('RoleID', $user->RoleID ?? '') == $role->RoleID)>
-                    {{ $role->Code }} - {{ $role->Name }}
-                </option>
-            @endforeach
-
-        </select>
-
-        @error('RoleID')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
+        @error('RoleIDs')
+            <div class="text-danger small mt-1">{{ $message }}</div>
         @enderror
-
+        @error('RoleIDs.*')
+            <div class="text-danger small mt-1">{{ $message }}</div>
+        @enderror
     </div>
 
-    <div class="col-md-6 mb-3">
-
-        <label class="form-label">
-            Status
-        </label>
-
-        <select name="IsActive" class="form-select @error('IsActive') is-invalid @enderror">
-
-            <option value="1" @selected(old('IsActive', $user->IsActive ?? 1) == 1)>
-                Aktif
-            </option>
-
-            <option value="0" @selected(old('IsActive', $user->IsActive ?? 1) == 0)>
-                Tidak Aktif
-            </option>
-
+    <div class="col-md-4 mb-3">
+        <label class="form-label">Status</label>
+        <select name="IsActive" class="form-select @error('IsActive') is-invalid @enderror" required>
+            <option value="1" @selected(old('IsActive', $user->IsActive ?? 1) == 1)>Aktif</option>
+            <option value="0" @selected(old('IsActive', $user->IsActive ?? 1) == 0)>Tidak Aktif</option>
         </select>
-
         @error('IsActive')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
+            <div class="invalid-feedback">{{ $message }}</div>
         @enderror
-
     </div>
-
 </div>
 
 @if ($mode === 'create')

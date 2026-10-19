@@ -106,9 +106,24 @@ class AssetMasterSeeder extends Seeder
             );
         }
 
+        DB::table('ms_vendor')->updateOrInsert(
+            ['VendorID' => 'VENDOR-UNKNOWN'],
+            [
+                'Vendor' => 'Vendor Belum Ditentukan',
+                'Description' => 'Placeholder vendor untuk kebutuhan data development.',
+                'IsActive' => true,
+                'InputUser' => 'Admin',
+                'InputDate' => $now,
+                'ModifUser' => 'Admin',
+                'ModifDate' => $now,
+                'DeletedBy' => null,
+                'DeletedDate' => null,
+            ]
+        );
+
         // =========================================================
         // Ms_Asset
-        // VendorID masih NULL sampai Master Vendor dibuat.
+        // VendorID masih NULL untuk data contoh yang belum menetapkan pemasok.
         // QRCode sementara menggunakan AssetID sebagai payload unik.
         // =========================================================
         $assets = [

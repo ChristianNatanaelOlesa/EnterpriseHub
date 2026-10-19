@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Add Menu')
+@section('title', 'Menu Management - Add Menu')
 
 @section('content')
 
@@ -9,7 +9,7 @@
         <div class="card-header">
 
             <h3 class="card-title">
-                Add Menu
+                Menu Management - Add Menu
             </h3>
 
         </div>
@@ -21,6 +21,7 @@
             <div class="card-body">
 
                 @include('security.menus._form')
+                <p class="text-muted small mb-0">Set available permissions after saving the menu. A mapping does not grant access to any role.</p>
 
             </div>
 

@@ -19,31 +19,17 @@ class UpdateMenuRequest extends FormRequest
         return [
             'ParentID' => [
                 'nullable',
-                'integer',
-                'exists:sc_menu,MenuID',
+                'string',
+                'regex:/^\d{2}-\d{2}-\d{2}$/',
+                Rule::exists('sc_menu', 'MenuID')->where(fn ($query) => $query->where('IsActive', true)->whereNull('DeletedDate')),
                 Rule::notIn([$menuId]),
             ],
 
-            'Code' => [
-                'required',
-                'string',
-                'max:30',
-                Rule::unique('sc_menu', 'Code')->ignore($menuId, 'MenuID'),
-            ],
-
-            'Name' => [
-                'required',
-                'string',
-                'max:100',
-            ],
+            'Menu' => ['required', 'string', 'max:100'],
+            'Description' => ['required', 'string'],
+            'MenuArea' => ['required', 'string', 'in:TOP,SIDEBAR', 'max:20'],
 
             'Route' => [
-                'nullable',
-                'string',
-                'max:255',
-            ],
-
-            'URL' => [
                 'nullable',
                 'string',
                 'max:255',
@@ -69,6 +55,16 @@ class UpdateMenuRequest extends FormRequest
             'IsActive' => [
                 'nullable',
                 'boolean',
+            ],
+            'permission_ids' => ['nullable', 'array'],
+            'MenuID' => ['prohibited'],
+            'Lvl' => ['prohibited'],
+            'permission_configuration_submitted' => ['nullable', 'boolean'],
+            'permission_ids.*' => [
+                'integer',
+                'distinct',
+                Rule::exists('sc_permission', 'PermissionID')
+                    ->where(fn ($query) => $query->where('IsActive', true)->whereNull('DeletedDate')),
             ],
         ];
     }

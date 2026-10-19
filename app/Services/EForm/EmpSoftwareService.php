@@ -4,6 +4,7 @@ namespace App\Services\EForm;
 
 use App\Models\EForm\TrEmpFormHist;
 use App\Models\EForm\TrEmpSoftware;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use App\Repositories\EForm\EmpSoftwareRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -20,9 +21,10 @@ class EmpSoftwareService
 
     public function getAll(
         ?string $search = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?string $empFormId = null
     ): LengthAwarePaginator {
-        return $this->repository->getAll($search, $perPage);
+        return $this->repository->getAll($search, $perPage, $empFormId);
     }
 
     public function find(string $id): ?TrEmpSoftware
@@ -56,14 +58,12 @@ class EmpSoftwareService
 
         if (!$history?->DivID) {
             throw ValidationException::withMessages([
-                'ReqDivID' => 'Division for the logged-in user was not found.',
+            'EmpFormID' => 'Division for the logged-in user was not found.',
             ]);
         }
 
         return [
             'EmpFormID' => $empFormID,
-            'ReqDivID' => $history->DivID,
-            'ReqUser' => $this->user(),
         ];
     }
 
@@ -156,7 +156,7 @@ class EmpSoftwareService
     {
         $prefix = 'ESO' . $dateFrom->format('Ym') . '-';
 
-        $ids = TrEmpSoftware::query()
+        $ids = TrEmpSoftware::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpSoftwareID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpSoftwareID');

@@ -29,23 +29,23 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID" id="CompanyID" class="form-select @error('CompanyID') is-invalid @enderror">
+                    <select name="CompID" id="CompID" class="form-select @error('CompID') is-invalid @enderror">
 
                         <option value="">
                             -- Pilih Company --
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}" @selected(old('CompanyID') == $company->CompanyID)>
-                                {{ $company->CompanyCode }}
+                            <option value="{{ $company->CompID }}" @selected(old('CompID') == $company->CompID)>
+                                {{ $company->CompID }}
                                 -
-                                {{ $company->CompanyName }}
+                                {{ $company->Company }}
                             </option>
                         @endforeach
 
                     </select>
 
-                    @error('CompanyID')
+                    @error('CompID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -62,8 +62,8 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DirectorateID" id="DirectorateID"
-                        class="form-select @error('DirectorateID') is-invalid @enderror" disabled>
+                    <select name="DirID" id="DirID"
+                        class="form-select @error('DirID') is-invalid @enderror" disabled>
 
                         <option value="">
                             -- Pilih Company Terlebih Dahulu --
@@ -71,7 +71,7 @@
 
                     </select>
 
-                    @error('DirectorateID')
+                    @error('DirID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -88,7 +88,7 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DivisionID" id="DivisionID" class="form-select @error('DivisionID') is-invalid @enderror"
+                    <select name="DivID" id="DivID" class="form-select @error('DivID') is-invalid @enderror"
                         disabled>
 
                         <option value="">
@@ -97,7 +97,7 @@
 
                     </select>
 
-                    @error('DivisionID')
+                    @error('DivID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -114,11 +114,11 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DepartmentCode"
-                        class="form-control @error('DepartmentCode') is-invalid @enderror"
-                        value="{{ old('DepartmentCode') }}" maxlength="20">
+                    <input type="text" name="DeptID"
+                        class="form-control @error('DeptID') is-invalid @enderror"
+                        value="{{ old('DeptID') }}" maxlength="20">
 
-                    @error('DepartmentCode')
+                    @error('DeptID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -135,11 +135,11 @@
                         <span class="text-danger">*</span>
                     </label>
 
-                    <input type="text" name="DepartmentName"
-                        class="form-control @error('DepartmentName') is-invalid @enderror"
-                        value="{{ old('DepartmentName') }}" maxlength="200">
+                    <input type="text" name="Department"
+                        class="form-control @error('Department') is-invalid @enderror"
+                        value="{{ old('Department') }}" maxlength="200">
 
-                    @error('DepartmentName')
+                    @error('Department')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -191,13 +191,13 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             const companySelect =
-                document.getElementById('CompanyID');
+                document.getElementById('CompID');
 
             const directorateSelect =
-                document.getElementById('DirectorateID');
+                document.getElementById('DirID');
 
             const divisionSelect =
-                document.getElementById('DivisionID');
+                document.getElementById('DivID');
 
             async function loadDirectorates(companyId) {
 
@@ -231,7 +231,7 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.department.directorates') }}?CompanyID=${companyId}`, {
+                        `{{ route('master.department.directorates') }}?CompID=${companyId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -257,10 +257,10 @@
                             document.createElement('option');
 
                         option.value =
-                            item.DirectorateID;
+                            item.DirID;
 
                         option.textContent =
-                            item.DirectorateName;
+                            item.Directorate;
 
                         directorateSelect.appendChild(option);
 
@@ -304,7 +304,7 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.department.divisions') }}?DirectorateID=${directorateId}`, {
+                        `{{ route('master.department.divisions') }}?DirID=${directorateId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -330,10 +330,10 @@
                             document.createElement('option');
 
                         option.value =
-                            item.DivisionID;
+                            item.DivID;
 
                         option.textContent =
-                            item.DivisionName;
+                            item.Division;
 
                         divisionSelect.appendChild(option);
 

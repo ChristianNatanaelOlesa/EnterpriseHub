@@ -625,3 +625,95 @@ body {
         width: calc(100vw - 24px);
     }
 }
+
+
+/* --------------------------------------------------------------------------
+| GLOBAL LIGHT ALERT THEME
+| Apply to inline alerts, validation messages, and flash messages across all
+| modules. Keep backgrounds soft and text readable; avoid dark/high-contrast
+| Bootstrap or inherited theme overrides.
+|-------------------------------------------------------------------------- */
+.eh-content .alert,
+body .alert {
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(16, 24, 40, .04) !important;
+    font-weight: 400;
+}
+
+.eh-content .alert.alert-success,
+body .alert.alert-success,
+.eh-toast-container .alert.alert-success {
+    background-color: #ecfdf3 !important;
+    color: #166534 !important;
+    border-color: #bbf7d0 !important;
+    --bs-alert-bg: #ecfdf3;
+    --bs-alert-color: #166534;
+    --bs-alert-border-color: #bbf7d0;
+}
+
+.eh-content .alert.alert-danger,
+body .alert.alert-danger,
+.eh-toast-container .alert.alert-danger {
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+    border-color: #fecaca !important;
+    --bs-alert-bg: #fef2f2;
+    --bs-alert-color: #991b1b;
+    --bs-alert-border-color: #fecaca;
+}
+
+.eh-content .alert.alert-warning,
+body .alert.alert-warning,
+.eh-toast-container .alert.alert-warning {
+    background-color: #fffbeb !important;
+    color: #92400e !important;
+    border-color: #fde68a !important;
+    --bs-alert-bg: #fffbeb;
+    --bs-alert-color: #92400e;
+    --bs-alert-border-color: #fde68a;
+}
+
+.eh-content .alert.alert-info,
+body .alert.alert-info,
+.eh-toast-container .alert.alert-info {
+    background-color: #eff6ff !important;
+    color: #1e40af !important;
+    border-color: #bfdbfe !important;
+    --bs-alert-bg: #eff6ff;
+    --bs-alert-color: #1e40af;
+    --bs-alert-border-color: #bfdbfe;
+}
+
+.eh-content .alert.alert-primary,
+body .alert.alert-primary {
+    background-color: #eff6ff !important;
+    color: #1d4ed8 !important;
+    border-color: #bfdbfe !important;
+}
+
+.eh-content .alert.alert-secondary,
+body .alert.alert-secondary {
+    background-color: #f8fafc !important;
+    color: #334155 !important;
+    border-color: #e2e8f0 !important;
+}
+
+.eh-content .alert .btn-close,
+body .alert .btn-close {
+    opacity: .65;
+    filter: none !important;
+}
+
+.eh-content .alert .btn-close:hover,
+body .alert .btn-close:hover {
+    opacity: 1;
+}
+
+.eh-toast-container .eh-toast {
+    width: 100%;
+    margin: 0 0 .75rem;
+    padding: .8rem 1rem;
+    pointer-events: auto;
+}

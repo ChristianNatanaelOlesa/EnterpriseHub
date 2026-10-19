@@ -14,6 +14,7 @@ class TrEmpSharingFolderDetail extends BaseModel
     protected $fillable = [
         'EmpSharingFolderID',
         'FolderPathID',
+        'ParentFolderID', // Legacy nullable field kept for backward compatibility.
         'ParentFolderPathID',
         'FolderName',
         'RequestedPath',
@@ -47,7 +48,10 @@ class TrEmpSharingFolderDetail extends BaseModel
         );
     }
 
-    public function parentFolder(): BelongsTo
+    /**
+     * Parent path used when requesting a NEW folder.
+     */
+    public function parentFolderPath(): BelongsTo
     {
         return $this->belongsTo(
             MsFolderPath::class,

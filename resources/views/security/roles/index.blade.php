@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Roles')
+@section('title', 'Role Management')
 
 @section('content')
     <div class="card">
@@ -28,8 +28,8 @@
                     <thead>
                         <tr>
                             <th width="60">#</th>
-                            <th>Code</th>
-                            <th>Name</th>
+                            <th>Role ID</th>
+                            <th>Role</th>
                             <th>Description</th>
                             <th width="120">Status</th>
                             <th width="150">Action</th>
@@ -39,8 +39,8 @@
                         @forelse($roles as $role)
                             <tr>
                                 <td>{{ $roles->firstItem() + $loop->index }}</td>
-                                <td>{{ $role->Code }}</td>
-                                <td>{{ $role->Name }}</td>
+                                <td>{{ $role->RoleID }}</td>
+                                <td>{{ $role->Role }}</td>
                                 <td>{{ $role->Description ?? '-' }}</td>
                                 <td>
                                     @if ($role->IsActive)
@@ -56,7 +56,8 @@
                                         action="{{ route('security.roles.destroy', $role->RoleID) }}" method="POST"
                                         class="d-inline">@csrf @method('DELETE')<button type="submit"
                                             class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus role ini?')"><i
+                                            title="Nonaktifkan role"
+                                            onclick="return confirm('Nonaktifkan role ini? Assignment user dan permission tetap disimpan.')"><i
                                                 class="bi bi-trash"></i></button></form>@endcanDelete
                                 </td>
                             </tr>

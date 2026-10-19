@@ -23,7 +23,8 @@ class EmpSoftwareController extends Controller
     {
         $data = $this->service->getAll(
             $request->input('search'),
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
         return view(
@@ -43,6 +44,9 @@ class EmpSoftwareController extends Controller
         if ($empFormID) {
             $history = TrEmpFormHist::query()
                 ->where('EmpFormID', $empFormID)
+                ->where('IsActive', true)
+                ->whereNotNull('DivID')
+                ->orderByDesc('EffectiveDate')
                 ->orderByDesc('InputDate')
                 ->first();
         }
@@ -83,9 +87,9 @@ class EmpSoftwareController extends Controller
 
         abort_if(!$data, 404);
 
-        $division = $data->ReqDivID
-            ? MsDivision::find($data->ReqDivID)
-            : null;
+        $divisionId = \App\Models\EForm\TrEmpFormHist::query()->where('EmpFormID', $data->EmpFormID)
+            ->where('IsActive', true)->orderByDesc('EffectiveDate')->value('DivID');
+        $division = $divisionId ? MsDivision::find($divisionId) : null;
 
         return view(
             'eform.employee-software.edit',

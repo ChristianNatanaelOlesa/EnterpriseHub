@@ -19,21 +19,21 @@
         <div class="card-body">
 
             <form method="POST"
-                  action="{{ route('master.directorate.update', $directorate->DirectorateID) }}">
+                  action="{{ route('master.directorate.update', $directorate->DirID) }}">
 
                 @csrf
                 @method('PUT')
 
                 <div class="mb-3">
 
-                    <label for="CompanyID" class="form-label">
+                    <label for="CompID" class="form-label">
                         Company
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID"
-                            id="CompanyID"
-                            class="form-select @error('CompanyID') is-invalid @enderror"
+                    <select name="CompID"
+                            id="CompID"
+                            class="form-select @error('CompID') is-invalid @enderror"
                             required>
 
                         <option value="">
@@ -41,19 +41,19 @@
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}"
-                                @selected(old('CompanyID', $directorate->CompanyID) == $company->CompanyID)>
+                            <option value="{{ $company->CompID }}"
+                                @selected(old('CompID', $directorate->CompID) == $company->CompID)>
 
-                                {{ $company->CompanyCode }}
+                                {{ $company->CompID }}
                                 -
-                                {{ $company->CompanyName }}
+                                {{ $company->Company }}
 
                             </option>
                         @endforeach
 
                     </select>
 
-                    @error('CompanyID')
+                    @error('CompID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -63,15 +63,15 @@
 
                 <x-form.input
                     label="Directorate Code"
-                    name="DirectorateCode"
-                    :value="old('DirectorateCode', $directorate->DirectorateCode)"
+                    name="DirID"
+                    :value="old('DirID', $directorate->DirID)"
                     required="true"
                 />
 
                 <x-form.input
                     label="Directorate Name"
-                    name="DirectorateName"
-                    :value="old('DirectorateName', $directorate->DirectorateName)"
+                    name="Directorate"
+                    :value="old('Directorate', $directorate->Directorate)"
                     required="true"
                 />
 

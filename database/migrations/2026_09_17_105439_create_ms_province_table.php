@@ -9,23 +9,20 @@ return new class () extends Migration {
     {
         Schema::create('ms_province', function (Blueprint $table) {
             $table->string('ProvinceID', 10)->primary();
+
             $table->string('CountryID', 3);
+
             $table->string('Province', 100);
+
             $table->boolean('IsActive')->default(true);
 
-            $table->dateTime('InputDate')->useCurrent();
-            $table->string('InputUser', 50)->default('Admin');
-            $table->dateTime('ModifDate')->useCurrent();
-            $table->string('ModifUser', 50)->default('Admin');
-            $table->string('DeletedBy', 50)->nullable();
-            $table->dateTime('DeletedDate')->nullable();
+            $table->auditColumns();
 
             $table->foreign('CountryID')
                 ->references('CountryID')
                 ->on('ms_country');
 
             $table->index('CountryID');
-            $table->index('IsActive');
         });
     }
 

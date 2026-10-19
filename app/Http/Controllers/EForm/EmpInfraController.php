@@ -24,7 +24,8 @@ class EmpInfraController extends Controller
     {
         $data = $this->service->getAll(
             $request->input('search'),
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
         return view(
@@ -58,8 +59,6 @@ class EmpInfraController extends Controller
             $request->validated(),
             [
                 'EmpFormID' => $context['empFormID'],
-                'ReqDivID' => $context['reqDivID'],
-                'ReqUser' => $context['reqUser'],
                 'ReqDate' => now()->toDateString(),
             ]
         );
@@ -124,7 +123,6 @@ class EmpInfraController extends Controller
 
         $empFormID = $user?->EmpFormID;
 
-        $reqDivID = null;
         $division = null;
 
         if ($empFormID) {
@@ -132,17 +130,10 @@ class EmpInfraController extends Controller
                 ->where('EmpFormID', $empFormID)
                 ->orderByDesc('InputDate')
                 ->first();
-
-            $reqDivID = $history?->DivID;
-
-            if ($reqDivID) {
-                $division = MsDivision::find($reqDivID);
-            }
         }
 
         return [
             'empFormID' => $empFormID,
-            'reqDivID' => $reqDivID,
             'division' => $division,
             'reqUser' => $user?->Username
                 ?? $user?->username

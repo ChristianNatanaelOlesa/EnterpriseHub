@@ -3,6 +3,7 @@
 namespace App\Models\Workflow;
 
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class WfProcess extends BaseModel
 {
@@ -39,4 +40,10 @@ class WfProcess extends BaseModel
         'InputDate' => 'datetime',
         'ModifDate' => 'datetime',
     ];
+    public function approvalRules(): HasMany
+    {
+        return $this->hasMany(WfApprovalRule::class, 'ProcessID', 'ProcessID')
+            ->orderBy('Priority');
+    }
+
 }

@@ -3,16 +3,21 @@
 namespace App\Services\Security;
 
 use App\Repositories\Security\UserRepository;
+use App\Repositories\Security\UserRoleRepository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
 {
     protected UserRepository $repository;
+    protected UserRoleRepository $userRoleRepository;
 
-    public function __construct(UserRepository $repository)
-    {
+    public function __construct(
+        UserRepository $repository,
+        UserRoleRepository $userRoleRepository
+    ) {
         $this->repository = $repository;
+        $this->userRoleRepository = $userRoleRepository;
     }
 
     public function getAll(?string $search = null)
@@ -22,38 +27,29 @@ class UserService
 
     public function findById(int $id)
     {
-        $user = $this->repository->findById($id);
+        return $this->repository->findById($id);
+    }
 
-        if ($user) {
-            $user->RoleID = DB::table('sc_user_role')
-                ->where('UserID', $id)
-                ->where('IsActive', true)
-                ->value('RoleID');
-        }
-
-        return $user;
+    public function getUserRoleIds(int $userId): array
+    {
+        return $this->userRoleRepository->getUserRoleIds($userId);
     }
 
     public function store(array $data)
     {
         return DB::transaction(function () use ($data) {
+            $roleIds = array_values(array_unique(array_map('strval', $data['RoleIDs'])));
+            unset($data['RoleIDs']);
 
-            $roleId = $data['RoleID'];
-
-            unset($data['RoleID']);
-
-            $data['Password'] = Hash::make(
-                $data['Username'] . '!23'
-            );
-
+            $data['Password'] = Hash::make($data['Username'] . '!23');
             $data['InputUser'] = auth()->user()->Username;
             $data['InputDate'] = now();
 
             $user = $this->repository->create($data);
 
-            $this->repository->syncRole(
+            $this->userRoleRepository->sync(
                 $user->UserID,
-                $roleId,
+                $roleIds,
                 auth()->user()->Username
             );
 
@@ -64,22 +60,17 @@ class UserService
     public function update(int $id, array $data)
     {
         return DB::transaction(function () use ($id, $data) {
-
-            $roleId = $data['RoleID'];
-
-            unset($data['RoleID']);
+            $roleIds = array_values(array_unique(array_map('strval', $data['RoleIDs'])));
+            unset($data['RoleIDs']);
 
             $data['ModifUser'] = auth()->user()->Username;
             $data['ModifDate'] = now();
 
-            $user = $this->repository->update(
-                $id,
-                $data
-            );
+            $user = $this->repository->update($id, $data);
 
-            $this->repository->syncRole(
+            $this->userRoleRepository->sync(
                 $id,
-                $roleId,
+                $roleIds,
                 auth()->user()->Username
             );
 
@@ -90,7 +81,6 @@ class UserService
     public function delete(int $id)
     {
         return DB::transaction(function () use ($id) {
-
             return $this->repository->update($id, [
                 'IsActive' => false,
                 'DeletedBy' => auth()->user()->Username,
@@ -102,7 +92,6 @@ class UserService
     public function resetPassword(int $id)
     {
         return DB::transaction(function () use ($id) {
-
             $user = $this->repository->findById($id);
 
             return $this->repository->update($id, [
@@ -118,15 +107,11 @@ class UserService
         $user = $this->repository->findById($id);
 
         return DB::transaction(function () use ($user) {
-
-            return $this->repository->update(
-                $user->UserID,
-                [
-                    'IsActive' => ! $user->IsActive,
-                    'ModifUser' => auth()->user()->Username,
-                    'ModifDate' => now(),
-                ]
-            );
+            return $this->repository->update($user->UserID, [
+                'IsActive' => ! $user->IsActive,
+                'ModifUser' => auth()->user()->Username,
+                'ModifDate' => now(),
+            ]);
         });
     }
 }

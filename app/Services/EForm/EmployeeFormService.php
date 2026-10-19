@@ -9,72 +9,168 @@ use Illuminate\Support\Facades\DB;
 
 class EmployeeFormService
 {
-    public function create(array $data, string $inputUser): TrEmpForm
-    {
-        return DB::transaction(function () use ($data, $inputUser) {
+    public function create(
+        array $data,
+        string $inputUser
+    ): TrEmpForm {
+        return DB::transaction(function () use (
+            $data,
+            $inputUser
+        ) {
             /*
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             | Effective Date menjadi sumber periode Employee Form ID.
-            | Contoh: Effective Date 2026-10-15
-            |         => EMP202610-001
-            |------------------------------------------------------------------
+            |
+            | Contoh:
+            | Effective Date 2026-10-15
+            | => EMP202610-001
+            |--------------------------------------------------------------------------
             */
-            $effectiveDate = Carbon::parse($data['EffectiveDate']);
 
-            $empFormId = $this->generateEmpFormId($effectiveDate);
+            $effectiveDate = Carbon::parse(
+                $data['EffectiveDate']
+            );
+
+            $empFormId = $this->generateEmpFormId(
+                $effectiveDate
+            );
 
             /*
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             | Join Date selalu sama dengan Effective Date.
-            | Tidak lagi bergantung pada input terpisah dari user.
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             */
+
             $data['JoinDate'] = $effectiveDate->toDateString();
 
-            $now = now();
+            /*
+            |--------------------------------------------------------------------------
+            | Request Date menggunakan tanggal saat transaction dibuat.
+            |--------------------------------------------------------------------------
+            */
+
+            $requestDate = now();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Employee Form
+            |--------------------------------------------------------------------------
+            */
 
             $employeeForm = TrEmpForm::create([
                 'EmpFormID' => $empFormId,
+
                 'FirstName' => $data['FirstName'],
+
                 'LastName' => $data['LastName'] ?? null,
+
                 'MobileNo' => $data['MobileNo'],
+
                 'BirthDate' => $data['BirthDate'],
+
                 'NIP' => $data['NIP'],
+
                 'MaritalStatus' => $data['MaritalStatus'],
+
                 'ReligionID' => $data['ReligionID'],
+
                 'JoinDate' => $data['JoinDate'],
+
                 'VillageID' => $data['VillageID'],
+
                 'Address' => $data['Address'],
+
                 'Email' => $data['Email'],
+
                 'InputUser' => $inputUser,
-                'InputDate' => $now,
+
+                'InputDate' => $requestDate,
+
                 'ModifUser' => $inputUser,
-                'ModifDate' => $now,
+
+                'ModifDate' => $requestDate,
             ]);
+
+            /*
+            |--------------------------------------------------------------------------
+            | Generate Employee Form History ID
+            |--------------------------------------------------------------------------
+            */
 
             $empFormHistId = $this->generateEmpFormHistId(
                 $empFormId
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Employee Form History
+            |--------------------------------------------------------------------------
+            */
+
             TrEmpFormHist::create([
                 'EmpFormHistID' => $empFormHistId,
+
                 'EmpFormID' => $empFormId,
+
                 'DirID' => $data['DirID'],
+
                 'DivID' => $data['DivID'],
+
                 'DeptID' => $data['DeptID'],
+
                 'JobLvlID' => $data['JobLvlID'],
+
                 'JobTitleID' => $data['JobTitleID'],
+
                 'ReportTo' => $data['ReportTo'] ?? null,
-                'EmpStatus' => 'NEW',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Employee Status
+                |--------------------------------------------------------------------------
+                | NEW / MUTATION / RESIGN
+                | Default: NEW
+                |--------------------------------------------------------------------------
+                */
+
+                'EmpStatus' => $data['EmpStatus'] ?? 'NEW',
+
                 'EffectiveDate' => $data['EffectiveDate'],
+
                 'Remarks' => $data['Remarks'],
-                'ReqUser' => $inputUser,
-                'ReqDate' => $data['EffectiveDate'],
+
+                /*
+                |--------------------------------------------------------------------------
+                | Request information
+                |--------------------------------------------------------------------------
+                */
+
+
+                'ReqDate' => $requestDate,
+
+                /*
+                |--------------------------------------------------------------------------
+                | Transaction status
+                |--------------------------------------------------------------------------
+                */
+
                 'IsActive' => true,
+
+                'Status' => 'DRAFT',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Audit
+                |--------------------------------------------------------------------------
+                */
+
                 'InputUser' => $inputUser,
-                'InputDate' => $now,
+
+                'InputDate' => $requestDate,
+
                 'ModifUser' => $inputUser,
-                'ModifDate' => $now,
+
+                'ModifDate' => $requestDate,
             ]);
 
             return $employeeForm->fresh([
@@ -93,52 +189,132 @@ class EmployeeFormService
             $data,
             $modifUser
         ) {
+            /*
+            |--------------------------------------------------------------------------
+            | Get Employee Form
+            |--------------------------------------------------------------------------
+            */
+
             $employeeForm = TrEmpForm::query()
-                ->where('EmpFormID', $empFormId)
+                ->where(
+                    'EmpFormID',
+                    $empFormId
+                )
                 ->firstOrFail();
 
+            /*
+            |--------------------------------------------------------------------------
+            | Get latest Employee Form History
+            |--------------------------------------------------------------------------
+            */
+
             $history = TrEmpFormHist::query()
-                ->where('EmpFormID', $empFormId)
+                ->where(
+                    'EmpFormID',
+                    $empFormId
+                )
                 ->orderByDesc('EffectiveDate')
                 ->orderByDesc('EmpFormHistID')
                 ->firstOrFail();
 
             /*
-            |------------------------------------------------------------------
+            |--------------------------------------------------------------------------
             | Effective Date bersifat immutable setelah Employee Form dibuat.
-            | Join Date juga tetap mengikuti Effective Date awal.
-            |------------------------------------------------------------------
+            |
+            | Join Date tetap mengikuti Effective Date awal.
+            |--------------------------------------------------------------------------
             */
-            $effectiveDate = Carbon::parse($history->EffectiveDate);
+
+            $effectiveDate = Carbon::parse(
+                $history->EffectiveDate
+            );
+
             $data['JoinDate'] = $effectiveDate->toDateString();
+
+            /*
+            |--------------------------------------------------------------------------
+            | Update Employee Form
+            |--------------------------------------------------------------------------
+            */
 
             $employeeForm->update([
                 'FirstName' => $data['FirstName'],
+
                 'LastName' => $data['LastName'] ?? null,
+
                 'MobileNo' => $data['MobileNo'],
+
                 'BirthDate' => $data['BirthDate'],
+
                 'NIP' => $data['NIP'],
+
                 'MaritalStatus' => $data['MaritalStatus'],
+
                 'ReligionID' => $data['ReligionID'],
+
                 'JoinDate' => $data['JoinDate'],
+
                 'VillageID' => $data['VillageID'],
+
                 'Address' => $data['Address'],
+
                 'Email' => $data['Email'],
+
                 'ModifUser' => $modifUser,
+
                 'ModifDate' => now(),
             ]);
 
+            /*
+            |--------------------------------------------------------------------------
+            | Update Employee Form History
+            |--------------------------------------------------------------------------
+            */
+
             $history->update([
                 'DirID' => $data['DirID'],
+
                 'DivID' => $data['DivID'],
+
                 'DeptID' => $data['DeptID'],
+
                 'JobLvlID' => $data['JobLvlID'],
+
                 'JobTitleID' => $data['JobTitleID'],
+
                 'ReportTo' => $data['ReportTo'] ?? null,
-                'EmpStatus' => 'NEW',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Jangan hardcode NEW.
+                |
+                | Bisa:
+                | NEW
+                | MUTATION
+                | RESIGN
+                |--------------------------------------------------------------------------
+                */
+
+                'EmpStatus' => $data['EmpStatus']
+                    ?? $history->EmpStatus,
+
                 'Remarks' => $data['Remarks'],
-                'ReqUser' => $history->ReqUser ?: $modifUser,
+
+                /*
+                |--------------------------------------------------------------------------
+                | Request User tetap user pertama yang membuat request.
+                |--------------------------------------------------------------------------
+                */
+
+
+                /*
+                |--------------------------------------------------------------------------
+                | Request Date tidak diubah ketika Update.
+                |--------------------------------------------------------------------------
+                */
+
                 'ModifUser' => $modifUser,
+
                 'ModifDate' => now(),
             ]);
 
@@ -148,38 +324,56 @@ class EmployeeFormService
         });
     }
 
-    public function delete(string $empFormId): void
-    {
-        DB::transaction(function () use ($empFormId) {
+    public function delete(
+        string $empFormId
+    ): void {
+        DB::transaction(function () use (
+            $empFormId
+        ) {
             $employeeForm = TrEmpForm::query()
-                ->where('EmpFormID', $empFormId)
+                ->where(
+                    'EmpFormID',
+                    $empFormId
+                )
                 ->firstOrFail();
 
             TrEmpFormHist::query()
-                ->where('EmpFormID', $empFormId)
+                ->where(
+                    'EmpFormID',
+                    $empFormId
+                )
                 ->delete();
 
             $employeeForm->delete();
         });
     }
 
-    private function generateEmpFormId(Carbon $effectiveDate): string
-    {
-        $prefix = 'EMP' . $effectiveDate->format('Ym') . '-';
+    private function generateEmpFormId(
+        Carbon $effectiveDate
+    ): string {
+        $prefix = 'EMP'
+            . $effectiveDate->format('Ym')
+            . '-';
 
         $existingIds = TrEmpForm::query()
-            ->where('EmpFormID', 'like', $prefix . '%')
+            ->where(
+                'EmpFormID',
+                'like',
+                $prefix . '%'
+            )
             ->lockForUpdate()
             ->pluck('EmpFormID');
 
         $lastNumber = 0;
 
         foreach ($existingIds as $existingId) {
-            if (preg_match(
-                '/^EMP\d{6}-(\d{3})$/',
-                trim($existingId),
-                $matches
-            )) {
+            if (
+                preg_match(
+                    '/^EMP\d{6}-(\d{3})$/',
+                    trim($existingId),
+                    $matches
+                )
+            ) {
                 $number = (int) $matches[1];
 
                 if ($number > $lastNumber) {
@@ -200,18 +394,25 @@ class EmployeeFormService
         string $empFormId
     ): string {
         $existingIds = TrEmpFormHist::query()
-            ->where('EmpFormID', $empFormId)
+            ->where(
+                'EmpFormID',
+                $empFormId
+            )
             ->lockForUpdate()
             ->pluck('EmpFormHistID');
 
         $lastNumber = 0;
 
         foreach ($existingIds as $existingId) {
-            if (preg_match(
-                '/^' . preg_quote($empFormId, '/') . 'H(\d{2})$/',
-                trim($existingId),
-                $matches
-            )) {
+            if (
+                preg_match(
+                    '/^'
+                    . preg_quote($empFormId, '/')
+                    . 'H(\d{2})$/',
+                    trim($existingId),
+                    $matches
+                )
+            ) {
                 $number = (int) $matches[1];
 
                 if ($number > $lastNumber) {
@@ -220,11 +421,13 @@ class EmployeeFormService
             }
         }
 
-        return $empFormId . 'H' . str_pad(
-            (string) ($lastNumber + 1),
-            2,
-            '0',
-            STR_PAD_LEFT
-        );
+        return $empFormId
+            . 'H'
+            . str_pad(
+                (string) ($lastNumber + 1),
+                2,
+                '0',
+                STR_PAD_LEFT
+            );
     }
 }

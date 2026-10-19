@@ -18,7 +18,7 @@ class CompanyRequest extends FormRequest
 
         return [
 
-            'CompanyCode' => [
+            'CompID' => [
 
                 'required',
 
@@ -26,15 +26,15 @@ class CompanyRequest extends FormRequest
 
                 Rule::unique(
                     'Ms_Company',
-                    'CompanyCode'
+                    'CompID'
                 )->ignore(
                     $companyId,
-                    'CompanyID'
+                    'CompID'
                 ),
 
             ],
 
-            'CompanyName' => 'required|max:100',
+            'Company' => 'required|max:100',
 
             'Address' => 'nullable|max:255',
 

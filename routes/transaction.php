@@ -21,27 +21,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-form', [EmployeeFormController::class, 'index'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.index');
 
     Route::get('/employee-form/create', [EmployeeFormController::class, 'create'])
-        ->middleware('permission:employee-form.index,CanAdd')
+        ->middleware('permission:employee-form.index,Create')
         ->name('employee-form.create');
 
     Route::post('/employee-form', [EmployeeFormController::class, 'store'])
-        ->middleware('permission:employee-form.index,CanAdd')
+        ->middleware('permission:employee-form.index,Create')
         ->name('employee-form.store');
 
     Route::get('/employee-form/{empFormId}/edit', [EmployeeFormController::class, 'edit'])
-        ->middleware('permission:employee-form.index,CanEdit')
+        ->middleware('permission:employee-form.index,Update')
         ->name('employee-form.edit');
 
     Route::put('/employee-form/{empFormId}', [EmployeeFormController::class, 'update'])
-        ->middleware('permission:employee-form.index,CanEdit')
+        ->middleware('permission:employee-form.index,Update')
         ->name('employee-form.update');
 
     Route::delete('/employee-form/{empFormId}', [EmployeeFormController::class, 'destroy'])
-        ->middleware('permission:employee-form.index,CanDelete')
+        ->middleware('permission:employee-form.index,Delete')
         ->name('employee-form.destroy');
 
     /*
@@ -51,28 +51,32 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-form/provinces/{countryId}', [EmployeeFormController::class, 'provinces'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.provinces');
 
     Route::get('/employee-form/cities/{provinceId}', [EmployeeFormController::class, 'cities'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.cities');
 
     Route::get('/employee-form/districts/{cityId}', [EmployeeFormController::class, 'districts'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.districts');
 
     Route::get('/employee-form/villages/{districtId}', [EmployeeFormController::class, 'villages'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.villages');
 
     Route::get('/employee-form/divisions/{directorateId}', [EmployeeFormController::class, 'divisions'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.divisions');
 
     Route::get('/employee-form/departments/{divisionId}', [EmployeeFormController::class, 'departments'])
-        ->middleware('permission:employee-form.index,CanOpen')
+        ->middleware('permission:employee-form.index,View')
         ->name('employee-form.departments');
+
+    Route::get('/employee-form/report-to', [EmployeeFormController::class, 'reportTo'])
+        ->middleware('permission:employee-form.index,View')
+        ->name('employee-form.report-to');
 
     /*
     |--------------------------------------------------------------------------
@@ -81,27 +85,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-app', [EmpAppController::class, 'index'])
-        ->middleware('permission:employee-app.index,CanOpen')
+        ->middleware('permission:employee-app.index,View')
         ->name('employee-app.index');
 
     Route::get('/employee-app/create', [EmpAppController::class, 'create'])
-        ->middleware('permission:employee-app.index,CanAdd')
+        ->middleware('permission:employee-app.index,Create')
         ->name('employee-app.create');
 
     Route::post('/employee-app', [EmpAppController::class, 'store'])
-        ->middleware('permission:employee-app.index,CanAdd')
+        ->middleware('permission:employee-app.index,Create')
         ->name('employee-app.store');
 
     Route::get('/employee-app/{employeeApp}/edit', [EmpAppController::class, 'edit'])
-        ->middleware('permission:employee-app.index,CanEdit')
+        ->middleware('permission:employee-app.index,Update')
         ->name('employee-app.edit');
 
     Route::put('/employee-app/{employeeApp}', [EmpAppController::class, 'update'])
-        ->middleware('permission:employee-app.index,CanEdit')
+        ->middleware('permission:employee-app.index,Update')
         ->name('employee-app.update');
 
     Route::delete('/employee-app/{employeeApp}', [EmpAppController::class, 'destroy'])
-        ->middleware('permission:employee-app.index,CanDelete')
+        ->middleware('permission:employee-app.index,Delete')
         ->name('employee-app.destroy');
 
     /*
@@ -111,32 +115,36 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-email', [EmpEmailController::class, 'index'])
-        ->middleware('permission:employee-email.index,CanOpen')
+        ->middleware('permission:employee-email.index,View')
         ->name('employee-email.index');
 
     Route::get('/employee-email/create', [EmpEmailController::class, 'create'])
-        ->middleware('permission:employee-email.index,CanAdd')
+        ->middleware('permission:employee-email.index,Create')
         ->name('employee-email.create');
 
     Route::post('/employee-email', [EmpEmailController::class, 'store'])
-        ->middleware('permission:employee-email.index,CanAdd')
+        ->middleware('permission:employee-email.index,Create')
         ->name('employee-email.store');
 
     Route::get('/employee-email/{employeeEmail}/edit', [EmpEmailController::class, 'edit'])
-        ->middleware('permission:employee-email.index,CanEdit')
+        ->middleware('permission:employee-email.index,Update')
         ->name('employee-email.edit');
 
     Route::put('/employee-email/{employeeEmail}', [EmpEmailController::class, 'update'])
-        ->middleware('permission:employee-email.index,CanEdit')
+        ->middleware('permission:employee-email.index,Update')
         ->name('employee-email.update');
 
     Route::post('/employee-email/{employeeEmail}/submit-approval', [EmpEmailController::class, 'submitApproval'])
-        ->middleware('permission:employee-email.index,CanEdit')
+        ->middleware('permission:employee-email.index,Update')
         ->name('employee-email.submit-approval');
 
     Route::delete('/employee-email/{employeeEmail}', [EmpEmailController::class, 'destroy'])
-        ->middleware('permission:employee-email.index,CanDelete')
+        ->middleware('permission:employee-email.index,Delete')
         ->name('employee-email.destroy');
+
+    Route::put('/employee-email/{employeeEmail}/fulfillment', [EmpEmailController::class, 'updateFulfillment'])
+        ->middleware('permission:employee-email.index,IT Fulfillment')
+        ->name('employee-email.fulfillment');
 
     /*
     |--------------------------------------------------------------------------
@@ -145,27 +153,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-equipment', [EmpEquipController::class, 'index'])
-        ->middleware('permission:employee-equipment.index,CanOpen')
+        ->middleware('permission:employee-equipment.index,View')
         ->name('employee-equipment.index');
 
     Route::get('/employee-equipment/create', [EmpEquipController::class, 'create'])
-        ->middleware('permission:employee-equipment.index,CanAdd')
+        ->middleware('permission:employee-equipment.index,Create')
         ->name('employee-equipment.create');
 
     Route::post('/employee-equipment', [EmpEquipController::class, 'store'])
-        ->middleware('permission:employee-equipment.index,CanAdd')
+        ->middleware('permission:employee-equipment.index,Create')
         ->name('employee-equipment.store');
 
     Route::get('/employee-equipment/{employeeEquipment}/edit', [EmpEquipController::class, 'edit'])
-        ->middleware('permission:employee-equipment.index,CanEdit')
+        ->middleware('permission:employee-equipment.index,Update')
         ->name('employee-equipment.edit');
 
     Route::put('/employee-equipment/{employeeEquipment}', [EmpEquipController::class, 'update'])
-        ->middleware('permission:employee-equipment.index,CanEdit')
+        ->middleware('permission:employee-equipment.index,Update')
         ->name('employee-equipment.update');
 
     Route::delete('/employee-equipment/{employeeEquipment}', [EmpEquipController::class, 'destroy'])
-        ->middleware('permission:employee-equipment.index,CanDelete')
+        ->middleware('permission:employee-equipment.index,Delete')
         ->name('employee-equipment.destroy');
 
     /*
@@ -175,27 +183,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-network', [EmpNetworkController::class, 'index'])
-        ->middleware('permission:employee-network.index,CanOpen')
+        ->middleware('permission:employee-network.index,View')
         ->name('employee-network.index');
 
     Route::get('/employee-network/create', [EmpNetworkController::class, 'create'])
-        ->middleware('permission:employee-network.index,CanAdd')
+        ->middleware('permission:employee-network.index,Create')
         ->name('employee-network.create');
 
     Route::post('/employee-network', [EmpNetworkController::class, 'store'])
-        ->middleware('permission:employee-network.index,CanAdd')
+        ->middleware('permission:employee-network.index,Create')
         ->name('employee-network.store');
 
     Route::get('/employee-network/{employeeNetwork}/edit', [EmpNetworkController::class, 'edit'])
-        ->middleware('permission:employee-network.index,CanEdit')
+        ->middleware('permission:employee-network.index,Update')
         ->name('employee-network.edit');
 
     Route::put('/employee-network/{employeeNetwork}', [EmpNetworkController::class, 'update'])
-        ->middleware('permission:employee-network.index,CanEdit')
+        ->middleware('permission:employee-network.index,Update')
         ->name('employee-network.update');
 
     Route::delete('/employee-network/{employeeNetwork}', [EmpNetworkController::class, 'destroy'])
-        ->middleware('permission:employee-network.index,CanDelete')
+        ->middleware('permission:employee-network.index,Delete')
         ->name('employee-network.destroy');
 
     /*
@@ -205,27 +213,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-infra', [EmpInfraController::class, 'index'])
-        ->middleware('permission:employee-infra.index,CanOpen')
+        ->middleware('permission:employee-infra.index,View')
         ->name('employee-infra.index');
 
     Route::get('/employee-infra/create', [EmpInfraController::class, 'create'])
-        ->middleware('permission:employee-infra.index,CanAdd')
+        ->middleware('permission:employee-infra.index,Create')
         ->name('employee-infra.create');
 
     Route::post('/employee-infra', [EmpInfraController::class, 'store'])
-        ->middleware('permission:employee-infra.index,CanAdd')
+        ->middleware('permission:employee-infra.index,Create')
         ->name('employee-infra.store');
 
     Route::get('/employee-infra/{employeeInfra}/edit', [EmpInfraController::class, 'edit'])
-        ->middleware('permission:employee-infra.index,CanEdit')
+        ->middleware('permission:employee-infra.index,Update')
         ->name('employee-infra.edit');
 
     Route::put('/employee-infra/{employeeInfra}', [EmpInfraController::class, 'update'])
-        ->middleware('permission:employee-infra.index,CanEdit')
+        ->middleware('permission:employee-infra.index,Update')
         ->name('employee-infra.update');
 
     Route::delete('/employee-infra/{employeeInfra}', [EmpInfraController::class, 'destroy'])
-        ->middleware('permission:employee-infra.index,CanDelete')
+        ->middleware('permission:employee-infra.index,Delete')
         ->name('employee-infra.destroy');
 
     /*
@@ -235,59 +243,28 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-it-area', [EmpITAreaController::class, 'index'])
-        ->middleware('permission:employee-it-area.index,CanOpen')
+        ->middleware('permission:employee-it-area.index,View')
         ->name('employee-it-area.index');
 
     Route::get('/employee-it-area/create', [EmpITAreaController::class, 'create'])
-        ->middleware('permission:employee-it-area.index,CanAdd')
+        ->middleware('permission:employee-it-area.index,Create')
         ->name('employee-it-area.create');
 
     Route::post('/employee-it-area', [EmpITAreaController::class, 'store'])
-        ->middleware('permission:employee-it-area.index,CanAdd')
+        ->middleware('permission:employee-it-area.index,Create')
         ->name('employee-it-area.store');
 
     Route::get('/employee-it-area/{employeeITArea}/edit', [EmpITAreaController::class, 'edit'])
-        ->middleware('permission:employee-it-area.index,CanEdit')
+        ->middleware('permission:employee-it-area.index,Update')
         ->name('employee-it-area.edit');
 
     Route::put('/employee-it-area/{employeeITArea}', [EmpITAreaController::class, 'update'])
-        ->middleware('permission:employee-it-area.index,CanEdit')
+        ->middleware('permission:employee-it-area.index,Update')
         ->name('employee-it-area.update');
 
     Route::delete('/employee-it-area/{employeeITArea}', [EmpITAreaController::class, 'destroy'])
-        ->middleware('permission:employee-it-area.index,CanDelete')
+        ->middleware('permission:employee-it-area.index,Delete')
         ->name('employee-it-area.destroy');
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | Employee Network Drive
-    |--------------------------------------------------------------------------
-    */
-
-    Route::get('/employee-net-drive', [EmpNetDriveController::class, 'index'])
-        ->middleware('permission:employee-net-drive.index,CanOpen')
-        ->name('employee-net-drive.index');
-
-    Route::get('/employee-net-drive/create', [EmpNetDriveController::class, 'create'])
-        ->middleware('permission:employee-net-drive.index,CanAdd')
-        ->name('employee-net-drive.create');
-
-    Route::post('/employee-net-drive', [EmpNetDriveController::class, 'store'])
-        ->middleware('permission:employee-net-drive.index,CanAdd')
-        ->name('employee-net-drive.store');
-
-    Route::get('/employee-net-drive/{employeeNetDrive}/edit', [EmpNetDriveController::class, 'edit'])
-        ->middleware('permission:employee-net-drive.index,CanEdit')
-        ->name('employee-net-drive.edit');
-
-    Route::put('/employee-net-drive/{employeeNetDrive}', [EmpNetDriveController::class, 'update'])
-        ->middleware('permission:employee-net-drive.index,CanEdit')
-        ->name('employee-net-drive.update');
-
-    Route::delete('/employee-net-drive/{employeeNetDrive}', [EmpNetDriveController::class, 'destroy'])
-        ->middleware('permission:employee-net-drive.index,CanDelete')
-        ->name('employee-net-drive.destroy');
 
     /*
     |--------------------------------------------------------------------------
@@ -296,27 +273,27 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-software', [EmpSoftwareController::class, 'index'])
-        ->middleware('permission:employee-software.index,CanOpen')
+        ->middleware('permission:employee-software.index,View')
         ->name('employee-software.index');
 
     Route::get('/employee-software/create', [EmpSoftwareController::class, 'create'])
-        ->middleware('permission:employee-software.index,CanAdd')
+        ->middleware('permission:employee-software.index,Create')
         ->name('employee-software.create');
 
     Route::post('/employee-software', [EmpSoftwareController::class, 'store'])
-        ->middleware('permission:employee-software.index,CanAdd')
+        ->middleware('permission:employee-software.index,Create')
         ->name('employee-software.store');
 
     Route::get('/employee-software/{employeeSoftware}/edit', [EmpSoftwareController::class, 'edit'])
-        ->middleware('permission:employee-software.index,CanEdit')
+        ->middleware('permission:employee-software.index,Update')
         ->name('employee-software.edit');
 
     Route::put('/employee-software/{employeeSoftware}', [EmpSoftwareController::class, 'update'])
-        ->middleware('permission:employee-software.index,CanEdit')
+        ->middleware('permission:employee-software.index,Update')
         ->name('employee-software.update');
 
     Route::delete('/employee-software/{employeeSoftware}', [EmpSoftwareController::class, 'destroy'])
-        ->middleware('permission:employee-software.index,CanDelete')
+        ->middleware('permission:employee-software.index,Delete')
         ->name('employee-software.destroy');
 
     /*
@@ -326,26 +303,26 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/employee-sharing-folder', [EmpSharingFolderController::class, 'index'])
-    ->middleware('permission:employee-sharing-folder.index,CanOpen')
+    ->middleware('permission:employee-sharing-folder.index,View')
     ->name('employee-sharing-folder.index');
 
     Route::get('/employee-sharing-folder/create', [EmpSharingFolderController::class, 'create'])
-        ->middleware('permission:employee-sharing-folder.index,CanAdd')
+        ->middleware('permission:employee-sharing-folder.index,Create')
         ->name('employee-sharing-folder.create');
 
     Route::post('/employee-sharing-folder', [EmpSharingFolderController::class, 'store'])
-        ->middleware('permission:employee-sharing-folder.index,CanAdd')
+        ->middleware('permission:employee-sharing-folder.index,Create')
         ->name('employee-sharing-folder.store');
 
     Route::get('/employee-sharing-folder/{employeeSharingFolder}/edit', [EmpSharingFolderController::class, 'edit'])
-        ->middleware('permission:employee-sharing-folder.index,CanEdit')
+        ->middleware('permission:employee-sharing-folder.index,Update')
         ->name('employee-sharing-folder.edit');
 
     Route::put('/employee-sharing-folder/{employeeSharingFolder}', [EmpSharingFolderController::class, 'update'])
-        ->middleware('permission:employee-sharing-folder.index,CanEdit')
+        ->middleware('permission:employee-sharing-folder.index,Update')
         ->name('employee-sharing-folder.update');
 
     Route::delete('/employee-sharing-folder/{employeeSharingFolder}', [EmpSharingFolderController::class, 'destroy'])
-        ->middleware('permission:employee-sharing-folder.index,CanDelete')
+        ->middleware('permission:employee-sharing-folder.index,Delete')
         ->name('employee-sharing-folder.destroy');
 });

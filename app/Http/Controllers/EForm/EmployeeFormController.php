@@ -5,6 +5,7 @@ namespace App\Http\Controllers\EForm;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\EForm\StoreEmployeeFormRequest;
 use App\Models\EForm\TrEmpForm;
+use App\Models\EForm\TrEmpFormHist;
 use App\Models\Master\MsCity;
 use App\Models\Master\MsCountry;
 use App\Models\Master\MsDepartment;
@@ -16,6 +17,7 @@ use App\Models\Master\MsJobTitle;
 use App\Models\Master\MsProvince;
 use App\Models\Master\MsReligion;
 use App\Models\Master\MsVillage;
+use App\Models\Security\ScUser;
 use App\Services\EForm\EmployeeFormService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -286,7 +288,6 @@ class EmployeeFormController extends Controller
                                 $like
                             )
                             ->orWhere(
-                                'ReqUser',
                                 'like',
                                 $like
                             )
@@ -314,7 +315,7 @@ class EmployeeFormController extends Controller
                                 'directorate',
                                 function ($q) use ($like) {
                                     $q->where(
-                                        'DirectorateName',
+                                        'Directorate',
                                         'like',
                                         $like
                                     );
@@ -324,7 +325,7 @@ class EmployeeFormController extends Controller
                                 'division',
                                 function ($q) use ($like) {
                                     $q->where(
-                                        'DivisionName',
+                                        'Division',
                                         'like',
                                         $like
                                     );
@@ -334,7 +335,7 @@ class EmployeeFormController extends Controller
                                 'department',
                                 function ($q) use ($like) {
                                     $q->where(
-                                        'DepartmentName',
+                                        'Department',
                                         'like',
                                         $like
                                     );
@@ -542,7 +543,7 @@ class EmployeeFormController extends Controller
             ->get();
 
         $directorates = MsDirectorate::query()
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get();
 
         $jobLevels = MsJobLevel::query()
@@ -706,23 +707,23 @@ class EmployeeFormController extends Controller
             ->get();
 
         $directorates = MsDirectorate::query()
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get();
 
         $divisions = MsDivision::query()
             ->where(
-                'DirectorateID',
+                'DirID',
                 $history?->DirID
             )
-            ->orderBy('DivisionName')
+            ->orderBy('Division')
             ->get();
 
         $departments = MsDepartment::query()
             ->where(
-                'DivisionID',
+                'DivID',
                 $history?->DivID
             )
-            ->orderBy('DepartmentName')
+            ->orderBy('Department')
             ->get();
 
         $jobLevels = MsJobLevel::query()
@@ -874,11 +875,11 @@ class EmployeeFormController extends Controller
     {
         return response()->json(
             MsDivision::query()
-                ->where('DirectorateID', $directorateId)
-                ->orderBy('DivisionName')
+                ->where('DirID', $directorateId)
+                ->orderBy('Division')
                 ->get([
-                    'DivisionID',
-                    'DivisionName',
+                    'DivID',
+                    'Division',
                 ])
         );
     }
@@ -887,12 +888,163 @@ class EmployeeFormController extends Controller
     {
         return response()->json(
             MsDepartment::query()
-                ->where('DivisionID', $divisionId)
-                ->orderBy('DepartmentName')
+                ->where('DivID', $divisionId)
+                ->orderBy('Department')
                 ->get([
-                    'DepartmentID',
-                    'DepartmentName',
+                    'DeptID',
+                    'Department',
                 ])
         );
+    }
+
+    public function reportTo(Request $request): JsonResponse
+    {
+        $directorateId = $request->string('directorateId')->toString();
+        $divisionId = $request->string('divisionId')->toString();
+        $departmentId = $request->string('departmentId')->toString();
+        $jobTitleId = $request->integer('jobTitleId');
+
+        if ($directorateId === '' || !$jobTitleId) {
+            return response()->json([]);
+        }
+
+        /*
+         * Report To is a supervisor candidate pool, not a fixed one-level
+         * hierarchy.
+         *
+         * Rules:
+         * - Staff / non-Head:
+         *      may report to Head of Department, Head of Division,
+         *      or Director.
+         * - Head of Department:
+         *      may report to Head of Division or Director.
+         * - Head of Division:
+         *      may report to Director.
+         * - Director:
+         *      no Report To.
+         *
+         * We deliberately do NOT force the nearest level. The user may
+         * select a higher-level supervisor according to the real
+         * organizational reporting line.
+         */
+
+        $jobTitle = MsJobTitle::query()
+            ->where('JobTitleID', $jobTitleId)
+            ->first();
+
+        if (!$jobTitle) {
+            return response()->json([]);
+        }
+
+        $selectedTitle = strtolower(trim((string) $jobTitle->JobTitle));
+
+        $isDirector =
+            str_contains($selectedTitle, 'director')
+            && !str_contains($selectedTitle, 'head');
+
+        $isHeadOfDepartment =
+            str_contains($selectedTitle, 'head')
+            && str_contains($selectedTitle, 'department');
+
+        $isHeadOfDivision =
+            str_contains($selectedTitle, 'head')
+            && str_contains($selectedTitle, 'division');
+
+        // Top-level position has no supervisor.
+        if ($isDirector) {
+            return response()->json([]);
+        }
+
+        /*
+         * Candidate rules are intentionally cumulative:
+         *
+         * Staff:
+         *   - Head of Department in the same Department
+         *   - Head of Division in the same Division
+         *   - Director in the same Directorate
+         *
+         * Head of Department:
+         *   - Head of Division in the same Division
+         *   - Director in the same Directorate
+         *
+         * Head of Division:
+         *   - Director in the same Directorate
+         */
+        $candidates = collect();
+
+        if (!$isHeadOfDivision && !$isHeadOfDepartment && $departmentId !== '') {
+            $departmentHeads = TrEmpFormHist::query()
+                ->from('Tr_EmpFormHist as hist')
+                ->join('sc_user as u', 'u.EmpFormID', '=', 'hist.EmpFormID')
+                ->join('ms_job_title as jt', 'jt.JobTitleID', '=', 'hist.JobTitleID')
+                ->where('hist.DirID', $directorateId)
+                ->where('hist.DivID', $divisionId)
+                ->where('hist.DeptID', $departmentId)
+                ->whereRaw("LOWER(jt.JobTitle) LIKE '%head%'")
+                ->whereRaw("LOWER(jt.JobTitle) LIKE '%department%'")
+                ->where('u.IsActive', true)
+                ->whereNull('u.DeletedDate')
+                ->select([
+                    'u.UserID',
+                    'u.FullName',
+                    'jt.JobTitle',
+                ])
+                ->distinct()
+                ->get();
+
+            $candidates = $candidates->merge($departmentHeads);
+        }
+
+        if (!$isHeadOfDivision && $divisionId !== '') {
+            $divisionHeads = TrEmpFormHist::query()
+                ->from('Tr_EmpFormHist as hist')
+                ->join('sc_user as u', 'u.EmpFormID', '=', 'hist.EmpFormID')
+                ->join('ms_job_title as jt', 'jt.JobTitleID', '=', 'hist.JobTitleID')
+                ->where('hist.DirID', $directorateId)
+                ->where('hist.DivID', $divisionId)
+                ->whereRaw("LOWER(jt.JobTitle) LIKE '%head%'")
+                ->whereRaw("LOWER(jt.JobTitle) LIKE '%division%'")
+                ->where('u.IsActive', true)
+                ->whereNull('u.DeletedDate')
+                ->select([
+                    'u.UserID',
+                    'u.FullName',
+                    'jt.JobTitle',
+                ])
+                ->distinct()
+                ->get();
+
+            $candidates = $candidates->merge($divisionHeads);
+        }
+
+        // Every non-Director role may report directly to a Director.
+        $directors = TrEmpFormHist::query()
+            ->from('Tr_EmpFormHist as hist')
+            ->join('sc_user as u', 'u.EmpFormID', '=', 'hist.EmpFormID')
+            ->join('ms_job_title as jt', 'jt.JobTitleID', '=', 'hist.JobTitleID')
+            ->where('hist.DirID', $directorateId)
+            ->whereRaw("LOWER(jt.JobTitle) LIKE '%director%'")
+            ->whereRaw("LOWER(jt.JobTitle) NOT LIKE '%head%'")
+            ->where('u.IsActive', true)
+            ->whereNull('u.DeletedDate')
+            ->select([
+                'u.UserID',
+                'u.FullName',
+                'jt.JobTitle',
+            ])
+            ->distinct()
+            ->get();
+
+        $candidates = $candidates->merge($directors);
+
+        /*
+         * Deduplicate by UserID and keep the organizational order:
+         * Department Head -> Division Head -> Director.
+         */
+        $result = $candidates
+            ->unique('UserID')
+            ->values();
+
+        return response()->json($result);
     }
 }

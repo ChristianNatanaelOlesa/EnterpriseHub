@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Menus')
+@section('title', 'Menu Management')
 
 @section('content')
     <div class="card">
@@ -41,13 +41,13 @@
                         @forelse($menus as $menu)
                             <tr>
                                 <td>{{ $menus->firstItem() + $loop->index }}</td>
-                                <td>{{ $menu->Code }}</td>
+                                <td>{{ $menu->MenuID }}</td>
                                 <td>
                                     @if ($menu->ParentID)
                                         &nbsp;&nbsp;&nbsp;↳
-                                    @endif{{ $menu->Name }}
+                                    @endif{{ $menu->Menu }}
                                 </td>
-                                <td>{{ $menu->parent?->Name ?? '-' }}</td>
+                                <td>{{ $menu->parent?->Menu ?? '-' }}</td>
                                 <td>{{ $menu->Route ?? '-' }}</td>
                                 <td>{{ $menu->SortOrder }}</td>
                                 <td>
@@ -63,8 +63,8 @@
                                     @canDelete('security.menus.index')<form
                                         action="{{ route('security.menus.destroy', $menu->MenuID) }}" method="POST"
                                         class="d-inline">@csrf @method('DELETE')<button type="submit"
-                                            class="btn btn-sm btn-danger"
-                                            onclick="return confirm('Yakin ingin menghapus menu ini?')"><i
+                                            class="btn btn-sm btn-danger" title="Nonaktifkan menu"
+                                            onclick="return confirm('Nonaktifkan menu ini? Relasi permission yang ada tetap disimpan.')"><i
                                                 class="bi bi-trash"></i></button></form>@endcanDelete
                                 </td>
                             </tr>

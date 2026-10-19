@@ -9,9 +9,9 @@ class EmpEmailRepository
 {
     public function __construct(protected TrEmpEmail $model) {}
 
-    public function getAll(?string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function getAll(?string $search = null, int $perPage = 10, ?string $empFormId = null): LengthAwarePaginator
     {
-        return $this->model->newQuery()->with('empForm')
+        $query = $this->model->newQuery()->with('empForm')
             ->when($search, function ($query) use ($search) {
                 $like = "%{$search}%";
                 $query->where(function ($q) use ($like) {
@@ -21,8 +21,20 @@ class EmpEmailRepository
                           $eq->where('FirstName','like',$like)->orWhere('LastName','like',$like)->orWhere('NIP','like',$like);
                       });
                 });
-            })
-            ->orderByDesc('InputDate')->paginate($perPage)->withQueryString();
+            });
+
+        if ($empFormId !== null) {
+            $query->orderByRaw(
+                "CASE WHEN Status = 'DRAFT' AND EmpFormID = ? THEN 1 " .
+                "WHEN Status = 'WAITING_APPROVAL' THEN 2 " .
+                "WHEN Status IN ('APPROVED', 'COMPLETED') THEN 3 " .
+                "WHEN Status IN ('REJECTED', 'CANCELLED') THEN 4 " .
+                "ELSE 5 END",
+                [$empFormId]
+            );
+        }
+
+        return $query->orderByDesc('InputDate')->orderByDesc('EmpEmailID')->paginate($perPage)->withQueryString();
     }
 
     public function find(string $id): ?TrEmpEmail

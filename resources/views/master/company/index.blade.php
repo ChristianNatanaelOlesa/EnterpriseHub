@@ -98,11 +98,11 @@
                             <tr>
 
                                 <td>
-                                    {{ $company->CompanyCode }}
+                                    {{ $company->CompID }}
                                 </td>
 
                                 <td>
-                                    {{ $company->CompanyName }}
+                                    {{ $company->Company }}
                                 </td>
 
                                 <td>
@@ -127,7 +127,7 @@
 
                                     @canEdit('master.company.index')
 
-                                    <a href="{{ route('master.company.edit', $company->CompanyID) }}"
+                                    <a href="{{ route('master.company.edit', $company->CompID) }}"
                                         class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                     </a>
@@ -136,7 +136,7 @@
 
                                     @canDelete('master.company.index')
 
-                                    <form action="{{ route('master.company.destroy', $company->CompanyID) }}" method="POST"
+                                    <form action="{{ route('master.company.destroy', $company->CompID) }}" method="POST"
                                         class="d-inline">
 
                                         @csrf

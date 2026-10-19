@@ -3,7 +3,7 @@
 namespace App\Models\Master;
 
 use App\Models\BaseModel;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Master\MsParentFolder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class MsFolderPath extends BaseModel
@@ -17,7 +17,7 @@ class MsFolderPath extends BaseModel
         'FolderPathID',
         'FolderName',
         'FolderPath',
-        'ParentFolderPathID',
+        'ParentFolderID',
         'IsActive',
         'InputDate',
         'InputUser',
@@ -34,21 +34,9 @@ class MsFolderPath extends BaseModel
         'DeletedDate' => 'datetime',
     ];
 
-    public function parent(): BelongsTo
+    public function parentFolder(): BelongsTo
     {
-        return $this->belongsTo(
-            self::class,
-            'ParentFolderPathID',
-            'FolderPathID'
-        );
+        return $this->belongsTo(MsParentFolder::class, 'ParentFolderID', 'ParentFolderID');
     }
 
-    public function children(): HasMany
-    {
-        return $this->hasMany(
-            self::class,
-            'ParentFolderPathID',
-            'FolderPathID'
-        );
-    }
 }

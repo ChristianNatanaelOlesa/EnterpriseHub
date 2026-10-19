@@ -16,11 +16,13 @@ class UserRoleRepository
             ->get();
     }
 
-    public function getUserRoleIds(int $userId)
+    public function getUserRoleIds(int $userId): array
     {
         return ScUserRole::query()
             ->where('UserID', $userId)
             ->where('IsActive', true)
+            ->whereNull('DeletedDate')
+            ->whereHas('role', fn ($query) => $query->where('IsActive', true)->whereNull('DeletedDate'))
             ->pluck('RoleID')
             ->toArray();
     }
@@ -32,10 +34,7 @@ class UserRoleRepository
     ): void {
         $now = now();
 
-        $roleIds = array_map(
-            'intval',
-            $roleIds
-        );
+        $roleIds = array_values(array_unique(array_map('strval', $roleIds)));
 
         $existing = ScUserRole::query()
             ->where('UserID', $userId)
@@ -71,7 +70,7 @@ class UserRoleRepository
 
         ScUserRole::query()
             ->where('UserID', $userId)
-            ->whereNotIn('RoleID', $roleIds ?: [0])
+            ->whereNotIn('RoleID', $roleIds ?: [''])
             ->update([
                 'IsActive' => false,
                 'ModifUser' => $username,

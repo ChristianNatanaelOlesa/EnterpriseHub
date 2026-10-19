@@ -19,18 +19,18 @@ class MenuRepository extends BaseRepository
             ->whereNull('DeletedDate')
             ->when($search, function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('Code', 'like', "%{$search}%")
-                        ->orWhere('Name', 'like', "%{$search}%")
+                    $q->where('MenuID', 'like', "%{$search}%")
+                        ->orWhere('Menu', 'like', "%{$search}%")
+                        ->orWhere('Description', 'like', "%{$search}%")
                         ->orWhere('Route', 'like', "%{$search}%")
-                        ->orWhere('URL', 'like', "%{$search}%")
                         ->orWhereHas('parent', function ($parentQuery) use ($search) {
-                            $parentQuery->where('Name', 'like', "%{$search}%")
-                                ->orWhere('Code', 'like', "%{$search}%");
+                            $parentQuery->where('Menu', 'like', "%{$search}%")
+                                ->orWhere('MenuID', 'like', "%{$search}%");
                         });
                 });
             })
-            ->orderBy('SortOrder')
-            ->orderBy('Name')
+            ->orderBy('MenuID')
+            ->orderBy('Menu')
             ->paginate($perPage)
             ->withQueryString();
     }
@@ -39,11 +39,10 @@ class MenuRepository extends BaseRepository
     {
         return $this->model
             ->whereNull('DeletedDate')
-            ->whereNull('ParentID')
             ->where('IsActive', true)
             ->where('IsMenu', true)
             ->orderBy('SortOrder')
-            ->orderBy('Name')
+            ->orderBy('Menu')
             ->get();
     }
 }

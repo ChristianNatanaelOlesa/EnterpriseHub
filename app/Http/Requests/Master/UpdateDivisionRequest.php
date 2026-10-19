@@ -17,26 +17,26 @@ class UpdateDivisionRequest extends FormRequest
         $divisionId = $this->route('division');
 
         if (is_object($divisionId)) {
-            $divisionId = $divisionId->DivisionID;
+            $divisionId = $divisionId->DivID;
         }
 
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
                 'integer',
-                'exists:ms_company,CompanyID',
+                'exists:ms_company,CompID',
             ],
 
-            'DirectorateID' => [
+            'DirID' => [
                 'required',
                 'integer',
                 Rule::exists(
                     'ms_directorate',
-                    'DirectorateID'
+                    'DirID'
                 )->where(function ($query) {
                     $query->where(
-                        'CompanyID',
-                        $this->CompanyID
+                        'CompID',
+                        $this->CompID
                     );
                     $query->where(
                         'IsActive',
@@ -48,20 +48,20 @@ class UpdateDivisionRequest extends FormRequest
                 }),
             ],
 
-            'DivisionCode' => [
+            'DivID' => [
                 'required',
                 'string',
                 'max:30',
                 Rule::unique(
                     'ms_division',
-                    'DivisionCode'
+                    'DivID'
                 )->ignore(
                     $divisionId,
-                    'DivisionID'
+                    'DivID'
                 ),
             ],
 
-            'DivisionName' => [
+            'Division' => [
                 'required',
                 'string',
                 'max:100',

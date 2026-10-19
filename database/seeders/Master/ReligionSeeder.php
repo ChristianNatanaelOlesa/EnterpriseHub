@@ -9,56 +9,31 @@ class ReligionSeeder extends Seeder
 {
     public function run(): void
     {
+        $now = now();
+
         $religions = [
-            [
-                'ReligionID' => 'ISL',
-                'Religion' => 'Islam',
-            ],
-            [
-                'ReligionID' => 'KRI',
-                'Religion' => 'Kristen Protestan',
-            ],
-            [
-                'ReligionID' => 'KAT',
-                'Religion' => 'Katolik',
-            ],
-            [
-                'ReligionID' => 'HIN',
-                'Religion' => 'Hindu',
-            ],
-            [
-                'ReligionID' => 'BUD',
-                'Religion' => 'Buddha',
-            ],
-            [
-                'ReligionID' => 'KON',
-                'Religion' => 'Konghucu',
-            ],
+            ['BDH', 'Buddha'],
+            ['CAT', 'Katolik'],
+            ['CHR', 'Kristen Protestan'],
+            ['HIN', 'Hindu'],
+            ['ISL', 'Islam'],
+            ['UNK', 'Unknown'],
         ];
 
-        foreach ($religions as $religion) {
+        foreach ($religions as [$id, $name]) {
             DB::table('ms_religion')->updateOrInsert(
+                ['ReligionID' => $id],
                 [
-                    'ReligionID' => $religion['ReligionID'],
-                ],
-                [
-                    'Religion' => $religion['Religion'],
+                    'Religion' => $name,
                     'IsActive' => true,
-
-                    'InputDate' => now(),
+                    'InputDate' => $now,
                     'InputUser' => 'Admin',
-
-                    'ModifDate' => now(),
+                    'ModifDate' => $now,
                     'ModifUser' => 'Admin',
-
                     'DeletedBy' => null,
                     'DeletedDate' => null,
                 ]
             );
         }
-
-        $this->command?->info(
-            'Religion master imported: ' . count($religions) . ' records.'
-        );
     }
 }

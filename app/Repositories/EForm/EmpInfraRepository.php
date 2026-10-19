@@ -14,9 +14,10 @@ class EmpInfraRepository
 
     public function getAll(
         ?string $search = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?string $empFormId = null
     ): LengthAwarePaginator {
-        return $this->model
+        $query = $this->model
             ->newQuery()
             ->with([
                 'empForm',
@@ -28,8 +29,6 @@ class EmpInfraRepository
                 $query->where(function ($q) use ($like) {
                     $q->where('EmpInfraID', 'like', $like)
                         ->orWhere('EmpFormID', 'like', $like)
-                        ->orWhere('ReqDivID', 'like', $like)
-                        ->orWhere('ReqUser', 'like', $like)
                         ->orWhere('ReqType', 'like', $like)
                         ->orWhere('DateFrom', 'like', $like)
                         ->orWhere('DateUntil', 'like', $like)
@@ -46,14 +45,24 @@ class EmpInfraRepository
                                 ->orWhere('NIP', 'like', $like);
                         })
                         ->orWhereHas('division', function ($dq) use ($like) {
-                            $dq->where('DivisionName', 'like', $like)
-                                ->orWhere('DivisionCode', 'like', $like);
+                            $dq->where('Division', 'like', $like)
+                                ->orWhere('DivID', 'like', $like);
                         });
                 });
-            })
-            ->orderByDesc('InputDate')
-            ->paginate($perPage)
-            ->withQueryString();
+            });
+
+        if ($empFormId !== null) {
+            $query->orderByRaw(
+                "CASE WHEN Status = 'DRAFT' AND EmpFormID = ? THEN 1 " .
+                "WHEN Status = 'WAITING_APPROVAL' THEN 2 " .
+                "WHEN Status IN ('APPROVED', 'COMPLETED') THEN 3 " .
+                "WHEN Status IN ('REJECTED', 'CANCELLED') THEN 4 " .
+                "ELSE 5 END",
+                [$empFormId]
+            );
+        }
+
+        return $query->orderByDesc('InputDate')->orderByDesc('EmpInfraID')->paginate($perPage)->withQueryString();
     }
 
     public function find(string $id): ?TrEmpInfra

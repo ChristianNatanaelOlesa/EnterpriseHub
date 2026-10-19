@@ -51,11 +51,11 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Request User</label>
-                            <input type="text" class="form-control" value="{{ $data->ReqUser ?? '-' }}" readonly>
+                            <input type="text" class="form-control" value="{{ $data->EmpFormID ?? '-' }}" readonly>
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Division</label>
-                            <input type="text" class="form-control" value="{{ $data->division?->DivisionName ?? '-' }}"
+                            <input type="text" class="form-control" value="{{ $data->division?->Division ?? '-' }}"
                                 readonly>
                         </div>
                     </div>

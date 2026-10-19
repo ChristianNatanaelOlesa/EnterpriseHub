@@ -76,7 +76,7 @@
                         <input
                             type="text"
                             class="form-control readonly-field"
-                            value="{{ $employeeApp->ReqUser }}"
+                            value="{{ $employeeApp->EmpFormID }}"
                             readonly
                         >
                     </div>

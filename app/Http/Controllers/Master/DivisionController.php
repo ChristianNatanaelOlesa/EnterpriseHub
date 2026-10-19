@@ -36,7 +36,7 @@ class DivisionController extends Controller
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         $directorates = collect();
@@ -67,7 +67,7 @@ class DivisionController extends Controller
     public function show(string $id)
     {
         $division = $this->divisionService->findById(
-            (int) $id
+            $id
         );
 
         return view(
@@ -79,23 +79,23 @@ class DivisionController extends Controller
     public function edit(string $id)
     {
         $division = $this->divisionService->findById(
-            (int) $id
+            $id
         );
 
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         $directorates = MsDirectorate::query()
             ->where(
-                'CompanyID',
-                $division->directorate?->CompanyID
+                'CompID',
+                $division->directorate?->CompID
             )
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get();
 
         return view(
@@ -113,7 +113,7 @@ class DivisionController extends Controller
         string $id
     ) {
         $this->divisionService->update(
-            (int) $id,
+            $id,
             $request->validated()
         );
 
@@ -128,7 +128,7 @@ class DivisionController extends Controller
     public function destroy(string $id)
     {
         $this->divisionService->delete(
-            (int) $id
+            $id
         );
 
         return redirect()
@@ -142,21 +142,22 @@ class DivisionController extends Controller
     public function getDirectorates(Request $request)
     {
         $request->validate([
-            'CompanyID' => [
+            'CompID' => [
                 'required',
-                'integer',
-                'exists:ms_company,CompanyID',
+                'string',
+                'max:3',
+                'exists:ms_company,CompID',
             ],
         ]);
 
         return MsDirectorate::query()
-            ->where('CompanyID', $request->CompanyID)
+            ->where('CompID', $request->CompID)
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get([
-                'DirectorateID',
-                'DirectorateName',
+                'DirID',
+                'Directorate',
             ]);
     }
 }

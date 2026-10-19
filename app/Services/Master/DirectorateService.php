@@ -19,7 +19,7 @@ class DirectorateService
         return $this->repository->search($search, 10);
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->repository->findById($id);
     }
@@ -35,7 +35,7 @@ class DirectorateService
         });
     }
 
-    public function update(int $id, array $data)
+    public function update(string $id, array $data)
     {
         return DB::transaction(function () use ($id, $data) {
 
@@ -46,7 +46,7 @@ class DirectorateService
         });
     }
 
-    public function delete(int $id)
+    public function delete(string $id)
     {
         return DB::transaction(function () use ($id) {
 

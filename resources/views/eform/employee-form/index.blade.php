@@ -243,19 +243,19 @@
 
                                 {{-- Directorate --}}
                                 <td>
-                                    {{ $history?->directorate?->DirectorateName ?? '-' }}
+                                    {{ $history?->directorate?->Directorate ?? '-' }}
                                 </td>
 
 
                                 {{-- Division --}}
                                 <td>
-                                    {{ $history?->division?->DivisionName ?? '-' }}
+                                    {{ $history?->division?->Division ?? '-' }}
                                 </td>
 
 
                                 {{-- Department --}}
                                 <td>
-                                    {{ $history?->department?->DepartmentName ?? '-' }}
+                                    {{ $history?->department?->Department ?? '-' }}
                                 </td>
 
 
@@ -644,7 +644,7 @@
                                     Directorate
                                 </label>
                                 <div>
-                                    {{ $history?->directorate?->DirectorateName ?? '-' }}
+                                    {{ $history?->directorate?->Directorate ?? '-' }}
                                 </div>
                             </div>
 
@@ -653,7 +653,7 @@
                                     Division
                                 </label>
                                 <div>
-                                    {{ $history?->division?->DivisionName ?? '-' }}
+                                    {{ $history?->division?->Division ?? '-' }}
                                 </div>
                             </div>
 
@@ -662,7 +662,7 @@
                                     Department
                                 </label>
                                 <div>
-                                    {{ $history?->department?->DepartmentName ?? '-' }}
+                                    {{ $history?->department?->Department ?? '-' }}
                                 </div>
                             </div>
 

@@ -24,13 +24,11 @@ class EmpSharingFolderController extends Controller
     {
         $data = $this->service->getAll(
             $request->input('search'),
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
-        return view(
-            'eform.employee-sharing-folder.index',
-            compact('data')
-        );
+        return view('eform.employee-sharing-folder.index', compact('data'));
     }
 
     public function create(): View
@@ -45,39 +43,41 @@ class EmpSharingFolderController extends Controller
                 ->orderByDesc('InputDate')
                 ->first();
 
-            $reqDivID = $history?->ReqDivID ?? $history?->DivID;
+            $reqDivID = $history?->DivID;
         }
 
-        $division = $reqDivID
-            ? MsDivision::find($reqDivID)
-            : null;
+        $division = $reqDivID ? MsDivision::find($reqDivID) : null;
 
         return view('eform.employee-sharing-folder.create', [
             'empFormID' => $empFormID,
             'reqDivID' => $reqDivID,
             'reqUser' => $user?->Username ?? $user?->username ?? 'Admin',
             'division' => $division,
-            'folders' => MsFolderPath::where('IsActive', true)
-                ->orderBy('FolderName')
-                ->get(),
+            'folders' => $this->activeFolderPaths(),
         ]);
     }
 
     public function store(StoreEmpSharingFolderRequest $request): RedirectResponse
     {
         $user = auth()->user();
-
         $payload = $request->validated();
 
         $payload['EmpFormID'] = $user?->EmpFormID;
-        $payload['ReqUser'] = $user?->Username ?? $user?->username ?? 'Admin';
         $payload['ReqDate'] = now()->toDateString();
 
         $history = TrEmpFormHist::where('EmpFormID', $payload['EmpFormID'])
+            ->where('IsActive', true)
+            ->whereNotNull('DivID')
+            ->orderByDesc('EffectiveDate')
             ->orderByDesc('InputDate')
             ->first();
 
-        $payload['ReqDivID'] = $history?->ReqDivID ?? $history?->DivID;
+        if (!$history) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'EmpFormID' => 'Division aktif untuk EmpFormID user login tidak ditemukan pada Tr_EmpFormHist.',
+            ]);
+        }
+
 
         $this->service->create($payload);
 
@@ -99,14 +99,11 @@ class EmpSharingFolderController extends Controller
             ->all();
 
         $existingAccessType = $data->details->first()?->AccessType ?? 'Read';
-
         $newDetail = $data->details->firstWhere('FolderPathID', null);
 
         return view('eform.employee-sharing-folder.edit', [
             'data' => $data,
-            'folders' => MsFolderPath::where('IsActive', true)
-                ->orderBy('FolderName')
-                ->get(),
+            'folders' => $this->activeFolderPaths(),
             'selectedFolderIds' => $selectedFolderIds,
             'existingAccessType' => $existingAccessType,
             'selectedParentFolderId' => $newDetail?->ParentFolderPathID,
@@ -135,5 +132,13 @@ class EmpSharingFolderController extends Controller
         return redirect()
             ->route('employee-sharing-folder.index')
             ->with('success', 'Employee Sharing Folder deleted successfully.');
+    }
+
+    private function activeFolderPaths()
+    {
+        return MsFolderPath::query()
+            ->where('IsActive', true)
+            ->orderBy('FolderName')
+            ->get();
     }
 }

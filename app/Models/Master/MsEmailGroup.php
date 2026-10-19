@@ -17,7 +17,7 @@ class MsEmailGroup extends BaseModel
 
     protected $fillable = [
         'EmailGroupID',
-        'DivisionID',
+        'DivID',
         'Email',
         'Description',
         'IsGroup',
@@ -32,7 +32,7 @@ class MsEmailGroup extends BaseModel
 
     public function division()
     {
-        return $this->belongsTo(MsDivision::class, 'DivisionID', 'DivisionID');
+        return $this->belongsTo(MsDivision::class, 'DivID', 'DivID');
     }
 
     protected $casts = [
@@ -41,6 +41,6 @@ class MsEmailGroup extends BaseModel
         'InputDate' => 'datetime',
         'ModifDate' => 'datetime',
         'DeletedDate' => 'datetime',
-        'DivisionID' => 'integer',
+        'DivID' => 'integer',
     ];
 }

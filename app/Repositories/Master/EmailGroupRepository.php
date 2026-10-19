@@ -22,7 +22,7 @@ class EmailGroupRepository extends BaseRepository
                         ->orWhere('Email', 'like', "%{$keyword}%")
                         ->orWhere('Description', 'like', "%{$keyword}%")
                         ->orWhereHas('division', function ($q) use ($keyword) {
-                            $q->where('DivisionName', 'like', "%{$keyword}%");
+                            $q->where('Division', 'like', "%{$keyword}%");
                         });
                 });
             })

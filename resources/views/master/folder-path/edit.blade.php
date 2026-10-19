@@ -113,25 +113,25 @@
                         <label class="form-label">Parent Folder</label>
 
                         <select
-                            name="ParentFolderPathID"
-                            class="form-select @error('ParentFolderPathID') is-invalid @enderror"
+                            name="ParentFolderID"
+                            class="form-select @error('ParentFolderID') is-invalid @enderror"
                         >
                             <option value="">- Root Folder -</option>
 
                             @foreach($parents as $parent)
                                 <option
-                                    value="{{ $parent->FolderPathID }}"
+                                    value="{{ $parent->ParentFolderID }}"
                                     @selected(old(
-                                        'ParentFolderPathID',
-                                        $data->ParentFolderPathID ?? ''
-                                    ) === $parent->FolderPathID)
+                                        'ParentFolderID',
+                                        $data->ParentFolderID ?? ''
+                                    ) === $parent->ParentFolderID)
                                 >
-                                    {{ $parent->FolderName }} - {{ $parent->FolderPath }}
+                                    {{ $parent->ParentFolderName }} - {{ $parent->ParentFolderPath }}
                                 </option>
                             @endforeach
                         </select>
 
-                        @error('ParentFolderPathID')
+                        @error('ParentFolderID')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
 

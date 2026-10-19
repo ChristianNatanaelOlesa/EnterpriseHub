@@ -11,34 +11,35 @@ class DirectorateSeeder extends Seeder
     public function run(): void
     {
         $companyId = DB::table('ms_company')
-            ->where('CompanyCode', 'HO')
-            ->value('CompanyID');
+            ->where('CompID', 'HO')
+            ->value('CompID');
 
         if ($companyId === null) {
             throw new RuntimeException('Company HO belum tersedia. Jalankan CompanySeeder terlebih dahulu.');
         }
 
         $rows = [
-            ['DirectorateCode' => 'BOM', 'DirectorateName' => 'Board Of Management', 'IsActive' => true],
-            ['DirectorateCode' => 'CSL', 'DirectorateName' => 'Claim Service & Loss Adjusting', 'IsActive' => true],
-            ['DirectorateCode' => 'GRI', 'DirectorateName' => 'Technical (G)', 'IsActive' => true],
-            ['DirectorateCode' => 'LRI', 'DirectorateName' => 'Technical (L)', 'IsActive' => true],
-            ['DirectorateCode' => 'OTH', 'DirectorateName' => 'Other', 'IsActive' => true],
-            ['DirectorateCode' => 'PRD', 'DirectorateName' => 'President Director', 'IsActive' => true],
-            ['DirectorateCode' => 'SRU', 'DirectorateName' => 'Sharia Reinsurance Unit', 'IsActive' => true],
-            ['DirectorateCode' => 'SUP', 'DirectorateName' => 'Finance', 'IsActive' => true],
-            ['DirectorateCode' => 'UNK', 'DirectorateName' => 'Unknown', 'IsActive' => true],
-            ['DirectorateCode' => 'SSB', 'DirectorateName' => 'Sharia Supervisory Board', 'IsActive' => false],
-            ['DirectorateCode' => 'GAI', 'DirectorateName' => 'Governance, Risk, and Compliance', 'IsActive' => false],
-            ['DirectorateCode' => 'CCO', 'DirectorateName' => 'Corporate Committee', 'IsActive' => false],
+            ['DirID' => 'BOM', 'Directorate' => 'Board Of Management', 'IsActive' => true],
+            ['DirID' => 'CSL', 'Directorate' => 'Claim Service & Loss Adjusting', 'IsActive' => true],
+            ['DirID' => 'GRI', 'Directorate' => 'Technical (G)', 'IsActive' => true],
+            ['DirID' => 'LRI', 'Directorate' => 'Technical (L)', 'IsActive' => true],
+            ['DirID' => 'OTH', 'Directorate' => 'Other', 'IsActive' => true],
+            ['DirID' => 'PRD', 'Directorate' => 'President Director', 'IsActive' => true],
+            ['DirID' => 'SRU', 'Directorate' => 'Sharia Reinsurance Unit', 'IsActive' => true],
+            ['DirID' => 'SUP', 'Directorate' => 'Finance', 'IsActive' => true],
+            ['DirID' => 'UNK', 'Directorate' => 'Unknown', 'IsActive' => true],
+            ['DirID' => 'SSB', 'Directorate' => 'Sharia Supervisory Board', 'IsActive' => false],
+            ['DirID' => 'GAI', 'Directorate' => 'Governance, Risk, and Compliance', 'IsActive' => false],
+            ['DirID' => 'CCO', 'Directorate' => 'Corporate Committee', 'IsActive' => false],
         ];
 
         foreach ($rows as $row) {
             DB::table('ms_directorate')->updateOrInsert(
-                ['DirectorateCode' => $row['DirectorateCode']],
+                ['DirID' => $row['DirID']],
                 [
-                    'CompanyID' => $companyId,
-                    'DirectorateName' => $row['DirectorateName'],
+                    'CompID' => $companyId,
+                    'Directorate' => $row['Directorate'],
+                    'Description' => $row['Directorate'],
                     'IsActive' => $row['IsActive'],
                     'InputUser' => 'Admin',
                     'InputDate' => now(),

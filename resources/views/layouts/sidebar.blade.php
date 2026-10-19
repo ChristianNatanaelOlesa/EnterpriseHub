@@ -3,8 +3,7 @@
     $sidebarMenus = $sidebarMenuTree->get(null, collect());
 @endphp
 
-<aside id="ehSidebar"
-       class="eh-sidebar">
+<aside id="ehSidebar" class="eh-sidebar">
 
     <div class="eh-sidebar-title">
         My Workspace

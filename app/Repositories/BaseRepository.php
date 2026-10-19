@@ -15,7 +15,7 @@ abstract class BaseRepository
             ->get();
     }
 
-    public function find(int $id)
+    public function find(int|string $id)
     {
         return $this->model
             ->where($this->model->getKeyName(), $id)
@@ -28,7 +28,7 @@ abstract class BaseRepository
         return $this->model->create($data);
     }
 
-    public function update(int $id, array $data)
+    public function update(int|string $id, array $data)
     {
         $model = $this->find($id);
 
@@ -37,7 +37,7 @@ abstract class BaseRepository
         return $model->fresh();
     }
 
-    public function delete(int $id)
+    public function delete(int|string $id)
     {
         $model = $this->find($id);
 

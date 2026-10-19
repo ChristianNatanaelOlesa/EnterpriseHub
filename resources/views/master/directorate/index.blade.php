@@ -98,15 +98,15 @@
                             <tr>
 
                                 <td>
-                                    {{ $directorate->company?->CompanyName ?? '-' }}
+                                    {{ $directorate->company?->Company ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $directorate->DirectorateCode }}
+                                    {{ $directorate->DirID }}
                                 </td>
 
                                 <td>
-                                    {{ $directorate->DirectorateName }}
+                                    {{ $directorate->Directorate }}
                                 </td>
 
                                 <td>
@@ -127,7 +127,7 @@
 
                                     @canEdit('master.directorate.index')
 
-                                    <a href="{{ route('master.directorate.edit', $directorate->DirectorateID) }}"
+                                    <a href="{{ route('master.directorate.edit', $directorate->DirID) }}"
                                         class="btn btn-sm btn-warning">
                                         <i class="bi bi-pencil"></i>
                                         Edit
@@ -138,7 +138,7 @@
                                     @canDelete('master.directorate.index')
 
                                     <form method="POST"
-                                        action="{{ route('master.directorate.destroy', $directorate->DirectorateID) }}"
+                                        action="{{ route('master.directorate.destroy', $directorate->DirID) }}"
                                         class="d-inline">
 
                                         @csrf

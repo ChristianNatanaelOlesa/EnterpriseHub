@@ -17,19 +17,10 @@
 
         <div class="card mb-3">
             <div class="card-body">
-                <form
-                    method="GET"
-                    action="{{ route('employee-infra.index') }}"
-                    class="row g-2"
-                >
+                <form method="GET" action="{{ route('employee-infra.index') }}" class="row g-2">
                     <div class="col-md-8">
-                        <input
-                            type="text"
-                            name="search"
-                            class="form-control"
-                            value="{{ request('search') }}"
-                            placeholder="Search anything..."
-                        >
+                        <input type="text" name="search" class="form-control" value="{{ request('search') }}"
+                            placeholder="Search anything...">
                     </div>
 
                     <div class="col-md-auto">
@@ -41,10 +32,7 @@
 
                     @if (request('search'))
                         <div class="col-md-auto">
-                            <a
-                                href="{{ route('employee-infra.index') }}"
-                                class="btn btn-outline-secondary"
-                            >
+                            <a href="{{ route('employee-infra.index') }}" class="btn btn-outline-secondary">
                                 Clear
                             </a>
                         </div>
@@ -76,11 +64,10 @@
 
                         <tbody>
                             @forelse ($data as $item)
-                                <tr
-                                    class="transaction-row"
-                                    data-transaction-id="{{ $item->EmpInfraID }}"
-                                    style="cursor: pointer;"
-                                >
+                                <tr class="transaction-row" data-transaction-id="{{ $item->EmpInfraID }}"
+                                    data-emp-form-id="{{ $item->EmpFormID }}"
+                                    data-status="{{ strtoupper((string) ($item->Status ?? 'DRAFT')) }}"
+                                    style="cursor: pointer;">
                                     <td class="text-center">
                                         <span class="row-selector">
                                             <i class="bi bi-circle-fill"></i>
@@ -100,7 +87,7 @@
                                     </td>
 
                                     <td>
-                                        {{ $item->division?->DivisionName ?? '-' }}
+                                        {{ $item->division?->Division ?? '-' }}
                                     </td>
 
                                     <td>
@@ -151,7 +138,8 @@
 
                 <div class="d-flex justify-content-between align-items-center mt-3">
                     <div class="small text-muted">
-                        Showing {{ $data->firstItem() ?? 0 }} to {{ $data->lastItem() ?? 0 }} of {{ $data->total() }} results
+                        Showing {{ $data->firstItem() ?? 0 }} to {{ $data->lastItem() ?? 0 }} of {{ $data->total() }}
+                        results
                     </div>
 
                     {{ $data->links() }}
@@ -163,180 +151,250 @@
         <div class="d-flex justify-content-end align-items-center gap-2 mt-3">
 
             @canAdd('employee-infra.index')
-                <a
-                    href="{{ route('employee-infra.create') }}"
-                    class="btn btn-primary"
-                >
-                    <i class="bi bi-plus-lg me-1"></i>
-                    Create
-                </a>
+            <a href="{{ route('employee-infra.create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-lg me-1"></i>
+                Create
+            </a>
             @endcanAdd
 
             @canEdit('employee-infra.index')
-                <a
-                    href="#"
-                    id="updateButton"
-                    class="btn btn-warning disabled"
-                    aria-disabled="true"
-                >
-                    <i class="bi bi-pencil me-1"></i>
-                    Update
-                </a>
+            <a href="#" id="updateButton" class="btn btn-warning disabled" aria-disabled="true">
+                <i class="bi bi-pencil me-1"></i>
+                Update
+            </a>
             @endcanEdit
 
             @canDelete('employee-infra.index')
-                <form
-                    id="deleteForm"
-                    method="POST"
-                    action="#"
-                    class="d-inline"
-                >
-                    @csrf
-                    @method('DELETE')
+            <form id="deleteForm" method="POST" action="#" class="d-inline">
+                @csrf
+                @method('DELETE')
 
-                    <button
-                        type="submit"
-                        id="deleteButton"
-                        class="btn btn-danger"
-                        disabled
-                    >
-                        <i class="bi bi-trash me-1"></i>
-                        Delete
-                    </button>
-                </form>
+                <button type="submit" id="deleteButton" class="btn btn-danger" disabled>
+                    <i class="bi bi-trash me-1"></i>
+                    Delete
+                </button>
+            </form>
             @endcanDelete
+
+            <button type="button" id="btnDetail" class="btn btn-outline-primary" disabled>
+                <i class="bi bi-eye me-1"></i>Detail
+            </button>
+
+            {{-- Workflow action: requester may submit draft/revision-required transactions. --}}
+            @canEdit('employee-infra.index')
+            <form method="POST" action="{{ route('workflow.request-approval') }}" id="requestApprovalForm"
+                class="d-inline">
+                @csrf
+                <input type="hidden" name="process_id" value="EMPLOYEE_INFRA">
+                <input type="hidden" name="module" value="EMPLOYEE_INFRA">
+                <input type="hidden" name="transaction_id" id="approvalTransactionId">
+                <button type="submit" id="btnRequestApproval" class="btn btn-success" disabled>
+                    <i class="bi bi-send me-1"></i>Request Approval
+                </button>
+            </form>
+            @endcanEdit
 
         </div>
 
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('requestApprovalForm');
+            const idInput = document.getElementById('approvalTransactionId');
+            const button = document.getElementById('btnRequestApproval');
+            if (!form || !idInput || !button) return;
+            const rows = document.querySelectorAll('.transaction-row');
+            const currentUser = @json(auth()->user()->EmpFormID ?? '');
+            rows.forEach(row => row.addEventListener('click', function() {
+                const id = row.dataset.id || row.dataset.transactionId || '';
+                const status = (row.dataset.status || 'DRAFT').toUpperCase();
+                const requester = row.dataset.empFormId || '';
+                idInput.value = id;
+                button.disabled = !(id && requester === currentUser && ['DRAFT', 'REVISION_REQUIRED']
+                    .includes(status));
+            }));
+        });
+    </script>
+
+
+    <div class="modal fade" id="transactionRowDetailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content bg-white text-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title">Transaction Detail</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <dl class="row mb-0" id="transactionRowDetailContent"></dl>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const rows = document.querySelectorAll('tbody tr[data-id], tbody tr[data-transaction-id]');
+            const detailButton = document.getElementById('btnDetail');
+            const modalElement = document.getElementById('transactionRowDetailModal');
+            const content = document.getElementById('transactionRowDetailContent');
+            let selectedRow = null;
+            if (!detailButton || !modalElement || !content) return;
+            rows.forEach(function(row) {
+                row.addEventListener('click', function() {
+                    selectedRow = row;
+                    detailButton.disabled = false;
+                });
+            });
+            detailButton.addEventListener('click', function() {
+                if (!selectedRow) return;
+                content.replaceChildren();
+                const headers = Array.from(selectedRow.closest('table').querySelectorAll('thead th'));
+                const cells = Array.from(selectedRow.querySelectorAll('td'));
+                headers.forEach(function(header, index) {
+                    if (!cells[index]) return;
+                    const label = header.textContent.trim();
+                    const value = cells[index].innerText.trim() || '-';
+                    if (!label || label === '#') return;
+                    const dt = document.createElement('dt');
+                    dt.className = 'col-sm-4 text-muted mb-2';
+                    dt.textContent = label;
+                    const dd = document.createElement('dd');
+                    dd.className = 'col-sm-8 mb-2';
+                    dd.textContent = value;
+                    content.append(dt, dd);
+                });
+                bootstrap.Modal.getOrCreateInstance(modalElement).show();
+            });
+        });
+    </script>
+
 @endsection
 
 @push('styles')
-<style>
-    .employee-infra-table th,
-    .employee-infra-table td {
-        vertical-align: middle;
-    }
+    <style>
+        .employee-infra-table th,
+        .employee-infra-table td {
+            vertical-align: middle;
+        }
 
-    .employee-infra-table th.text-center,
-    .employee-infra-table td.text-center {
-        text-align: center !important;
-    }
+        .employee-infra-table th.text-center,
+        .employee-infra-table td.text-center {
+            text-align: center !important;
+        }
 
-    .employee-infra-table .status-badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 52px;
-        min-height: 22px;
-        line-height: 1;
-        vertical-align: middle;
-        white-space: nowrap;
-    }
+        .employee-infra-table .status-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 52px;
+            min-height: 22px;
+            line-height: 1;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
 
-    .row-selector i {
-        color: #adb5bd;
-    }
+        .row-selector i {
+            color: #adb5bd;
+        }
 
-    .transaction-row.table-primary .row-selector i {
-        color: #0d6efd;
-    }
-</style>
+        .transaction-row.table-primary .row-selector i {
+            color: #0d6efd;
+        }
+    </style>
 @endpush
 
 @push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
 
-    const rows = document.querySelectorAll('.transaction-row');
-    const updateButton = document.getElementById('updateButton');
-    const deleteButton = document.getElementById('deleteButton');
-    const deleteForm = document.getElementById('deleteForm');
+            const rows = document.querySelectorAll('.transaction-row');
+            const updateButton = document.getElementById('updateButton');
+            const deleteButton = document.getElementById('deleteButton');
+            const deleteForm = document.getElementById('deleteForm');
 
-    let selectedId = null;
+            let selectedId = null;
 
-    function setSelectedRow(row) {
-        rows.forEach(function (item) {
-            item.classList.remove('table-primary');
+            function setSelectedRow(row) {
+                rows.forEach(function(item) {
+                    item.classList.remove('table-primary');
 
-            const icon = item.querySelector('.row-selector i');
+                    const icon = item.querySelector('.row-selector i');
 
-            if (icon) {
-                icon.className = 'bi bi-circle-fill';
+                    if (icon) {
+                        icon.className = 'bi bi-circle-fill';
+                    }
+                });
+
+                if (!row) {
+                    selectedId = null;
+
+                    if (updateButton) {
+                        updateButton.classList.add('disabled');
+                        updateButton.setAttribute('aria-disabled', 'true');
+                        updateButton.href = '#';
+                    }
+
+                    if (deleteButton) {
+                        deleteButton.disabled = true;
+                    }
+
+                    if (deleteForm) {
+                        deleteForm.action = '#';
+                    }
+
+                    return;
+                }
+
+                selectedId = row.dataset.transactionId;
+                row.classList.add('table-primary');
+
+                const icon = row.querySelector('.row-selector i');
+
+                if (icon) {
+                    icon.className = 'bi bi-check-circle-fill';
+                }
+
+                if (updateButton) {
+                    updateButton.href = "{{ url('/employee-infra') }}/" +
+                        encodeURIComponent(selectedId) +
+                        '/edit';
+
+                    updateButton.classList.remove('disabled');
+                    updateButton.setAttribute('aria-disabled', 'false');
+                }
+
+                if (deleteForm) {
+                    deleteForm.action = "{{ url('/employee-infra') }}/" +
+                        encodeURIComponent(selectedId);
+                }
+
+                if (deleteButton) {
+                    deleteButton.disabled = false;
+                }
             }
-        });
 
-        if (!row) {
-            selectedId = null;
-
-            if (updateButton) {
-                updateButton.classList.add('disabled');
-                updateButton.setAttribute('aria-disabled', 'true');
-                updateButton.href = '#';
-            }
-
-            if (deleteButton) {
-                deleteButton.disabled = true;
-            }
+            rows.forEach(function(row) {
+                row.addEventListener('click', function() {
+                    if (selectedId === row.dataset.transactionId) {
+                        setSelectedRow(null);
+                    } else {
+                        setSelectedRow(row);
+                    }
+                });
+            });
 
             if (deleteForm) {
-                deleteForm.action = '#';
-            }
+                deleteForm.addEventListener('submit', function(event) {
+                    if (!selectedId) {
+                        event.preventDefault();
+                        return;
+                    }
 
-            return;
-        }
-
-        selectedId = row.dataset.transactionId;
-        row.classList.add('table-primary');
-
-        const icon = row.querySelector('.row-selector i');
-
-        if (icon) {
-            icon.className = 'bi bi-check-circle-fill';
-        }
-
-        if (updateButton) {
-            updateButton.href = "{{ url('/employee-infra') }}/"
-                + encodeURIComponent(selectedId)
-                + '/edit';
-
-            updateButton.classList.remove('disabled');
-            updateButton.setAttribute('aria-disabled', 'false');
-        }
-
-        if (deleteForm) {
-            deleteForm.action = "{{ url('/employee-infra') }}/"
-                + encodeURIComponent(selectedId);
-        }
-
-        if (deleteButton) {
-            deleteButton.disabled = false;
-        }
-    }
-
-    rows.forEach(function (row) {
-        row.addEventListener('click', function () {
-            if (selectedId === row.dataset.transactionId) {
-                setSelectedRow(null);
-            } else {
-                setSelectedRow(row);
+                    if (!confirm('Yakin ingin menghapus Employee Infrastructure Request ini?')) {
+                        event.preventDefault();
+                    }
+                });
             }
         });
-    });
-
-    if (deleteForm) {
-        deleteForm.addEventListener('submit', function (event) {
-            if (!selectedId) {
-                event.preventDefault();
-                return;
-            }
-
-            if (!confirm('Yakin ingin menghapus Employee Infrastructure Request ini?')) {
-                event.preventDefault();
-            }
-        });
-    }
-});
-</script>
+    </script>
 @endpush

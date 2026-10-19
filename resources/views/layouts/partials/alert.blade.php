@@ -1,6 +1,6 @@
 @if(session('success'))
 
-<div class="alert alert-success alert-dismissible fade show">
+<div class="alert alert-success alert-dismissible fade show" role="alert">
 
     {{ session('success') }}
 
@@ -16,7 +16,7 @@
 
 @if(session('error'))
 
-<div class="alert alert-danger alert-dismissible fade show">
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
 
     {{ session('error') }}
 
@@ -32,7 +32,7 @@
 
 @if($errors->any())
 
-<div class="alert alert-danger">
+<div class="alert alert-danger" role="alert">
 
     <ul class="mb-0">
 

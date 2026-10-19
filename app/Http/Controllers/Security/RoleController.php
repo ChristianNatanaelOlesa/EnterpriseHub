@@ -29,16 +29,11 @@ class RoleController extends Controller
 
     public function create()
     {
-        $menus = $this->roleService->getMenus();
-
-        $permissions = collect();
+        $menuPermissions = $this->roleService->getMenuPermissions();
 
         return view(
             'security.roles.create',
-            compact(
-                'menus',
-                'permissions'
-            )
+            compact('menuPermissions')
         );
     }
 
@@ -46,13 +41,12 @@ class RoleController extends Controller
     {
         $data = $request->validated();
 
-        $permissions = $data['permissions'] ?? [];
-
-        unset($data['permissions']);
+        $menuPermissions = $data['menu_permissions'] ?? [];
+        unset($data['menu_permissions']);
 
         $this->roleService->store(
             $data,
-            $permissions
+            $menuPermissions
         );
 
         return redirect()
@@ -72,18 +66,12 @@ class RoleController extends Controller
     {
         $role = $this->roleService->findById($id);
 
-        $menus = $this->roleService->getMenus();
-
-        $permissions = $this->roleService
-            ->getRolePermissions($role->RoleID);
+        $menuPermissions = $this->roleService->getMenuPermissions();
+        $selectedPermissions = $this->roleService->getRolePermissions($role->RoleID);
 
         return view(
             'security.roles.edit',
-            compact(
-                'role',
-                'menus',
-                'permissions'
-            )
+            compact('role', 'menuPermissions', 'selectedPermissions')
         );
     }
 
@@ -93,14 +81,13 @@ class RoleController extends Controller
     ) {
         $data = $request->validated();
 
-        $permissions = $data['permissions'] ?? [];
-
-        unset($data['permissions']);
+        $menuPermissions = $data['menu_permissions'] ?? [];
+        unset($data['menu_permissions']);
 
         $this->roleService->update(
             $id,
             $data,
-            $permissions
+            $menuPermissions
         );
 
         return redirect()
@@ -114,14 +101,14 @@ class RoleController extends Controller
     public function destroy(string $id)
     {
         $this->roleService->delete(
-            (int) $id
+            $id
         );
 
         return redirect()
             ->route('security.roles.index')
             ->with(
                 'success',
-                'Role berhasil dihapus.'
+                'Role dinonaktifkan. Assignment user dan permission tetap disimpan.'
             );
     }
 }

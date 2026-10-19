@@ -33,8 +33,8 @@ class EmailGroupController extends Controller
         $divisions = MsDivision::query()
             ->whereNull('DeletedDate')
             ->where('IsActive', true)
-            ->orderBy('DivisionName')
-            ->get(['DivisionID', 'DivisionName']);
+            ->orderBy('Division')
+            ->get(['DivID', 'Division']);
 
         return view('master.email-group.create', compact('divisions'));
     }
@@ -60,8 +60,8 @@ class EmailGroupController extends Controller
         $divisions = MsDivision::query()
             ->whereNull('DeletedDate')
             ->where('IsActive', true)
-            ->orderBy('DivisionName')
-            ->get(['DivisionID', 'DivisionName']);
+            ->orderBy('Division')
+            ->get(['DivID', 'Division']);
 
         return view('master.email-group.edit', compact('data', 'divisions'));
     }

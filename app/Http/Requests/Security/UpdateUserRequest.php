@@ -20,47 +20,34 @@ class UpdateUserRequest extends FormRequest
             $userId = $userId->UserID;
         }
 
+        $activeRole = Rule::exists('sc_role', 'RoleID')->where(
+            fn ($query) => $query->where('IsActive', true)->whereNull('DeletedDate')
+        );
+
         return [
-
             'Username' => [
-                'required',
-                'string',
-                'max:50',
-                Rule::unique('sc_user', 'Username')
-                    ->ignore($userId, 'UserID'),
+                'required', 'string', 'max:50',
+                Rule::unique('sc_user', 'Username')->ignore($userId, 'UserID'),
             ],
-
             'FullName' => [
-                'required',
-                'string',
-                'max:100',
+                'required', 'string', 'max:100',
             ],
-
             'Email' => [
-                'required',
-                'email',
-                'max:100',
-                Rule::unique('sc_user', 'Email')
-                    ->ignore($userId, 'UserID'),
+                'required', 'email', 'max:100',
+                Rule::unique('sc_user', 'Email')->ignore($userId, 'UserID'),
             ],
-
             'PhoneNumber' => [
-                'nullable',
-                'string',
-                'max:20',
+                'nullable', 'string', 'max:30',
             ],
-
-            'RoleID' => [
-                'required',
-                'integer',
-                'exists:sc_role,RoleID',
+            'RoleIDs' => [
+                'required', 'array', 'min:1',
             ],
-
+            'RoleIDs.*' => [
+                'required', 'string', 'size:5', 'distinct', $activeRole,
+            ],
             'IsActive' => [
-                'required',
-                'boolean',
+                'required', 'boolean',
             ],
-
         ];
     }
 }

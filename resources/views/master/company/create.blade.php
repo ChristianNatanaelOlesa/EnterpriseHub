@@ -22,13 +22,17 @@
 
                 @csrf
 
-                <x-form.input label="Company Code" name="CompanyCode" :value="old('CompanyCode')" required="true" />
+                <x-form.input label="Company Code" name="CompID" :value="old('CompID')" required="true" />
 
-                <x-form.input label="Company Name" name="CompanyName" :value="old('CompanyName')" required="true" />
+                <x-form.input label="Company Name" name="Company" :value="old('Company')" required="true" />
 
-                <x-form.input label="Address" name="Address" :value="old('Address')" />
+                <x-form.input label="Description" name="Description" :value="old('Description')" required="true" />
 
-                <x-form.input label="Phone" name="Phone" :value="old('Phone')" />
+                <x-form.input label="Address" name="Address" :value="old('Address')" required="true" />
+
+                <x-form.input label="Phone 1" name="Phone1" :value="old('Phone1')" required="true" />
+
+                <x-form.input label="Phone 2" name="Phone2" :value="old('Phone2', '-')" />
 
                 <x-form.input label="Email" name="Email" :value="old('Email')" />
 

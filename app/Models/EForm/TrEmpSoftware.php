@@ -3,56 +3,33 @@
 namespace App\Models\EForm;
 
 use App\Models\BaseModel;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Concerns\HasEmployeeVisibility;
 use App\Models\Master\MsDivision;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class TrEmpSoftware extends BaseModel
 {
+    use HasEmployeeVisibility;
+
     protected $table = 'Tr_EmpSoftware';
     protected $primaryKey = 'EmpSoftwareID';
     public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
-        'EmpSoftwareID',
-        'EmpFormID',
-        'ReqDivID',
-        'ReqUser',
-        'ReqDate',
-        'ReqType',
-        'DateFrom',
-        'DateUntil',
-        'SoftType',
-        'SoftTool',
-        'Purpose',
-        'Notes',
-        'CocID',
-        'IsConfirm',
-        'QRAppCoc',
-        'IsGiven',
-        'GivenDate',
-        'GivenNote',
-        'IsTakeOut',
-        'TakeOutDate',
-        'TakeOutNote',
-        'Status',
-        'InputUser',
-        'InputDate',
-        'ModifUser',
+        'EmpSoftwareID','EmpFormID','ReqDate','ReqType',
+        'DateFrom','DateUntil','SoftType','SoftTool','Purpose','Notes','CocID',
+        'IsConfirm','QRAppCoc','IsGiven','GivenDate','GivenNote','IsTakeOut',
+        'TakeOutDate','TakeOutNote','Status','InputUser','InputDate','ModifUser',
         'ModifDate',
     ];
 
     protected $casts = [
-        'ReqDate' => 'date',
-        'DateFrom' => 'date',
-        'DateUntil' => 'date',
-        'IsConfirm' => 'boolean',
-        'IsGiven' => 'boolean',
-        'GivenDate' => 'date',
-        'IsTakeOut' => 'boolean',
-        'TakeOutDate' => 'date',
-        'InputDate' => 'datetime',
-        'ModifDate' => 'datetime',
+        'ReqDate' => 'date','DateFrom' => 'date','DateUntil' => 'date',
+        'IsConfirm' => 'boolean','GivenDate' => 'date','IsGiven' => 'boolean',
+        'IsTakeOut' => 'boolean','TakeOutDate' => 'date',
+        'InputDate' => 'datetime','ModifDate' => 'datetime',
     ];
 
     public function empForm(): BelongsTo
@@ -64,12 +41,10 @@ class TrEmpSoftware extends BaseModel
         );
     }
 
-    public function division(): BelongsTo
+    public function division(): HasOneThrough
     {
-        return $this->belongsTo(
-            MsDivision::class,
-            'ReqDivID',
-            'DivisionID'
-        );
+        return $this->hasOneThrough(MsDivision::class, TrEmpFormHist::class, 'EmpFormID', 'DivID', 'EmpFormID', 'DivID')
+            ->where('Tr_EmpFormHist.IsActive', true)->orderByDesc('Tr_EmpFormHist.EffectiveDate');
     }
+
 }

@@ -11,12 +11,14 @@ class CompanySeeder extends Seeder
     {
         DB::table('ms_company')->updateOrInsert(
             [
-                'CompanyCode' => 'HO',
+                'CompID' => 'HO',
             ],
             [
-                'CompanyName' => 'Head Office',
+                'Company' => 'Head Office',
+                'Description' => 'Head Office',
                 'Address' => 'Jakarta',
-                'Phone' => '021000000',
+                'Phone1' => '021000000',
+                'Phone2' => '-',
                 'Email' => 'admin@enterprisehub.local',
                 'IsActive' => true,
                 'InputUser' => 'admin',

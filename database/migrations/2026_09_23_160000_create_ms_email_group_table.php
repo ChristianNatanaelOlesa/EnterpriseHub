@@ -9,12 +9,20 @@ return new class () extends Migration {
     {
         Schema::create('ms_email_group', function (Blueprint $table) {
             $table->string('EmailGroupID', 5)->primary();
+            $table->string('DivID', 3);
             $table->string('Email', 100);
             $table->text('Description');
             $table->boolean('IsGroup')->default(true);
             $table->boolean('IsActive')->default(true);
 
             $table->auditColumns();
+
+            $table->foreign('DivID')
+                ->references('DivID')
+                ->on('ms_division');
+
+            $table->index('DivID');
+            $table->index('Email');
         });
     }
 

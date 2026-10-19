@@ -12,7 +12,8 @@ return new class () extends Migration {
             $table->bigIncrements('UserRoleID');
 
             $table->unsignedBigInteger('UserID');
-            $table->unsignedBigInteger('RoleID');
+
+            $table->string('RoleID', 5);
 
             $table->boolean('IsActive')->default(true);
 
@@ -25,8 +26,6 @@ return new class () extends Migration {
             $table->foreign('RoleID')
                 ->references('RoleID')
                 ->on('sc_role');
-
-            $table->unique(['UserID', 'RoleID']);
 
             $table->index('UserID');
             $table->index('RoleID');

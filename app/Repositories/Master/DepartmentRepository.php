@@ -25,12 +25,12 @@ class DepartmentRepository extends BaseRepository
 
                     $query
                         ->where(
-                            'DepartmentCode',
+                            'DeptID',
                             'like',
                             "%{$search}%"
                         )
                         ->orWhere(
-                            'DepartmentName',
+                            'Department',
                             'like',
                             "%{$search}%"
                         )
@@ -40,7 +40,7 @@ class DepartmentRepository extends BaseRepository
 
                                 $query
                                     ->where(
-                                        'DivisionName',
+                                        'Division',
                                         'like',
                                         "%{$search}%"
                                     )
@@ -50,7 +50,7 @@ class DepartmentRepository extends BaseRepository
 
                                             $query
                                                 ->where(
-                                                    'DirectorateName',
+                                                    'Directorate',
                                                     'like',
                                                     "%{$search}%"
                                                 )
@@ -59,7 +59,7 @@ class DepartmentRepository extends BaseRepository
                                                     function ($query) use ($search) {
 
                                                         $query->where(
-                                                            'CompanyName',
+                                                            'Company',
                                                             'like',
                                                             "%{$search}%"
                                                         );
@@ -76,19 +76,19 @@ class DepartmentRepository extends BaseRepository
                 });
 
             })
-            ->orderBy('DepartmentID')
+            ->orderBy('DeptID')
             ->paginate($perPage)
             ->withQueryString();
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->model
             ->with([
                 'division.directorate.company',
             ])
             ->where(
-                'DepartmentID',
+                'DeptID',
                 $id
             )
             ->whereNull('DeletedDate')

@@ -17,28 +17,30 @@ class UpdateCompanyRequest extends FormRequest
         $companyId = $this->route('company');
 
         if (is_object($companyId)) {
-            $companyId = $companyId->CompanyID;
+            $companyId = $companyId->CompID;
         }
 
         return [
-            'CompanyCode' => [
+            'CompID' => [
                 'required',
                 'string',
                 'max:20',
                 Rule::unique(
                     'ms_company',
-                    'CompanyCode'
+                    'CompID'
                 )->ignore(
                     $companyId,
-                    'CompanyID'
+                    'CompID'
                 ),
             ],
 
-            'CompanyName' => [
+            'Company' => [
                 'required',
                 'string',
                 'max:200',
             ],
+
+            'Description' => ['required', 'string'],
 
             'Address' => [
                 'nullable',
@@ -46,11 +48,8 @@ class UpdateCompanyRequest extends FormRequest
                 'max:500',
             ],
 
-            'Phone' => [
-                'nullable',
-                'string',
-                'max:30',
-            ],
+            'Phone1' => ['required', 'string', 'max:30'],
+            'Phone2' => ['nullable', 'string', 'max:30'],
 
             'Email' => [
                 'nullable',

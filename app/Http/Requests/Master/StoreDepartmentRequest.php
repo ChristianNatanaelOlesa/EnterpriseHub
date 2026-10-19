@@ -15,68 +15,72 @@ class StoreDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'CompanyID' => [
-                'required',
-                'integer',
-                'exists:ms_company,CompanyID',
-            ],
-
-            'DirectorateID' => [
-                'required',
-                'integer',
-                Rule::exists(
-                    'ms_directorate',
-                    'DirectorateID'
-                )->where(function ($query) {
-                    $query
-                        ->where(
-                            'CompanyID',
-                            $this->CompanyID
-                        )
-                        ->where(
-                            'IsActive',
-                            true
-                        )
-                        ->whereNull(
-                            'DeletedDate'
-                        );
-                }),
-            ],
-
-            'DivisionID' => [
-                'required',
-                'integer',
-                Rule::exists(
-                    'ms_division',
-                    'DivisionID'
-                )->where(function ($query) {
-                    $query
-                        ->where(
-                            'DirectorateID',
-                            $this->DirectorateID
-                        )
-                        ->where(
-                            'IsActive',
-                            true
-                        )
-                        ->whereNull(
-                            'DeletedDate'
-                        );
-                }),
-            ],
-
-            'DepartmentCode' => [
+            'CompID' => [
                 'required',
                 'string',
-                'max:30',
-                'unique:ms_department,DepartmentCode',
+                'max:3',
+                'exists:ms_company,CompID',
             ],
 
-            'DepartmentName' => [
+            'DirID' => [
+                'required',
+                'string',
+                'max:3',
+                Rule::exists(
+                    'ms_directorate',
+                    'DirID'
+                )->where(function ($query) {
+                    $query
+                        ->where(
+                            'CompID',
+                            $this->CompID
+                        )
+                        ->where(
+                            'IsActive',
+                            true
+                        )
+                        ->whereNull(
+                            'DeletedDate'
+                        );
+                }),
+            ],
+
+            'DivID' => [
+                'required',
+                'string',
+                'max:3',
+                Rule::exists(
+                    'ms_division',
+                    'DivID'
+                )->where(function ($query) {
+                    $query
+                        ->where(
+                            'DirID',
+                            $this->DirID
+                        )
+                        ->where(
+                            'IsActive',
+                            true
+                        )
+                        ->whereNull(
+                            'DeletedDate'
+                        );
+                }),
+            ],
+
+            'DeptID' => [
+                'required',
+                'string',
+                'max:3',
+                'unique:ms_department,DeptID',
+            ],
+
+            'Department' => [
                 'required',
                 'string',
                 'max:100',
             ],
+            'Description' => ['required', 'string'],
 
             'IsActive' => [
                 'required',

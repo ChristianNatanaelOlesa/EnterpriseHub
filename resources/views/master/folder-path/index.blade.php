@@ -92,7 +92,7 @@
                             </td>
 
                             <td>
-                                {{ $item->parent?->FolderName ?? '-' }}
+                                {{ $item->parentFolder?->ParentFolderName ?? '-' }}
                             </td>
 
                             <td class="text-center">

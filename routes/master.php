@@ -19,6 +19,7 @@ use App\Http\Controllers\Master\AssetGroupController;
 use App\Http\Controllers\Master\AssetTypeController;
 use App\Http\Controllers\Master\CurrencyController;
 use App\Http\Controllers\Master\FolderPathController;
+use App\Http\Controllers\Master\ParentFolderController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])
@@ -33,13 +34,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('company', CompanyController::class)
-            ->middlewareFor('index', 'permission:master.company.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.company.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.company.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.company.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.company.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.company.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.company.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.company.index,View')
+            ->middlewareFor('show', 'permission:master.company.index,View')
+            ->middlewareFor('create', 'permission:master.company.index,Create')
+            ->middlewareFor('store', 'permission:master.company.index,Create')
+            ->middlewareFor('edit', 'permission:master.company.index,Update')
+            ->middlewareFor('update', 'permission:master.company.index,Update')
+            ->middlewareFor('destroy', 'permission:master.company.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -48,13 +49,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('country', CountryController::class)
-            ->middlewareFor('index', 'permission:master.country.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.country.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.country.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.country.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.country.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.country.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.country.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.country.index,View')
+            ->middlewareFor('show', 'permission:master.country.index,View')
+            ->middlewareFor('create', 'permission:master.country.index,Create')
+            ->middlewareFor('store', 'permission:master.country.index,Create')
+            ->middlewareFor('edit', 'permission:master.country.index,Update')
+            ->middlewareFor('update', 'permission:master.country.index,Update')
+            ->middlewareFor('destroy', 'permission:master.country.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -63,13 +64,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('province', ProvinceController::class)
-            ->middlewareFor('index', 'permission:master.province.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.province.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.province.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.province.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.province.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.province.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.province.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.province.index,View')
+            ->middlewareFor('show', 'permission:master.province.index,View')
+            ->middlewareFor('create', 'permission:master.province.index,Create')
+            ->middlewareFor('store', 'permission:master.province.index,Create')
+            ->middlewareFor('edit', 'permission:master.province.index,Update')
+            ->middlewareFor('update', 'permission:master.province.index,Update')
+            ->middlewareFor('destroy', 'permission:master.province.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -78,13 +79,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('city', CityController::class)
-            ->middlewareFor('index', 'permission:master.city.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.city.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.city.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.city.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.city.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.city.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.city.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.city.index,View')
+            ->middlewareFor('show', 'permission:master.city.index,View')
+            ->middlewareFor('create', 'permission:master.city.index,Create')
+            ->middlewareFor('store', 'permission:master.city.index,Create')
+            ->middlewareFor('edit', 'permission:master.city.index,Update')
+            ->middlewareFor('update', 'permission:master.city.index,Update')
+            ->middlewareFor('destroy', 'permission:master.city.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -93,13 +94,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('district', DistrictController::class)
-            ->middlewareFor('index', 'permission:master.district.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.district.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.district.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.district.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.district.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.district.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.district.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.district.index,View')
+            ->middlewareFor('show', 'permission:master.district.index,View')
+            ->middlewareFor('create', 'permission:master.district.index,Create')
+            ->middlewareFor('store', 'permission:master.district.index,Create')
+            ->middlewareFor('edit', 'permission:master.district.index,Update')
+            ->middlewareFor('update', 'permission:master.district.index,Update')
+            ->middlewareFor('destroy', 'permission:master.district.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -108,13 +109,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('village', VillageController::class)
-            ->middlewareFor('index', 'permission:master.village.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.village.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.village.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.village.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.village.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.village.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.village.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.village.index,View')
+            ->middlewareFor('show', 'permission:master.village.index,View')
+            ->middlewareFor('create', 'permission:master.village.index,Create')
+            ->middlewareFor('store', 'permission:master.village.index,Create')
+            ->middlewareFor('edit', 'permission:master.village.index,Update')
+            ->middlewareFor('update', 'permission:master.village.index,Update')
+            ->middlewareFor('destroy', 'permission:master.village.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -123,13 +124,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('directorate', DirectorateController::class)
-            ->middlewareFor('index', 'permission:master.directorate.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.directorate.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.directorate.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.directorate.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.directorate.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.directorate.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.directorate.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.directorate.index,View')
+            ->middlewareFor('show', 'permission:master.directorate.index,View')
+            ->middlewareFor('create', 'permission:master.directorate.index,Create')
+            ->middlewareFor('store', 'permission:master.directorate.index,Create')
+            ->middlewareFor('edit', 'permission:master.directorate.index,Update')
+            ->middlewareFor('update', 'permission:master.directorate.index,Update')
+            ->middlewareFor('destroy', 'permission:master.directorate.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -138,7 +139,7 @@ Route::middleware(['auth'])
         */
 
         Route::get('division/directorates', [DivisionController::class, 'getDirectorates'])
-            ->middleware('permission:master.division.index,CanOpen')
+            ->middleware('permission:master.division.index,View')
             ->name('division.directorates');
 
         /*
@@ -148,13 +149,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('division', DivisionController::class)
-            ->middlewareFor('index', 'permission:master.division.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.division.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.division.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.division.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.division.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.division.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.division.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.division.index,View')
+            ->middlewareFor('show', 'permission:master.division.index,View')
+            ->middlewareFor('create', 'permission:master.division.index,Create')
+            ->middlewareFor('store', 'permission:master.division.index,Create')
+            ->middlewareFor('edit', 'permission:master.division.index,Update')
+            ->middlewareFor('update', 'permission:master.division.index,Update')
+            ->middlewareFor('destroy', 'permission:master.division.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -163,21 +164,21 @@ Route::middleware(['auth'])
         */
 
         Route::get('department/directorates', [DepartmentController::class, 'getDirectorates'])
-            ->middleware('permission:master.department.index,CanOpen')
+            ->middleware('permission:master.department.index,View')
             ->name('department.directorates');
 
         Route::get('department/divisions', [DepartmentController::class, 'getDivisions'])
-            ->middleware('permission:master.department.index,CanOpen')
+            ->middleware('permission:master.department.index,View')
             ->name('department.divisions');
 
         Route::resource('department', DepartmentController::class)
-            ->middlewareFor('index', 'permission:master.department.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.department.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.department.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.department.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.department.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.department.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.department.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.department.index,View')
+            ->middlewareFor('show', 'permission:master.department.index,View')
+            ->middlewareFor('create', 'permission:master.department.index,Create')
+            ->middlewareFor('store', 'permission:master.department.index,Create')
+            ->middlewareFor('edit', 'permission:master.department.index,Update')
+            ->middlewareFor('update', 'permission:master.department.index,Update')
+            ->middlewareFor('destroy', 'permission:master.department.index,Delete');
 
 
         /*
@@ -188,13 +189,13 @@ Route::middleware(['auth'])
 
         Route::resource('job-level', JobLevelController::class)
             ->parameters(['job-level' => 'jobLevel'])
-            ->middlewareFor('index', 'permission:master.job-level.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.job-level.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.job-level.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.job-level.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.job-level.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.job-level.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.job-level.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.job-level.index,View')
+            ->middlewareFor('show', 'permission:master.job-level.index,View')
+            ->middlewareFor('create', 'permission:master.job-level.index,Create')
+            ->middlewareFor('store', 'permission:master.job-level.index,Create')
+            ->middlewareFor('edit', 'permission:master.job-level.index,Update')
+            ->middlewareFor('update', 'permission:master.job-level.index,Update')
+            ->middlewareFor('destroy', 'permission:master.job-level.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -204,13 +205,13 @@ Route::middleware(['auth'])
 
         Route::resource('job-title', JobTitleController::class)
             ->parameters(['job-title' => 'jobTitle'])
-            ->middlewareFor('index', 'permission:master.job-title.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.job-title.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.job-title.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.job-title.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.job-title.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.job-title.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.job-title.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.job-title.index,View')
+            ->middlewareFor('show', 'permission:master.job-title.index,View')
+            ->middlewareFor('create', 'permission:master.job-title.index,Create')
+            ->middlewareFor('store', 'permission:master.job-title.index,Create')
+            ->middlewareFor('edit', 'permission:master.job-title.index,Update')
+            ->middlewareFor('update', 'permission:master.job-title.index,Update')
+            ->middlewareFor('destroy', 'permission:master.job-title.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -220,13 +221,13 @@ Route::middleware(['auth'])
 
         Route::resource('email-group', EmailGroupController::class)
             ->parameters(['email-group' => 'emailGroup'])
-            ->middlewareFor('index', 'permission:master.email-group.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.email-group.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.email-group.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.email-group.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.email-group.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.email-group.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.email-group.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.email-group.index,View')
+            ->middlewareFor('show', 'permission:master.email-group.index,View')
+            ->middlewareFor('create', 'permission:master.email-group.index,Create')
+            ->middlewareFor('store', 'permission:master.email-group.index,Create')
+            ->middlewareFor('edit', 'permission:master.email-group.index,Update')
+            ->middlewareFor('update', 'permission:master.email-group.index,Update')
+            ->middlewareFor('destroy', 'permission:master.email-group.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -235,17 +236,17 @@ Route::middleware(['auth'])
         */
 
         Route::get('coc/{coc}/download', [CocController::class, 'download'])
-            ->middleware('permission:master.coc.index,CanOpen')
+            ->middleware('permission:master.coc.index,View')
             ->name('coc.download');
 
         Route::resource('coc', CocController::class)
-            ->middlewareFor('index', 'permission:master.coc.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.coc.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.coc.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.coc.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.coc.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.coc.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.coc.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.coc.index,View')
+            ->middlewareFor('show', 'permission:master.coc.index,View')
+            ->middlewareFor('create', 'permission:master.coc.index,Create')
+            ->middlewareFor('store', 'permission:master.coc.index,Create')
+            ->middlewareFor('edit', 'permission:master.coc.index,Update')
+            ->middlewareFor('update', 'permission:master.coc.index,Update')
+            ->middlewareFor('destroy', 'permission:master.coc.index,Delete');
         /*
         |--------------------------------------------------------------------------
         | Religion
@@ -253,13 +254,13 @@ Route::middleware(['auth'])
         */
 
         Route::resource('religion', ReligionController::class)
-            ->middlewareFor('index', 'permission:master.religion.index,CanOpen')
-            ->middlewareFor('show', 'permission:master.religion.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.religion.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.religion.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.religion.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.religion.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.religion.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.religion.index,View')
+            ->middlewareFor('show', 'permission:master.religion.index,View')
+            ->middlewareFor('create', 'permission:master.religion.index,Create')
+            ->middlewareFor('store', 'permission:master.religion.index,Create')
+            ->middlewareFor('edit', 'permission:master.religion.index,Update')
+            ->middlewareFor('update', 'permission:master.religion.index,Update')
+            ->middlewareFor('destroy', 'permission:master.religion.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -269,39 +270,39 @@ Route::middleware(['auth'])
 
         Route::resource('asset-group', AssetGroupController::class)
             ->except(['show'])
-            ->middlewareFor('index', 'permission:master.asset-group.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.asset-group.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.asset-group.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.asset-group.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.asset-group.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.asset-group.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.asset-group.index,View')
+            ->middlewareFor('create', 'permission:master.asset-group.index,Create')
+            ->middlewareFor('store', 'permission:master.asset-group.index,Create')
+            ->middlewareFor('edit', 'permission:master.asset-group.index,Update')
+            ->middlewareFor('update', 'permission:master.asset-group.index,Update')
+            ->middlewareFor('destroy', 'permission:master.asset-group.index,Delete');
 
         Route::resource('asset-type', AssetTypeController::class)
             ->except(['show'])
-            ->middlewareFor('index', 'permission:master.asset-type.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.asset-type.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.asset-type.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.asset-type.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.asset-type.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.asset-type.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.asset-type.index,View')
+            ->middlewareFor('create', 'permission:master.asset-type.index,Create')
+            ->middlewareFor('store', 'permission:master.asset-type.index,Create')
+            ->middlewareFor('edit', 'permission:master.asset-type.index,Update')
+            ->middlewareFor('update', 'permission:master.asset-type.index,Update')
+            ->middlewareFor('destroy', 'permission:master.asset-type.index,Delete');
 
         Route::resource('currency', CurrencyController::class)
             ->except(['show'])
-            ->middlewareFor('index', 'permission:master.currency.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.currency.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.currency.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.currency.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.currency.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.currency.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.currency.index,View')
+            ->middlewareFor('create', 'permission:master.currency.index,Create')
+            ->middlewareFor('store', 'permission:master.currency.index,Create')
+            ->middlewareFor('edit', 'permission:master.currency.index,Update')
+            ->middlewareFor('update', 'permission:master.currency.index,Update')
+            ->middlewareFor('destroy', 'permission:master.currency.index,Delete');
 
         Route::resource('asset', AssetController::class)
             ->except(['show'])
-            ->middlewareFor('index', 'permission:master.asset.index,CanOpen')
-            ->middlewareFor('create', 'permission:master.asset.index,CanAdd')
-            ->middlewareFor('store', 'permission:master.asset.index,CanAdd')
-            ->middlewareFor('edit', 'permission:master.asset.index,CanEdit')
-            ->middlewareFor('update', 'permission:master.asset.index,CanEdit')
-            ->middlewareFor('destroy', 'permission:master.asset.index,CanDelete');
+            ->middlewareFor('index', 'permission:master.asset.index,View')
+            ->middlewareFor('create', 'permission:master.asset.index,Create')
+            ->middlewareFor('store', 'permission:master.asset.index,Create')
+            ->middlewareFor('edit', 'permission:master.asset.index,Update')
+            ->middlewareFor('update', 'permission:master.asset.index,Update')
+            ->middlewareFor('destroy', 'permission:master.asset.index,Delete');
 
         /*
         |--------------------------------------------------------------------------
@@ -309,29 +310,39 @@ Route::middleware(['auth'])
         |--------------------------------------------------------------------------
         */
 
+        Route::resource('parent-folder', ParentFolderController::class)
+            ->parameters(['parent-folder' => 'parent_folder'])
+            ->middlewareFor('index', 'permission:master.parent-folder.index,View')
+            ->middlewareFor('show', 'permission:master.parent-folder.index,View')
+            ->middlewareFor('create', 'permission:master.parent-folder.index,Create')
+            ->middlewareFor('store', 'permission:master.parent-folder.index,Create')
+            ->middlewareFor('edit', 'permission:master.parent-folder.index,Update')
+            ->middlewareFor('update', 'permission:master.parent-folder.index,Update')
+            ->middlewareFor('destroy', 'permission:master.parent-folder.index,Delete');
+
         Route::get('/folder-path', [FolderPathController::class, 'index'])
-    ->middleware('permission:master.folder-path.index,CanOpen')
-    ->name('master.folder-path.index');
+            ->middleware('permission:master.folder-path.index,View')
+            ->name('folder-path.index');
 
         Route::get('/folder-path/create', [FolderPathController::class, 'create'])
-            ->middleware('permission:master.folder-path.index,CanAdd')
-            ->name('master.folder-path.create');
+            ->middleware('permission:master.folder-path.index,Create')
+            ->name('folder-path.create');
 
         Route::post('/folder-path', [FolderPathController::class, 'store'])
-            ->middleware('permission:master.folder-path.index,CanAdd')
-            ->name('master.folder-path.store');
+            ->middleware('permission:master.folder-path.index,Create')
+            ->name('folder-path.store');
 
         Route::get('/folder-path/{folder_path}/edit', [FolderPathController::class, 'edit'])
-            ->middleware('permission:master.folder-path.index,CanEdit')
-            ->name('master.folder-path.edit');
+            ->middleware('permission:master.folder-path.index,Update')
+            ->name('folder-path.edit');
 
         Route::put('/folder-path/{folder_path}', [FolderPathController::class, 'update'])
-            ->middleware('permission:master.folder-path.index,CanEdit')
-            ->name('master.folder-path.update');
+            ->middleware('permission:master.folder-path.index,Update')
+            ->name('folder-path.update');
 
         Route::delete('/folder-path/{folder_path}', [FolderPathController::class, 'destroy'])
-            ->middleware('permission:master.folder-path.index,CanDelete')
-            ->name('master.folder-path.destroy');
+            ->middleware('permission:master.folder-path.index,Delete')
+            ->name('folder-path.destroy');
 
 
     });

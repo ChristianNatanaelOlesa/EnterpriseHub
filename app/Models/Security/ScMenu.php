@@ -12,18 +12,19 @@ class ScMenu extends BaseModel
 
     protected $primaryKey = 'MenuID';
 
-    public $incrementing = true;
+    public $incrementing = false;
 
-    protected $keyType = 'int';
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'Code',
-        'Name',
+        'MenuID',
+        'Menu',
+        'Description',
         'MenuArea',
         'ParentID',
+        'Lvl',
         'SortOrder',
         'Route',
-        'URL',
         'Icon',
         'IsActive',
         'IsMenu',
@@ -37,9 +38,8 @@ class ScMenu extends BaseModel
     ];
 
     protected $casts = [
-        'MenuID' => 'integer',
-        'ParentID' => 'integer',
         'SortOrder' => 'integer',
+        'Lvl' => 'integer',
         'IsActive' => 'boolean',
         'IsMenu' => 'boolean',
 

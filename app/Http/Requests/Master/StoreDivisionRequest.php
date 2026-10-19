@@ -15,22 +15,24 @@ class StoreDivisionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
-                'integer',
-                'exists:ms_company,CompanyID',
+                'string',
+                'max:3',
+                'exists:ms_company,CompID',
             ],
 
-            'DirectorateID' => [
+            'DirID' => [
                 'required',
-                'integer',
+                'string',
+                'max:3',
                 Rule::exists(
                     'ms_directorate',
-                    'DirectorateID'
+                    'DirID'
                 )->where(function ($query) {
                     $query->where(
-                        'CompanyID',
-                        $this->CompanyID
+                        'CompID',
+                        $this->CompID
                     );
                     $query->where(
                         'IsActive',
@@ -42,18 +44,19 @@ class StoreDivisionRequest extends FormRequest
                 }),
             ],
 
-            'DivisionCode' => [
+            'DivID' => [
                 'required',
                 'string',
-                'max:30',
-                'unique:ms_division,DivisionCode',
+                'max:3',
+                'unique:ms_division,DivID',
             ],
 
-            'DivisionName' => [
+            'Division' => [
                 'required',
                 'string',
                 'max:100',
             ],
+            'Description' => ['required', 'string'],
 
             'IsActive' => [
                 'required',

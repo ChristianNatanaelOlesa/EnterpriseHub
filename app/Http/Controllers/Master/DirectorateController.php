@@ -35,7 +35,7 @@ class DirectorateController extends Controller
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         return view(
@@ -61,7 +61,7 @@ class DirectorateController extends Controller
     public function show(string $id)
     {
         $directorate = $this->directorateService->findById(
-            (int) $id
+            $id
         );
 
         return view(
@@ -73,13 +73,13 @@ class DirectorateController extends Controller
     public function edit(string $id)
     {
         $directorate = $this->directorateService->findById(
-            (int) $id
+            $id
         );
 
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         return view(
@@ -96,7 +96,7 @@ class DirectorateController extends Controller
         string $id
     ) {
         $this->directorateService->update(
-            (int) $id,
+            $id,
             $request->validated()
         );
 
@@ -111,7 +111,7 @@ class DirectorateController extends Controller
     public function destroy(string $id)
     {
         $this->directorateService->delete(
-            (int) $id
+            $id
         );
 
         return redirect()

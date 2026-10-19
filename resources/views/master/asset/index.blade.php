@@ -32,7 +32,7 @@
                             <td>{{ $row->Brand }}</td>
                             <td>{{ $row->Model }}</td>
                             <td>{{ $row->SerialNo }}</td>
-                            <td>{{ $row->VendorID ?? '-' }}</td>
+                            <td>{{ $row->vendor?->Vendor ?? $row->VendorID ?? '-' }}</td>
                             <td>{{ $row->PurchaseDate?->format('d/m/Y') ?? '-' }}</td>
                             <td>{{ $row->CcyID }}</td>
                             <td>{{ number_format((float) $row->AcqCost, 2, '.', ',') }}</td>

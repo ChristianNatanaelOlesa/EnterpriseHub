@@ -18,26 +18,26 @@ class DepartmentRequest extends FormRequest
 
         return [
 
-            'DivisionID' => [
+            'DivID' => [
                 'required',
                 'integer',
-                'exists:ms_division,DivisionID',
+                'exists:ms_division,DivID',
             ],
 
-            'DepartmentCode' => [
+            'DeptID' => [
                 'required',
                 'string',
                 'max:20',
                 Rule::unique(
                     'ms_department',
-                    'DepartmentCode'
+                    'DeptID'
                 )->ignore(
                     $departmentId,
-                    'DepartmentID'
+                    'DeptID'
                 ),
             ],
 
-            'DepartmentName' => [
+            'Department' => [
                 'required',
                 'string',
                 'max:200',

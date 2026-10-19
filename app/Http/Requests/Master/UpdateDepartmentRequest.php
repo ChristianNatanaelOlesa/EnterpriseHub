@@ -17,27 +17,27 @@ class UpdateDepartmentRequest extends FormRequest
         $departmentId = $this->route('department');
 
         if (is_object($departmentId)) {
-            $departmentId = $departmentId->DepartmentID;
+            $departmentId = $departmentId->DeptID;
         }
 
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
                 'integer',
-                'exists:ms_company,CompanyID',
+                'exists:ms_company,CompID',
             ],
 
-            'DirectorateID' => [
+            'DirID' => [
                 'required',
                 'integer',
                 Rule::exists(
                     'ms_directorate',
-                    'DirectorateID'
+                    'DirID'
                 )->where(function ($query) {
                     $query
                         ->where(
-                            'CompanyID',
-                            $this->CompanyID
+                            'CompID',
+                            $this->CompID
                         )
                         ->where(
                             'IsActive',
@@ -49,17 +49,17 @@ class UpdateDepartmentRequest extends FormRequest
                 }),
             ],
 
-            'DivisionID' => [
+            'DivID' => [
                 'required',
                 'integer',
                 Rule::exists(
                     'ms_division',
-                    'DivisionID'
+                    'DivID'
                 )->where(function ($query) {
                     $query
                         ->where(
-                            'DirectorateID',
-                            $this->DirectorateID
+                            'DirID',
+                            $this->DirID
                         )
                         ->where(
                             'IsActive',
@@ -71,20 +71,20 @@ class UpdateDepartmentRequest extends FormRequest
                 }),
             ],
 
-            'DepartmentCode' => [
+            'DeptID' => [
                 'required',
                 'string',
                 'max:30',
                 Rule::unique(
                     'ms_department',
-                    'DepartmentCode'
+                    'DeptID'
                 )->ignore(
                     $departmentId,
-                    'DepartmentID'
+                    'DeptID'
                 ),
             ],
 
-            'DepartmentName' => [
+            'Department' => [
                 'required',
                 'string',
                 'max:100',

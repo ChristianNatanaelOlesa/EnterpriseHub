@@ -8,12 +8,17 @@ class MsDirectorate extends BaseModel
 {
     protected $table = 'ms_directorate';
 
-    protected $primaryKey = 'DirectorateID';
+    protected $primaryKey = 'DirID';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'CompanyID',
-        'DirectorateCode',
-        'DirectorateName',
+        'DirID',
+        'CompID',
+        'Directorate',
+        'Description',
         'IsActive',
 
         'InputUser',
@@ -21,13 +26,12 @@ class MsDirectorate extends BaseModel
 
         'ModifUser',
         'ModifDate',
-
         'DeletedBy',
         'DeletedDate',
+
     ];
 
     protected $casts = [
-        'CompanyID' => 'integer',
         'IsActive' => 'boolean',
     ];
 
@@ -35,8 +39,8 @@ class MsDirectorate extends BaseModel
     {
         return $this->belongsTo(
             MsCompany::class,
-            'CompanyID',
-            'CompanyID'
+            'CompID',
+            'CompID'
         );
     }
 
@@ -44,8 +48,8 @@ class MsDirectorate extends BaseModel
     {
         return $this->hasMany(
             MsDivision::class,
-            'DirectorateID',
-            'DirectorateID'
+            'DirID',
+            'DirID'
         );
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class TrEmpFormHist extends BaseModel
 {
-    protected $table = 'Tr_EmpFormHist';
+    protected $table = 'tr_empformhist';
 
     protected $primaryKey = 'EmpFormHistID';
 
@@ -25,6 +25,7 @@ class TrEmpFormHist extends BaseModel
         'EmpFormHistID',
         'EmpFormID',
 
+        'CompID',
         'DirID',
         'DivID',
         'DeptID',
@@ -38,16 +39,12 @@ class TrEmpFormHist extends BaseModel
         'EffectiveDate',
         'Remarks',
 
-        'ReqUser',
         'ReqDate',
 
         'IsActive',
 
         'QRApp',
         'Status',
-        'UserID',
-        'ProcessID',
-        'CurrentStateID',
 
         'InputUser',
         'InputDate',
@@ -56,10 +53,6 @@ class TrEmpFormHist extends BaseModel
     ];
 
     protected $casts = [
-        'DirID' => 'integer',
-        'DivID' => 'integer',
-        'DeptID' => 'integer',
-
         'JobLvlID' => 'integer',
         'JobTitleID' => 'integer',
 
@@ -98,7 +91,7 @@ class TrEmpFormHist extends BaseModel
         return $this->belongsTo(
             MsDirectorate::class,
             'DirID',
-            'DirectorateID'
+            'DirID'
         );
     }
 
@@ -107,7 +100,7 @@ class TrEmpFormHist extends BaseModel
         return $this->belongsTo(
             MsDivision::class,
             'DivID',
-            'DivisionID'
+            'DivID'
         );
     }
 
@@ -116,7 +109,7 @@ class TrEmpFormHist extends BaseModel
         return $this->belongsTo(
             MsDepartment::class,
             'DeptID',
-            'DepartmentID'
+            'DeptID'
         );
     }
 

@@ -11,4 +11,5 @@ class MsAsset extends BaseModel
     protected $casts = ['PurchaseDate'=>'date','ExchRate'=>'decimal:4','AcqCost'=>'decimal:2','AcqCostIDR'=>'decimal:2','IsWarranty'=>'boolean','WarrantyDate'=>'date','IsISO'=>'boolean','IsActive'=>'boolean','InputDate'=>'datetime','ModifDate'=>'datetime','DeletedDate'=>'datetime'];
     public function assetType(){ return $this->belongsTo(MsAssetType::class,'AssTypeID','AssTypeID'); }
     public function currency(){ return $this->belongsTo(MsCurrency::class,'CcyID','CcyID'); }
+    public function vendor(){ return $this->belongsTo(MsVendor::class,'VendorID','VendorID'); }
 }

@@ -71,7 +71,7 @@
                             <tr>
                                 <td>{{ $emailGroups->firstItem() + $loop->index }}</td>
                                 <td>{{ $emailGroup->EmailGroupID }}</td>
-                                <td>{{ $emailGroup->division?->DivisionName ?? '-' }}</td>
+                                <td>{{ $emailGroup->division?->Division ?? '-' }}</td>
                                 <td>{{ $emailGroup->Email }}</td>
                                 <td>{{ $emailGroup->Description }}</td>
                                 <td>

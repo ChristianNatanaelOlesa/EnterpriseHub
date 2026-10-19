@@ -9,21 +9,12 @@ return new class () extends Migration {
     {
         Schema::create('ms_religion', function (Blueprint $table) {
             $table->string('ReligionID', 3)->primary();
+
             $table->string('Religion', 50);
 
             $table->boolean('IsActive')->default(true);
 
-            // Audit fields
-            $table->dateTime('InputDate')->useCurrent();
-            $table->string('InputUser', 50)->default('Admin');
-
-            $table->dateTime('ModifDate')->useCurrent();
-            $table->string('ModifUser', 50)->default('Admin');
-
-            $table->string('DeletedBy', 50)->nullable();
-            $table->dateTime('DeletedDate')->nullable();
-
-            $table->index('IsActive');
+            $table->auditColumns();
         });
     }
 

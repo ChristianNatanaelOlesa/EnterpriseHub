@@ -15,12 +15,13 @@ class StoreDirectorateRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'CompanyID' => [
+            'CompID' => [
                 'required',
-                'integer',
+                'string',
+                'max:3',
                 Rule::exists(
                     'ms_company',
-                    'CompanyID'
+                    'CompID'
                 )->where(function ($query) {
                     $query->where(
                         'IsActive',
@@ -33,18 +34,19 @@ class StoreDirectorateRequest extends FormRequest
                 }),
             ],
 
-            'DirectorateCode' => [
+            'DirID' => [
                 'required',
                 'string',
-                'max:30',
-                'unique:ms_directorate,DirectorateCode',
+                'max:3',
+                'unique:ms_directorate,DirID',
             ],
 
-            'DirectorateName' => [
+            'Directorate' => [
                 'required',
                 'string',
                 'max:100',
             ],
+            'Description' => ['required', 'string'],
 
             'IsActive' => [
                 'required',

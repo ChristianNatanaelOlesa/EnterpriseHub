@@ -47,7 +47,7 @@ class CompanyController extends Controller
 
     public function show(string $id)
     {
-        $company = $this->companyService->findById((int) $id);
+        $company = $this->companyService->findById($id);
 
         return view(
             'master.company.show',
@@ -58,7 +58,7 @@ class CompanyController extends Controller
     public function edit(string $id)
     {
         $company = $this->companyService->findById(
-            (int) $id
+            $id
         );
 
         return view(
@@ -72,7 +72,7 @@ class CompanyController extends Controller
         string $id
     ) {
         $this->companyService->update(
-            (int) $id,
+            $id,
             $request->validated()
         );
 
@@ -83,7 +83,7 @@ class CompanyController extends Controller
 
     public function destroy(string $id)
     {
-        $this->companyService->delete((int) $id);
+        $this->companyService->delete($id);
 
         return redirect()
             ->route('master.company.index')

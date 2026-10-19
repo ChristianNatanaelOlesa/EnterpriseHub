@@ -95,7 +95,7 @@
                                 Division
                             </label>
 
-                            <input type="text" class="form-control" value="{{ $division?->DivisionName ?? '-' }}"
+                            <input type="text" class="form-control" value="{{ $division?->Division ?? '-' }}"
                                 readonly>
 
                         </div>
@@ -204,46 +204,110 @@
                         </div>
 
 
-                        <div class="col-md-4 existing-folder-section">
+                        
+                        <div class="col-12 existing-folder-section">
 
-                            <label class="form-label">
-                                Existing Sharing Folder
-                            </label>
+                            <div class="folder-section-header mb-3">
+                                <div>
+                                    <label class="form-label mb-1">
+                                        Existing Sharing Folder
+                                    </label>
+                                    <div class="text-muted small">
+                                        Select one or more existing folders to grant access.
+                                    </div>
+                                </div>
+
+                                <span class="folder-count-badge">
+                                    <i class="bi bi-folder2-open me-1"></i>
+                                    {{ $folders->count() }} available
+                                </span>
+                            </div>
 
                             <div class="folder-picker">
 
-                                <div class="folder-search mb-2">
-
-                                    <input type="text" id="folderSearch" class="form-control"
-                                        placeholder="Search folder...">
-
+                                <div class="folder-search-wrap mb-3">
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="bi bi-search"></i>
+                                        </span>
+                                        <input
+                                            type="text"
+                                            id="folderSearch"
+                                            class="form-control"
+                                            placeholder="Search folder name or path..."
+                                            autocomplete="off"
+                                        >
+                                    </div>
                                 </div>
 
-                                <div class="border rounded p-2 folder-list">
+                                <div class="folder-list" id="folderList">
 
-                                    @foreach ($folders as $folder)
-                                        <div class="form-check folder-item py-1"
-                                            data-search="{{ strtolower($folder->FolderName . ' ' . $folder->FolderPath) }}">
+                                    @forelse($folders as $folder)
 
-                                            <input class="form-check-input" type="checkbox" name="FolderPathIDs[]"
+                                        <div
+                                            class="folder-card folder-item"
+                                            data-search="{{ strtolower($folder->FolderName . ' ' . $folder->FolderPath) }}"
+                                        >
+
+                                            <input
+                                                class="folder-checkbox"
+                                                type="checkbox"
+                                                name="FolderPathIDs[]"
                                                 value="{{ $folder->FolderPathID }}"
-                                                id="folder_{{ $folder->FolderPathID }}" @checked(in_array($folder->FolderPathID, old('FolderPathIDs', $selectedFolderIds ?? [])))>
+                                                id="folder_{{ $folder->FolderPathID }}"
+                                                @checked(
+                                                    in_array(
+                                                        $folder->FolderPathID,
+                                                        old('FolderPathIDs', $selectedFolderIds ?? [])
+                                                    )
+                                                )
+                                            >
 
-                                            <label class="form-check-label" for="folder_{{ $folder->FolderPathID }}">
+                                            <label
+                                                class="folder-card-label"
+                                                for="folder_{{ $folder->FolderPathID }}"
+                                            >
+                                                <span class="folder-icon">
+                                                    <i class="bi bi-folder-fill"></i>
+                                                </span>
 
-                                                <strong>
-                                                    {{ $folder->FolderName }}
-                                                </strong>
+                                                <span class="folder-card-content">
+                                                    <strong class="folder-card-name">
+                                                        {{ $folder->FolderName }}
+                                                    </strong>
 
-                                                <small class="text-muted d-block">
-                                                    {{ $folder->FolderPath }}
-                                                </small>
+                                                    <span class="folder-card-path">
+                                                        {{ $folder->FolderPath }}
+                                                    </span>
+                                                </span>
 
+                                                <span class="folder-card-check">
+                                                    <i class="bi bi-check2"></i>
+                                                </span>
                                             </label>
 
                                         </div>
-                                    @endforeach
 
+                                    @empty
+
+                                        <div class="folder-empty-state">
+                                            <i class="bi bi-folder-x"></i>
+                                            <div class="fw-semibold">No active sharing folders found</div>
+                                            <div class="text-muted small">
+                                                Create a Folder Path first before requesting access.
+                                            </div>
+                                        </div>
+
+                                    @endforelse
+
+                                </div>
+
+                                <div id="folderSearchEmpty" class="folder-empty-state d-none">
+                                    <i class="bi bi-search"></i>
+                                    <div class="fw-semibold">No matching folder</div>
+                                    <div class="text-muted small">
+                                        Try another folder name or path.
+                                    </div>
                                 </div>
 
                             </div>
@@ -251,44 +315,94 @@
                         </div>
 
 
-                        <div class="col-md-8 new-folder-section d-none">
 
-                            <div class="row g-3">
+                        <div class="col-12 new-folder-section d-none">
 
-                                <div class="col-md-6">
+                            <div class="new-folder-panel">
 
-                                    <label class="form-label">
-                                        Parent Folder <span class="text-danger">*</span>
-                                    </label>
-
-                                    <select name="ParentFolderPathID" id="ParentFolderPathID" class="form-select">
-
-                                        <option value="">
-                                            - Select Parent Folder -
-                                        </option>
-
-                                        @foreach ($folders as $folder)
-                                            <option value="{{ $folder->FolderPathID }}" @selected(old('ParentFolderPathID', $selectedParentFolderId ?? '') === $folder->FolderPathID)>
-                                                {{ $folder->FolderName }}
-                                                -
-                                                {{ $folder->FolderPath }}
-                                            </option>
-                                        @endforeach
-
-                                    </select>
-
+                                <div class="new-folder-panel-header mb-3">
+                                    <div>
+                                        <div class="fw-semibold">
+                                            <i class="bi bi-folder-plus me-1"></i>
+                                            Create New Sharing Folder
+                                        </div>
+                                        <div class="text-muted small">
+                                            Select the parent folder and enter the new folder name.
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <div class="row g-3">
 
-                                <div class="col-md-6">
+                                    <div class="col-md-6">
 
-                                    <label class="form-label">
-                                        New Folder Name
-                                        <span class="text-danger">*</span>
-                                    </label>
+                                        <label class="form-label">
+                                            Create Under Folder <span class="text-danger">*</span>
+                                        </label>
 
-                                    <input type="text" name="NewFolderName" id="NewFolderName" class="form-control"
-                                        value="{{ old('NewFolderName', $newFolderName ?? '') }}" maxlength="150">
+                                        <select
+                                            name="ParentFolderPathID"
+                                            id="ParentFolderPathID"
+                                            class="form-select"
+                                        >
+
+                                            <option value="">
+                                                - Select Folder Path -
+                                            </option>
+
+                                            @foreach ($folders as $folder)
+                                                <option
+                                                    value="{{ $folder->FolderPathID }}"
+                                                    data-path="{{ $folder->FolderPath }}"
+                                                    @selected(
+                                                        old(
+                                                            'ParentFolderPathID',
+                                                            $selectedParentFolderId ?? ''
+                                                        ) == $folder->FolderPathID
+                                                    )
+                                                >
+                                                    {{ $folder->FolderName }} - {{ $folder->FolderPath }}
+                                                </option>
+                                            @endforeach
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+                                        <label class="form-label">
+                                            New Folder Name <span class="text-danger">*</span>
+                                        </label>
+
+                                        <div class="input-group">
+                                            <span class="input-group-text">
+                                                <i class="bi bi-folder-plus"></i>
+                                            </span>
+                                            <input
+                                                type="text"
+                                                name="NewFolderName"
+                                                id="NewFolderName"
+                                                class="form-control"
+                                                value="{{ old('NewFolderName', $newFolderName ?? '') }}"
+                                                maxlength="150"
+                                                placeholder="e.g. Human Capital"
+                                            >
+                                        </div>
+
+                                        <div class="form-text">
+                                            Use the folder name only. The final network path will be generated from the selected Folder Path.
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="requested-path-preview">
+                                            <div class="small text-muted mb-1">Requested Path Preview</div>
+                                            <div class="font-monospace" id="requestedPathPreview">-</div>
+                                            <input type="hidden" id="RequestedPathPreview" value="">
+                                        </div>
+                                    </div>
 
                                 </div>
 
@@ -361,23 +475,179 @@
             gap: .5rem;
         }
 
-        .folder-list {
-            max-height: 280px;
-            overflow-y: auto;
+
+        .folder-section-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
         }
 
-        .folder-item {
-            border-radius: 5px;
-            padding-left: .5rem !important;
-            padding-right: .5rem !important;
-        }
-
-        .folder-item:hover {
+        .folder-count-badge {
+            display: inline-flex;
+            align-items: center;
+            white-space: nowrap;
+            padding: .35rem .65rem;
+            border: 1px solid #dee2e6;
+            border-radius: 999px;
             background: #f8f9fa;
+            color: #6c757d;
+            font-size: .8rem;
         }
 
-        .folder-item label {
+        .folder-search-wrap {
+            max-width: 100%;
+        }
+
+        .folder-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: .75rem;
+            max-height: 360px;
+            overflow-y: auto;
+            padding: .15rem;
+        }
+
+        .folder-card {
+            position: relative;
+            min-width: 0;
+        }
+
+        .folder-checkbox {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .folder-card-label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: .75rem;
+            width: 100%;
+            min-height: 76px;
+            margin: 0;
+            padding: .8rem .9rem;
+            border: 1px solid #dee2e6;
+            border-radius: .6rem;
+            background: #fff;
             cursor: pointer;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+
+        .folder-card-label:hover {
+            border-color: #b6c2d2;
+            background: #f8fafc;
+        }
+
+        .folder-checkbox:checked + .folder-card-label {
+            border-color: #0d6efd;
+            background: #f4f8ff;
+            box-shadow: 0 0 0 2px rgba(13, 110, 253, .08);
+        }
+
+        .folder-icon {
+            flex: 0 0 38px;
+            width: 38px;
+            height: 38px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: .5rem;
+            background: #eef4ff;
+            color: #0d6efd;
+            font-size: 1.1rem;
+        }
+
+        .folder-card-content {
+            min-width: 0;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            gap: .2rem;
+        }
+
+        .folder-card-name {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .folder-card-path {
+            display: block;
+            color: #6c757d;
+            font-size: .8rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .folder-card-check {
+            flex: 0 0 auto;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dee2e6;
+            border-radius: 50%;
+            color: transparent;
+            background: #fff;
+        }
+
+        .folder-checkbox:checked + .folder-card-label .folder-card-check {
+            border-color: #0d6efd;
+            background: #0d6efd;
+            color: #fff;
+        }
+
+        .folder-empty-state {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 1.5rem;
+            border: 1px dashed #ced4da;
+            border-radius: .6rem;
+            background: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .folder-empty-state > i {
+            font-size: 1.8rem;
+            margin-bottom: .5rem;
+        }
+
+        .new-folder-panel {
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: .65rem;
+            background: #f8fafc;
+        }
+
+
+        .requested-path-preview {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: .5rem;
+            padding: .75rem .9rem;
+        }
+
+        .requested-path-preview .font-monospace {
+            overflow-wrap: anywhere;
+            color: #495057;
+        }
+
+        @media (max-width: 767.98px) {
+            .folder-section-header {
+                flex-direction: column;
+            }
+
+            .folder-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 @endpush
@@ -407,6 +677,29 @@
 
             const folderSearch =
                 document.getElementById('folderSearch');
+
+            const parentFolderPath =
+                document.getElementById('ParentFolderPathID');
+
+            const newFolderName =
+                document.getElementById('NewFolderName');
+
+            const requestedPathPreview =
+                document.getElementById('requestedPathPreview');
+
+            function syncRequestedPathPreview() {
+                if (!parentFolderPath || !newFolderName || !requestedPathPreview) {
+                    return;
+                }
+
+                const option = parentFolderPath.options[parentFolderPath.selectedIndex];
+                const rawPath = option?.dataset?.path || '';
+                const folderName = newFolderName.value.trim();
+
+                requestedPathPreview.textContent = rawPath && folderName
+                    ? rawPath.replace(/\\+$/, '') + '\\' + folderName
+                    : '-';
+            }
 
 
             function syncDateUntil() {
@@ -507,11 +800,32 @@
                         const keyword =
                             this.value.toLowerCase().trim();
 
+                        let visibleCount = 0;
+
                         document
                             .querySelectorAll('.folder-item')
                             .forEach(function(item) {
 
-                                item.style.display = !keyword ||
+                                const visible = !keyword ||
+                                    item.dataset.search.includes(keyword);
+
+                                item.style.display = visible ? '' : 'none';
+
+                                if (visible) {
+                                    visibleCount++;
+                                }
+
+                            });
+
+                        const emptyState =
+                            document.getElementById('folderSearchEmpty');
+
+                        if (emptyState) {
+                            emptyState.classList.toggle(
+                                'd-none',
+                                visibleCount > 0
+                            );
+                        }|
                                     item.dataset.search.includes(keyword) ?
                                     '' :
                                     'none';

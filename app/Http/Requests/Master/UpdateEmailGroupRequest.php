@@ -17,10 +17,10 @@ class UpdateEmailGroupRequest extends FormRequest
         $emailGroupId = $this->route('emailGroup');
 
         return [
-            'DivisionID' => [
+            'DivID' => [
                 'required',
                 'integer',
-                'exists:ms_division,DivisionID',
+                'exists:ms_division,DivID',
             ],
             'Email' => [
                 'required',
@@ -46,7 +46,7 @@ class UpdateEmailGroupRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'DivisionID' => 'Division',
+            'DivID' => 'Division',
             'Email' => 'Email',
             'Description' => 'Description',
             'IsGroup' => 'Is Group',

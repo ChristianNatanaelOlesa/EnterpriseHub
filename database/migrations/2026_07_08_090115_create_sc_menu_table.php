@@ -9,19 +9,21 @@ return new class () extends Migration {
     {
         Schema::create('sc_menu', function (Blueprint $Table) {
 
-            $Table->bigIncrements('MenuID');
+            $Table->string('MenuID', 8)->primary();
 
-            $Table->unsignedBigInteger('ParentID')->nullable();
+            $Table->string('ParentID', 8)->nullable();
 
-            $Table->string('Code', 30)->unique();
+            $Table->unsignedTinyInteger('Lvl')->default(1);
 
-            $Table->string('Name', 100);
+            $Table->string('MenuArea', 5)->default('TOP');
 
-            $Table->string('Route', 255)->nullable();
+            $Table->string('Menu', 100);
 
-            $Table->string('URL', 255)->nullable();
+            $Table->text('Description');
 
             $Table->string('Icon', 100)->nullable();
+
+            $Table->string('Route', 255)->nullable();
 
             $Table->integer('SortOrder')->default(0);
 
@@ -32,9 +34,14 @@ return new class () extends Migration {
             $Table->auditColumns();
 
             $Table->index('ParentID');
-            $Table->index('Code');
             $Table->index('IsActive');
             $Table->index('SortOrder');
+            $Table->index('MenuArea');
+
+            $Table->foreign('ParentID')
+               ->references('MenuID')
+               ->on('sc_menu')
+               ->restrictOnDelete();
         });
     }
 

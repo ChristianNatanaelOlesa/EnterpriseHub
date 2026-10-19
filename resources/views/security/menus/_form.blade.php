@@ -3,13 +3,12 @@
     <div class="col-md-6 mb-3">
 
         <label class="form-label">
-            Code
+            Menu ID
         </label>
 
-        <input type="text" name="Code" class="form-control @error('Code') is-invalid @enderror"
-            value="{{ old('Code', $menu->Code ?? '') }}" maxlength="30" required>
+        <input type="text" class="form-control" value="{{ $menu->MenuID ?? 'Generated automatically' }}" readonly>
 
-        @error('Code')
+        @error('MenuID')
             <div class="invalid-feedback">
                 {{ $message }}
             </div>
@@ -21,13 +20,13 @@
     <div class="col-md-6 mb-3">
 
         <label class="form-label">
-            Name
+            Menu
         </label>
 
-        <input type="text" name="Name" class="form-control @error('Name') is-invalid @enderror"
-            value="{{ old('Name', $menu->Name ?? '') }}" maxlength="100" required>
+        <input type="text" name="Menu" class="form-control @error('Menu') is-invalid @enderror"
+            value="{{ old('Menu', $menu->Menu ?? '') }}" maxlength="100" required>
 
-        @error('Name')
+        @error('Menu')
             <div class="invalid-feedback">
                 {{ $message }}
             </div>
@@ -36,34 +35,21 @@
     </div>
 
 
-    <div class="col-md-6 mb-3">
+    <div class="col-md-6 mb-3"><label class="form-label">Level</label><input class="form-control" value="{{ $menu->Lvl ?? 'Calculated automatically' }}" readonly></div>
+    <div class="col-md-6 mb-3"><label class="form-label">Menu Area</label><select name="MenuArea" class="form-select" required><option value="TOP" @selected(old('MenuArea', $menu->MenuArea ?? 'TOP') === 'TOP')>TOP</option><option value="SIDEBAR" @selected(old('MenuArea', $menu->MenuArea ?? '') === 'SIDEBAR')>SIDEBAR</option></select></div>
 
-        <label class="form-label">
-            Parent Menu
-        </label>
-
-        <select name="ParentID" class="form-select @error('ParentID') is-invalid @enderror">
-
-            <option value="">
-                -- No Parent --
-            </option>
-
+    <div class="col-md-12 mb-3">
+        <label for="ParentID" class="form-label">Parent Menu</label>
+        <select id="ParentID" name="ParentID" class="form-select @error('ParentID') is-invalid @enderror">
+            <option value="">No parent (Level 1)</option>
             @foreach ($parents as $parent)
-                <option value="{{ $parent->MenuID }}" @selected(old('ParentID', $menu->ParentID ?? '') == $parent->MenuID)>
-
-                    {{ $parent->Name }}
-
+                <option value="{{ $parent->MenuID }}" @selected(old('ParentID', $menu->ParentID ?? '') === $parent->MenuID)>
+                    {{ $parent->MenuID }} — {{ $parent->Menu }} (Level {{ $parent->Lvl }})
                 </option>
             @endforeach
-
         </select>
-
-        @error('ParentID')
-            <div class="invalid-feedback">
-                {{ $message }}
-            </div>
-        @enderror
-
+        <div class="form-text">MenuID yang dipilih menjadi ParentID. Level dihitung otomatis, maksimal 3 level.</div>
+        @error('ParentID')<div class="invalid-feedback">{{ $message }}</div>@enderror
     </div>
 
 
@@ -94,11 +80,10 @@
     <div class="col-md-6 mb-3">
 
         <label class="form-label">
-            URL
+            Description
         </label>
 
-        <input type="text" name="URL" class="form-control" value="{{ old('URL', $menu->URL ?? '') }}"
-            maxlength="255" placeholder="/security/users">
+        <textarea name="Description" class="form-control" required>{{ old('Description', $menu->Description ?? '') }}</textarea>
 
     </div>
 

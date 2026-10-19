@@ -14,7 +14,7 @@ class FolderPathRepository
     public function getAll(?string $search = null, int $perPage = 10): LengthAwarePaginator
     {
         return $this->model->newQuery()
-            ->with('parent')
+            ->with('parentFolder')
             ->when($search, function ($query) use ($search) {
                 $like = "%{$search}%";
 
@@ -22,9 +22,9 @@ class FolderPathRepository
                     $q->where('FolderPathID', 'like', $like)
                         ->orWhere('FolderName', 'like', $like)
                         ->orWhere('FolderPath', 'like', $like)
-                        ->orWhereHas('parent', function ($parent) use ($like) {
-                            $parent->where('FolderName', 'like', $like)
-                                ->orWhere('FolderPath', 'like', $like);
+                        ->orWhereHas('parentFolder', function ($parent) use ($like) {
+                            $parent->where('ParentFolderName', 'like', $like)
+                                ->orWhere('ParentFolderPath', 'like', $like);
                         });
                 });
             })
@@ -35,7 +35,7 @@ class FolderPathRepository
 
     public function find(string $id): ?MsFolderPath
     {
-        return $this->model->newQuery()->with('parent')->find($id);
+        return $this->model->newQuery()->with('parentFolder')->find($id);
     }
 
     public function create(array $data): MsFolderPath

@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit User')
+@section('title', 'User Access - Edit Account')
 
 @section('content')
 
@@ -10,7 +10,7 @@
 
             <h3 class="card-title">
 
-                Edit User
+                User Access - Edit Account
 
             </h3>
 
@@ -24,7 +24,11 @@
 
             <div class="card-body">
 
-                @include('security.users._form', ['mode' => 'edit'])
+                @include('security.users._form', [
+                    'mode' => 'edit',
+                    'roles' => $roles,
+                    'userRoleIds' => $userRoleIds,
+                ])
 
             </div>
 

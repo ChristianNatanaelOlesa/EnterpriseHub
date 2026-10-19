@@ -48,3 +48,4 @@ require __DIR__.'/transaction.php';
 require __DIR__.'/reporting.php';
 require __DIR__.'/dashboard.php';
 require __DIR__.'/setting.php';
+require __DIR__.'/workflow.php';

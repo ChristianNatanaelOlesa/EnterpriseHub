@@ -8,6 +8,7 @@ use App\Http\Requests\Master\UpdateAssetRequest;
 use App\Services\Master\AssetService;
 use App\Services\Master\AssetTypeService;
 use App\Services\Master\CurrencyService;
+use App\Models\Master\MsVendor;
 use Illuminate\Http\Request;
 
 class AssetController extends Controller
@@ -22,7 +23,8 @@ class AssetController extends Controller
     {
         $assetTypes = $this->typeService->getAll(null);
         $currencies = $this->currencyService->getAll(null);
-        return view('master.asset.create', compact('assetTypes', 'currencies'));
+        $vendors = MsVendor::query()->where('IsActive', true)->whereNull('DeletedDate')->orderBy('Vendor')->get();
+        return view('master.asset.create', compact('assetTypes', 'currencies', 'vendors'));
     }public function store(StoreAssetRequest $r)
     {
         $this->service->store($r->validated());
@@ -32,7 +34,8 @@ class AssetController extends Controller
         $asset = $this->service->findById($id);
         $assetTypes = $this->typeService->getAll(null);
         $currencies = $this->currencyService->getAll(null);
-        return view('master.asset.edit', compact('asset', 'assetTypes', 'currencies'));
+        $vendors = MsVendor::query()->where('IsActive', true)->whereNull('DeletedDate')->orderBy('Vendor')->get();
+        return view('master.asset.edit', compact('asset', 'assetTypes', 'currencies', 'vendors'));
     }public function update(UpdateAssetRequest $r, string $id)
     {
         $this->service->update($id, $r->validated());
@@ -40,6 +43,6 @@ class AssetController extends Controller
     }public function destroy(string $id)
     {
         $this->service->delete($id);
-        return redirect()->route('master.asset.index')->with('success','Asset berhasil dihapus.');
+        return redirect()->route('master.asset.index')->with('success', 'Asset berhasil dihapus.');
     }
 }

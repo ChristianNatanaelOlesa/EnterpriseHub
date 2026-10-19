@@ -9,19 +9,20 @@ return new class () extends Migration {
     {
         Schema::create('ms_division', function (Blueprint $table) {
 
-            $table->id('DivisionID');
+            $table->string('DivID', 3)->primary();
 
-            $table->unsignedBigInteger('DirectorateID');
+            $table->string('DirID');
 
-            $table->string('DivisionCode', 20);
-            $table->string('DivisionName', 200);
+            $table->string('Division', 200);
+
+            $table->text('Description');
 
             $table->boolean('IsActive')->default(true);
 
             $table->auditColumns();
 
-            $table->foreign('DirectorateID')
-                ->references('DirectorateID')
+            $table->foreign('DirID')
+                ->references('DirID')
                 ->on('ms_directorate')
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();

@@ -8,12 +8,17 @@ class MsDepartment extends BaseModel
 {
     protected $table = 'ms_department';
 
-    protected $primaryKey = 'DepartmentID';
+    protected $primaryKey = 'DeptID';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'DivisionID',
-        'DepartmentCode',
-        'DepartmentName',
+        'DeptID',
+        'DivID',
+        'Department',
+        'Description',
         'IsActive',
         'InputUser',
         'InputDate',
@@ -24,7 +29,6 @@ class MsDepartment extends BaseModel
     ];
 
     protected $casts = [
-        'DivisionID' => 'integer',
         'IsActive' => 'boolean',
     ];
 
@@ -32,8 +36,8 @@ class MsDepartment extends BaseModel
     {
         return $this->belongsTo(
             MsDivision::class,
-            'DivisionID',
-            'DivisionID'
+            'DivID',
+            'DivID'
         );
     }
 }

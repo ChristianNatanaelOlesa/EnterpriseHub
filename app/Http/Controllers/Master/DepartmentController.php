@@ -37,7 +37,7 @@ class DepartmentController extends Controller
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         $directorates = collect();
@@ -71,7 +71,7 @@ class DepartmentController extends Controller
     public function show(string $id)
     {
         $department = $this->departmentService->findById(
-            (int) $id
+            $id
         );
 
         return view(
@@ -83,33 +83,33 @@ class DepartmentController extends Controller
     public function edit(string $id)
     {
         $department = $this->departmentService->findById(
-            (int) $id
+            $id
         );
 
         $companies = MsCompany::query()
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('CompanyName')
+            ->orderBy('Company')
             ->get();
 
         $directorates = MsDirectorate::query()
             ->where(
-                'CompanyID',
-                $department->CompanyID
+                'CompID',
+                $department->CompID
             )
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get();
 
         $divisions = MsDivision::query()
             ->where(
-                'DirectorateID',
-                $department->DirectorateID
+                'DirID',
+                $department->DirID
             )
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DivisionName')
+            ->orderBy('Division')
             ->get();
 
         return view(
@@ -128,7 +128,7 @@ class DepartmentController extends Controller
         string $id
     ) {
         $this->departmentService->update(
-            (int) $id,
+            $id,
             $request->validated()
         );
 
@@ -143,7 +143,7 @@ class DepartmentController extends Controller
     public function destroy(string $id)
     {
         $this->departmentService->delete(
-            (int) $id
+            $id
         );
 
         return redirect()
@@ -157,48 +157,50 @@ class DepartmentController extends Controller
     public function getDirectorates(Request $request)
     {
         $request->validate([
-            'CompanyID' => [
+            'CompID' => [
                 'required',
-                'integer',
-                'exists:ms_company,CompanyID',
+                'string',
+                'max:3',
+                'exists:ms_company,CompID',
             ],
         ]);
 
         return MsDirectorate::query()
             ->where(
-                'CompanyID',
-                $request->CompanyID
+                'CompID',
+                $request->CompID
             )
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DirectorateName')
+            ->orderBy('Directorate')
             ->get([
-                'DirectorateID',
-                'DirectorateName',
+                'DirID',
+                'Directorate',
             ]);
     }
 
     public function getDivisions(Request $request)
     {
         $request->validate([
-            'DirectorateID' => [
+            'DirID' => [
                 'required',
-                'integer',
-                'exists:ms_directorate,DirectorateID',
+                'string',
+                'max:3',
+                'exists:ms_directorate,DirID',
             ],
         ]);
 
         return MsDivision::query()
             ->where(
-                'DirectorateID',
-                $request->DirectorateID
+                'DirID',
+                $request->DirID
             )
             ->where('IsActive', true)
             ->whereNull('DeletedDate')
-            ->orderBy('DivisionName')
+            ->orderBy('Division')
             ->get([
-                'DivisionID',
-                'DivisionName',
+                'DivID',
+                'Division',
             ]);
     }
 }

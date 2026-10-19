@@ -25,19 +25,19 @@
                 </div>
 
                 <div class="mb-3">
-                    <label for="DivisionID" class="form-label">
+                    <label for="DivID" class="form-label">
                         Division <span class="text-danger">*</span>
                     </label>
-                    <select id="DivisionID" name="DivisionID" class="form-select @error('DivisionID') is-invalid @enderror"
+                    <select id="DivID" name="DivID" class="form-select @error('DivID') is-invalid @enderror"
                         required>
                         <option value="">-- Pilih Division --</option>
                         @foreach ($divisions as $division)
-                            <option value="{{ $division->DivisionID }}" @selected(old('DivisionID', $data->DivisionID ?? '') == $division->DivisionID)>
-                                {{ $division->DivisionName }}
+                            <option value="{{ $division->DivID }}" @selected(old('DivID', $data->DivID ?? '') == $division->DivID)>
+                                {{ $division->Division }}
                             </option>
                         @endforeach
                     </select>
-                    @error('DivisionID')
+                    @error('DivID')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>

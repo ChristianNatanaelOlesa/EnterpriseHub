@@ -22,7 +22,8 @@ class EmpITAreaController extends Controller
     {
         $data = $this->service->getAll(
             $request->input('search'),
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
         return view(
@@ -35,11 +36,7 @@ class EmpITAreaController extends Controller
     {
         $user = auth()->user();
 
-        $empFormID = $user?->EmpFormID;
-        $reqUser = $user?->Username
-            ?? $user?->username
-            ?? $user?->email
-            ?? '-';
+        $empFormID = $user?->EmpFormID ?? $user?->username ?? $user?->email ?? '-';
 
         $history = null;
 
@@ -56,8 +53,6 @@ class EmpITAreaController extends Controller
             'eform.employee-it-area.create',
             [
                 'empFormID' => $empFormID,
-                'reqDivID' => $history?->DivID,
-                'reqUser' => $reqUser,
                 'division' => $history?->division,
             ]
         );
@@ -80,12 +75,7 @@ class EmpITAreaController extends Controller
 
         $payload = $request->validated();
 
-        $payload['EmpFormID'] = $user?->EmpFormID;
-        $payload['ReqDivID'] = $history?->DivID;
-        $payload['ReqUser'] = $user?->Username
-            ?? $user?->username
-            ?? $user?->email
-            ?? 'Admin';
+        $payload['EmpFormID'] = $user?->EmpFormID ?? $user?->username ?? $user?->email ?? 'Admin';
         $payload['ReqDate'] = now()->toDateString();
 
         $payload['DataCenter'] = $request->boolean('DataCenter');

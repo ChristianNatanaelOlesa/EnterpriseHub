@@ -53,7 +53,7 @@
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Division</label>
-                            <input type="text" class="form-control" value="{{ $division?->DivisionName ?? '-' }}"
+                            <input type="text" class="form-control" value="{{ $division?->Division ?? '-' }}"
                                 readonly>
                         </div>
                     </div>

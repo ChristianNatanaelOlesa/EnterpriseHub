@@ -13,9 +13,10 @@ class EmpNetworkRepository
 
     public function getAll(
         ?string $search = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?string $empFormId = null
     ): LengthAwarePaginator {
-        return $this->model
+        $query = $this->model
             ->newQuery()
             ->with([
                 'empForm',
@@ -38,12 +39,10 @@ class EmpNetworkRepository
                                 $keyword
                             )
                             ->orWhere(
-                                'ReqDivID',
                                 'like',
                                 $keyword
                             )
                             ->orWhere(
-                                'ReqUser',
                                 'like',
                                 $keyword
                             )
@@ -110,12 +109,12 @@ class EmpNetworkRepository
                                 function ($division) use ($keyword) {
                                     $division
                                         ->where(
-                                            'DivisionName',
+                                            'Division',
                                             'like',
                                             $keyword
                                         )
                                         ->orWhere(
-                                            'DivisionCode',
+                                            'DivID',
                                             'like',
                                             $keyword
                                         );
@@ -123,11 +122,20 @@ class EmpNetworkRepository
                             );
                     });
                 }
-            )
-            ->orderByDesc('InputDate')
-            ->orderByDesc('EmpNetworkID')
-            ->paginate($perPage)
-            ->withQueryString();
+            );
+
+        if ($empFormId !== null) {
+            $query->orderByRaw(
+                "CASE WHEN Status = 'DRAFT' AND EmpFormID = ? THEN 1 " .
+                "WHEN Status = 'WAITING_APPROVAL' THEN 2 " .
+                "WHEN Status IN ('APPROVED', 'COMPLETED') THEN 3 " .
+                "WHEN Status IN ('REJECTED', 'CANCELLED') THEN 4 " .
+                "ELSE 5 END",
+                [$empFormId]
+            );
+        }
+
+        return $query->orderByDesc('InputDate')->orderByDesc('EmpNetworkID')->paginate($perPage)->withQueryString();
     }
 
     public function find(string $id): ?TrEmpNetwork

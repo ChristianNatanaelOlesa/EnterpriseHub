@@ -16,7 +16,7 @@
 
         <div class="card-body">
 
-            <form method="POST" action="{{ route('master.department.update', $department->DepartmentID) }}">
+            <form method="POST" action="{{ route('master.department.update', $department->DeptID) }}">
 
                 @csrf
                 @method('PUT')
@@ -25,12 +25,12 @@
 
                 <div class="mb-3">
 
-                    <label for="CompanyID" class="form-label">
+                    <label for="CompID" class="form-label">
                         Company
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="CompanyID" id="CompanyID" class="form-select @error('CompanyID') is-invalid @enderror"
+                    <select name="CompID" id="CompID" class="form-select @error('CompID') is-invalid @enderror"
                         required>
 
                         <option value="">
@@ -38,18 +38,18 @@
                         </option>
 
                         @foreach ($companies as $company)
-                            <option value="{{ $company->CompanyID }}" @selected(old('CompanyID', $department->division?->directorate?->CompanyID) == $company->CompanyID)>
+                            <option value="{{ $company->CompID }}" @selected(old('CompID', $department->division?->directorate?->CompID) == $company->CompID)>
 
-                                {{ $company->CompanyCode }}
+                                {{ $company->CompID }}
                                 -
-                                {{ $company->CompanyName }}
+                                {{ $company->Company }}
 
                             </option>
                         @endforeach
 
                     </select>
 
-                    @error('CompanyID')
+                    @error('CompID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -61,13 +61,13 @@
 
                 <div class="mb-3">
 
-                    <label for="DirectorateID" class="form-label">
+                    <label for="DirID" class="form-label">
                         Directorate
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DirectorateID" id="DirectorateID"
-                        class="form-select @error('DirectorateID') is-invalid @enderror" required>
+                    <select name="DirID" id="DirID"
+                        class="form-select @error('DirID') is-invalid @enderror" required>
 
                         <option value="">
                             -- Pilih Directorate --
@@ -75,7 +75,7 @@
 
                     </select>
 
-                    @error('DirectorateID')
+                    @error('DirID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -87,12 +87,12 @@
 
                 <div class="mb-3">
 
-                    <label for="DivisionID" class="form-label">
+                    <label for="DivID" class="form-label">
                         Division
                         <span class="text-danger">*</span>
                     </label>
 
-                    <select name="DivisionID" id="DivisionID" class="form-select @error('DivisionID') is-invalid @enderror"
+                    <select name="DivID" id="DivID" class="form-select @error('DivID') is-invalid @enderror"
                         required>
 
                         <option value="">
@@ -101,7 +101,7 @@
 
                     </select>
 
-                    @error('DivisionID')
+                    @error('DivID')
                         <div class="invalid-feedback">
                             {{ $message }}
                         </div>
@@ -111,11 +111,11 @@
 
                 {{-- Department Code --}}
 
-                <x-form.input label="Department Code" name="DepartmentCode" :value="old('DepartmentCode', $department->DepartmentCode)" required="true" />
+                <x-form.input label="Department Code" name="DeptID" :value="old('DeptID', $department->DeptID)" required="true" />
 
                 {{-- Department Name --}}
 
-                <x-form.input label="Department Name" name="DepartmentName" :value="old('DepartmentName', $department->DepartmentName)" required="true" />
+                <x-form.input label="Department Name" name="Department" :value="old('Department', $department->Department)" required="true" />
 
                 {{-- Active --}}
 
@@ -150,19 +150,19 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             const companySelect =
-                document.getElementById('CompanyID');
+                document.getElementById('CompID');
 
             const directorateSelect =
-                document.getElementById('DirectorateID');
+                document.getElementById('DirID');
 
             const divisionSelect =
-                document.getElementById('DivisionID');
+                document.getElementById('DivID');
 
             const selectedDirectorate =
-                "{{ old('DirectorateID', $department->division?->DirectorateID) }}";
+                "{{ old('DirID', $department->division?->DirID) }}";
 
             const selectedDivision =
-                "{{ old('DivisionID', $department->DivisionID) }}";
+                "{{ old('DivID', $department->DivID) }}";
 
             if (
                 !companySelect ||
@@ -207,7 +207,7 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.department.directorates') }}?CompanyID=${companyId}`, {
+                        `{{ route('master.department.directorates') }}?CompID=${companyId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -236,13 +236,13 @@
                             document.createElement('option');
 
                         option.value =
-                            directorate.DirectorateID;
+                            directorate.DirID;
 
                         option.textContent =
-                            directorate.DirectorateName;
+                            directorate.Directorate;
 
                         if (
-                            String(directorate.DirectorateID) ===
+                            String(directorate.DirID) ===
                             String(selectedId)
                         ) {
                             option.selected = true;
@@ -295,7 +295,7 @@
                 try {
 
                     const response = await fetch(
-                        `{{ route('master.department.divisions') }}?DirectorateID=${directorateId}`, {
+                        `{{ route('master.department.divisions') }}?DirID=${directorateId}`, {
                             headers: {
                                 'Accept': 'application/json',
                                 'X-Requested-With': 'XMLHttpRequest'
@@ -324,13 +324,13 @@
                             document.createElement('option');
 
                         option.value =
-                            division.DivisionID;
+                            division.DivID;
 
                         option.textContent =
-                            division.DivisionName;
+                            division.Division;
 
                         if (
-                            String(division.DivisionID) ===
+                            String(division.DivID) ===
                             String(selectedId)
                         ) {
                             option.selected = true;

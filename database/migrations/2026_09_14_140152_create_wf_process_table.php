@@ -14,12 +14,10 @@ return new class () extends Migration {
             $table->string('ProcessID', 50)->primary();
 
             $table->string('Process', 255);
+
             $table->text('ProcessDesc')->nullable();
 
             $table->string('CcyID', 10)->nullable();
-
-            $table->decimal('LimitMin', 18, 2)->default(0);
-            $table->decimal('LimitMax', 18, 2)->default(0);
 
             $table->date('EffectiveDate')->nullable();
 
@@ -27,11 +25,7 @@ return new class () extends Migration {
 
             $table->boolean('IsActive')->default(true);
 
-            $table->dateTime('InputDate')->nullable();
-            $table->string('InputUser', 50)->nullable();
-
-            $table->dateTime('ModifDate')->nullable();
-            $table->string('ModifUser', 50)->nullable();
+            $table->auditColumns();
         });
     }
 

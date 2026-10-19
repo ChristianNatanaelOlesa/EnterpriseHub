@@ -15,10 +15,10 @@ class StoreEmailGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'DivisionID' => [
+            'DivID' => [
                 'required',
                 'integer',
-                'exists:ms_division,DivisionID',
+                'exists:ms_division,DivID',
             ],
             'Email' => [
                 'required',
@@ -44,7 +44,7 @@ class StoreEmailGroupRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'DivisionID' => 'Division',
+            'DivID' => 'Division',
             'Email' => 'Email',
             'Description' => 'Description',
             'IsGroup' => 'Is Group',

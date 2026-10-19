@@ -11,19 +11,14 @@ return new class () extends Migration {
             $table->unsignedBigInteger('VillageID')->primary();
 
             $table->string('DistrictID', 10);
+
             $table->string('Village', 100);
+
             $table->string('PostalCode', 10)->nullable();
+
             $table->boolean('IsActive')->default(true);
 
-            // Audit fields
-            $table->dateTime('InputDate')->useCurrent();
-            $table->string('InputUser', 50)->default('Admin');
-
-            $table->dateTime('ModifDate')->useCurrent();
-            $table->string('ModifUser', 50)->default('Admin');
-
-            $table->string('DeletedBy', 50)->nullable();
-            $table->dateTime('DeletedDate')->nullable();
+            $table->auditColumns();
 
             // Foreign key
             $table->foreign('DistrictID')
@@ -33,7 +28,6 @@ return new class () extends Migration {
             // Index
             $table->index('DistrictID');
             $table->index('PostalCode');
-            $table->index('IsActive');
         });
     }
 

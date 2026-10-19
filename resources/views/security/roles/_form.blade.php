@@ -4,14 +4,13 @@
 
         <label class="form-label">
 
-            Code
+            Role ID
 
         </label>
 
-        <input type="text" name="Code" value="{{ old('Code', $role->Code ?? '') }}"
-            class="form-control @error('Code') is-invalid @enderror">
+        <input type="text" value="{{ $role->RoleID ?? 'Generated automatically' }}" class="form-control" readonly>
 
-        @error('Code')
+        @error('RoleID')
             <div class="invalid-feedback">
 
                 {{ $message }}
@@ -25,14 +24,14 @@
 
         <label class="form-label">
 
-            Name
+            Role
 
         </label>
 
-        <input type="text" name="Name" value="{{ old('Name', $role->Name ?? '') }}"
-            class="form-control @error('Name') is-invalid @enderror">
+        <input type="text" name="Role" value="{{ old('Role', $role->Role ?? '') }}"
+            class="form-control @error('Role') is-invalid @enderror" required>
 
-        @error('Name')
+        @error('Role')
             <div class="invalid-feedback">
 
                 {{ $message }}

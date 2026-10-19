@@ -3,6 +3,7 @@
 namespace App\Services\EForm;
 
 use App\Models\EForm\TrEmpITArea;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use App\Repositories\EForm\EmpITAreaRepository;
 use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -19,9 +20,10 @@ class EmpITAreaService
 
     public function getAll(
         ?string $search = null,
-        int $perPage = 10
+        int $perPage = 10,
+        ?string $empFormId = null
     ): LengthAwarePaginator {
-        return $this->repository->getAll($search, $perPage);
+        return $this->repository->getAll($search, $perPage, $empFormId);
     }
 
     public function find(string $id): ?TrEmpITArea
@@ -150,7 +152,7 @@ class EmpITAreaService
     {
         $prefix = 'EIT' . $dateFrom->format('Ym') . '-';
 
-        $ids = TrEmpITArea::query()
+        $ids = TrEmpITArea::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpITAreaID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpITAreaID');

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 return new class () extends Migration {
     public function up(): void
     {
-        if (Schema::hasTable('Ms_Coc')) {
+        if (Schema::hasTable('ms_coc')) {
             return;
         }
 
@@ -17,15 +17,13 @@ return new class () extends Migration {
             $table->string('Description', 1000);
             $table->longText('Contents');
             $table->string('FileLoc', 200);
-            $table->dateTime('InputDate');
-            $table->string('InputUser', 50);
-            $table->dateTime('ModifDate');
-            $table->string('ModifUser', 50);
+
+            $table->auditColumns();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('Ms_Coc');
+        Schema::dropIfExists('ms_coc');
     }
 };

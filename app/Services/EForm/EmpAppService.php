@@ -4,6 +4,7 @@ namespace App\Services\EForm;
 
 use App\Models\EForm\TrEmpApp;
 use App\Models\EForm\TrEmpFormHist;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class EmpAppService
 {
-    public function getAll(?string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function getAll(?string $search = null, int $perPage = 10, ?string $empFormId = null): LengthAwarePaginator
     {
         $query = TrEmpApp::query();
 
@@ -21,8 +22,6 @@ class EmpAppService
             $query->where(function ($q) use ($keyword) {
                 $q->where('EmpAppID', 'like', $keyword)
                     ->orWhere('EmpFormID', 'like', $keyword)
-                    ->orWhere('ReqDivID', 'like', $keyword)
-                    ->orWhere('ReqUser', 'like', $keyword)
                     ->orWhere('ReqType', 'like', $keyword)
                     ->orWhere('Purpose', 'like', $keyword)
                     ->orWhere('UserLogin', 'like', $keyword)
@@ -37,6 +36,17 @@ class EmpAppService
                     ->orWhereRaw("DATE_FORMAT(DateFrom, '%Y-%m-%d') LIKE ?", [$keyword])
                     ->orWhereRaw("DATE_FORMAT(DateUntil, '%Y-%m-%d') LIKE ?", [$keyword]);
             });
+        }
+
+        if ($empFormId !== null) {
+            $query->orderByRaw(
+                "CASE WHEN Status = 'DRAFT' AND EmpFormID = ? THEN 1 " .
+                "WHEN Status = 'WAITING_APPROVAL' THEN 2 " .
+                "WHEN Status IN ('APPROVED', 'COMPLETED') THEN 3 " .
+                "WHEN Status IN ('REJECTED', 'CANCELLED') THEN 4 " .
+                "ELSE 5 END",
+                [$empFormId]
+            );
         }
 
         return $query
@@ -78,15 +88,13 @@ class EmpAppService
                 ]);
             }
 
-            $reqDivId = $this->getCurrentRequestDivisionId($empFormId);
+            $this->getCurrentRequestDivisionId($empFormId);
             $username = $this->username();
             $now = now();
             $dateFrom = $data['DateFrom'];
 
             $data['EmpAppID'] = $this->generateId($dateFrom);
             $data['EmpFormID'] = $empFormId;
-            $data['ReqDivID'] = $reqDivId;
-            $data['ReqUser'] = $username;
             $data['ReqDate'] = $now->toDateString();
 
             $data['UserLogin'] = $this->defaultText($data['UserLogin'] ?? null);
@@ -132,7 +140,7 @@ class EmpAppService
 
             $username = $this->username();
 
-            $data['ReqDivID'] = $this->getCurrentRequestDivisionId($app->EmpFormID);
+            $this->getCurrentRequestDivisionId($app->EmpFormID);
             $data['UserLogin'] = $this->defaultText($data['UserLogin'] ?? null);
             $data['UserPassword'] = $this->defaultText($data['UserPassword'] ?? null);
             $data['URL'] = $data['AppType'] === 'Website'
@@ -147,7 +155,6 @@ class EmpAppService
             unset(
                 $data['EmpAppID'],
                 $data['EmpFormID'],
-                $data['ReqUser'],
                 $data['ReqDate'],
                 $data['CocID'],
                 $data['IsConfirm'],
@@ -196,7 +203,7 @@ class EmpAppService
 
         if ($divisionId === null) {
             throw ValidationException::withMessages([
-                'ReqDivID' => 'Division aktif untuk EmpFormID user login tidak ditemukan pada Tr_EmpFormHist.',
+                'EmpFormID' => 'Division aktif untuk EmpFormID user login tidak ditemukan pada Tr_EmpFormHist.',
             ]);
         }
 
@@ -227,7 +234,7 @@ class EmpAppService
         $date = \Carbon\Carbon::parse($dateFrom);
         $prefix = 'EAP' . $date->format('Ym') . '-';
 
-        $ids = TrEmpApp::query()
+        $ids = TrEmpApp::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpAppID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpAppID');

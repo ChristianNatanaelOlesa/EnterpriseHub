@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Security\UserController;
 use App\Http\Controllers\Security\RoleController;
 use App\Http\Controllers\Security\MenuController;
+use App\Http\Controllers\Security\PermissionController;
 
 Route::middleware('auth')
     ->prefix('security')
@@ -19,7 +20,7 @@ Route::middleware('auth')
             [UserController::class, 'resetPassword']
         )->name('users.reset-password')
           ->middleware(
-              'permission:security.users.index,CanEdit'
+              'permission:security.users.index,Update'
           );
 
         Route::post(
@@ -27,37 +28,41 @@ Route::middleware('auth')
             [UserController::class, 'toggleStatus']
         )->name('users.toggle-status')
           ->middleware(
-              'permission:security.users.index,CanEdit'
+              'permission:security.users.index,Update'
           );
 
-        Route::resource('users', UserController::class)
+        Route::get(
+            'users/{user}/roles',
+            [UserController::class, 'showRoles']
+        )->name('users.roles')
+          ->middleware(
+              'permission:security.users.index,View'
+          );
+
+        Route::resource('users', UserController::class)->except(['show'])
             ->middlewareFor(
                 'index',
-                'permission:security.users.index,CanOpen'
+                'permission:security.users.index,View'
             )
             ->middlewareFor(
                 'create',
-                'permission:security.users.index,CanAdd'
+                'permission:security.users.index,Create'
             )
             ->middlewareFor(
                 'store',
-                'permission:security.users.index,CanAdd'
-            )
-            ->middlewareFor(
-                'show',
-                'permission:security.users.index,CanOpen'
+                'permission:security.users.index,Create'
             )
             ->middlewareFor(
                 'edit',
-                'permission:security.users.index,CanEdit'
+                'permission:security.users.index,Update'
             )
             ->middlewareFor(
                 'update',
-                'permission:security.users.index,CanEdit'
+                'permission:security.users.index,Update'
             )
             ->middlewareFor(
                 'destroy',
-                'permission:security.users.index,CanDelete'
+                'permission:security.users.index,Delete'
             );
 
 
@@ -65,34 +70,30 @@ Route::middleware('auth')
         // ROLES
         // =========================
 
-        Route::resource('roles', RoleController::class)
+        Route::resource('roles', RoleController::class)->except(['show'])
             ->middlewareFor(
                 'index',
-                'permission:security.roles.index,CanOpen'
+                'permission:security.roles.index,View'
             )
             ->middlewareFor(
                 'create',
-                'permission:security.roles.index,CanAdd'
+                'permission:security.roles.index,Create'
             )
             ->middlewareFor(
                 'store',
-                'permission:security.roles.index,CanAdd'
-            )
-            ->middlewareFor(
-                'show',
-                'permission:security.roles.index,CanOpen'
+                'permission:security.roles.index,Create'
             )
             ->middlewareFor(
                 'edit',
-                'permission:security.roles.index,CanEdit'
+                'permission:security.roles.index,Update'
             )
             ->middlewareFor(
                 'update',
-                'permission:security.roles.index,CanEdit'
+                'permission:security.roles.index,Update'
             )
             ->middlewareFor(
                 'destroy',
-                'permission:security.roles.index,CanDelete'
+                'permission:security.roles.index,Delete'
             );
 
 
@@ -100,34 +101,42 @@ Route::middleware('auth')
         // MENUS
         // =========================
 
-        Route::resource('menus', MenuController::class)
+        Route::resource('menus', MenuController::class)->except(['show'])
     ->middlewareFor(
         'index',
-        'permission:security.menus.index,CanOpen'
+        'permission:security.menus.index,View'
     )
     ->middlewareFor(
         'create',
-        'permission:security.menus.index,CanAdd'
+        'permission:security.menus.index,Create'
     )
     ->middlewareFor(
         'store',
-        'permission:security.menus.index,CanAdd'
-    )
-    ->middlewareFor(
-        'show',
-        'permission:security.menus.index,CanOpen'
+        'permission:security.menus.index,Create'
     )
     ->middlewareFor(
         'edit',
-        'permission:security.menus.index,CanEdit'
+        'permission:security.menus.index,Update'
     )
     ->middlewareFor(
         'update',
-        'permission:security.menus.index,CanEdit'
+        'permission:security.menus.index,Update'
     )
     ->middlewareFor(
         'destroy',
-        'permission:security.menus.index,CanDelete'
+        'permission:security.menus.index,Delete'
     );
+
+        // =========================
+        // PERMISSIONS
+        // =========================
+
+        Route::resource('permissions', PermissionController::class)->except(['show'])
+            ->middlewareFor('index', 'permission:security.permissions.index,View')
+            ->middlewareFor('create', 'permission:security.permissions.index,Create')
+            ->middlewareFor('store', 'permission:security.permissions.index,Create')
+            ->middlewareFor('edit', 'permission:security.permissions.index,Update')
+            ->middlewareFor('update', 'permission:security.permissions.index,Update')
+            ->middlewareFor('destroy', 'permission:security.permissions.index,Delete');
 
     });

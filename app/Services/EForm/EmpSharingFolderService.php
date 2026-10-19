@@ -4,6 +4,8 @@ namespace App\Services\EForm;
 
 use App\Models\EForm\TrEmpSharingFolder;
 use App\Models\EForm\TrEmpSharingFolderDetail;
+use App\Models\Master\MsFolderPath;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use App\Repositories\EForm\EmpSharingFolderRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +27,9 @@ class EmpSharingFolderService
             ?? 'Admin';
     }
 
-    public function getAll(?string $search, int $perPage): LengthAwarePaginator
+    public function getAll(?string $search, int $perPage, ?string $empFormId = null): LengthAwarePaginator
     {
-        return $this->repository->getAll($search, $perPage);
+        return $this->repository->getAll($search, $perPage, $empFormId);
     }
 
     public function find(string $id): ?TrEmpSharingFolder
@@ -39,7 +41,7 @@ class EmpSharingFolderService
     {
         $prefix = 'ESF' . date('Ym', strtotime($dateFrom)) . '-';
 
-        $ids = TrEmpSharingFolder::query()
+        $ids = TrEmpSharingFolder::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpSharingFolderID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpSharingFolderID');
@@ -67,15 +69,12 @@ class EmpSharingFolderService
     public function create(array $data): TrEmpSharingFolder
     {
         return DB::transaction(function () use ($data) {
-
             $now = now();
             $user = $this->user();
 
             $header = [
                 'EmpSharingFolderID' => $this->generateId($data['DateFrom']),
                 'EmpFormID' => $data['EmpFormID'],
-                'ReqDivID' => $data['ReqDivID'] ?? null,
-                'ReqUser' => $data['ReqUser'] ?? $user,
                 'ReqDate' => $data['ReqDate'] ?? now()->toDateString(),
                 'ReqType' => $data['ReqType'],
                 'DateFrom' => $data['DateFrom'],
@@ -101,9 +100,7 @@ class EmpSharingFolderService
 
             $model = $this->repository->create($header);
 
-            $details = $this->buildDetails($data, $model->EmpSharingFolderID, $user, $now);
-
-            foreach ($details as $detail) {
+            foreach ($this->buildDetails($data, $model->EmpSharingFolderID, $user, $now) as $detail) {
                 TrEmpSharingFolderDetail::query()->create($detail);
             }
 
@@ -114,7 +111,6 @@ class EmpSharingFolderService
     public function update(string $id, array $data): TrEmpSharingFolder
     {
         return DB::transaction(function () use ($id, $data) {
-
             $model = $this->repository->find($id);
 
             if (!$model) {
@@ -140,14 +136,7 @@ class EmpSharingFolderService
                 ->where('EmpSharingFolderID', $id)
                 ->delete();
 
-            foreach (
-                $this->buildDetails(
-                    $data,
-                    $id,
-                    $user,
-                    now()
-                ) as $detail
-            ) {
+            foreach ($this->buildDetails($data, $id, $user, now()) as $detail) {
                 TrEmpSharingFolderDetail::query()->create($detail);
             }
 
@@ -165,12 +154,11 @@ class EmpSharingFolderService
         $accessType = $data['AccessType'];
 
         if ($data['FolderRequestType'] === 'Existing') {
-
             foreach ($data['FolderPathIDs'] as $folderPathId) {
-
                 $result[] = [
                     'EmpSharingFolderID' => $headerId,
                     'FolderPathID' => $folderPathId,
+                    'ParentFolderID' => null,
                     'ParentFolderPathID' => null,
                     'FolderName' => null,
                     'RequestedPath' => null,
@@ -186,19 +174,31 @@ class EmpSharingFolderService
         }
 
         $parentId = $data['ParentFolderPathID'];
-        $folderName = $data['NewFolderName'];
+        $folderName = trim($data['NewFolderName']);
 
-        $parent = \App\Models\Master\MsFolderPath::find($parentId);
+        $parent = MsFolderPath::query()
+            ->where('FolderPathID', $parentId)
+            ->where('IsActive', true)
+            ->first();
 
-        $requestedPath = $folderName;
+        if (!$parent) {
+            throw ValidationException::withMessages([
+                'ParentFolderPathID' => 'Parent Folder Path tidak ditemukan atau sudah tidak aktif.',
+            ]);
+        }
 
-        if ($parent) {
-            $requestedPath = rtrim($parent->FolderPath, '\\') . '\\' . $folderName;
+        $requestedPath = rtrim($parent->FolderPath, '\\') . '\\' . $folderName;
+
+        if (MsFolderPath::query()->where('FolderPath', $requestedPath)->exists()) {
+            throw ValidationException::withMessages([
+                'NewFolderName' => 'Folder tersebut sudah terdaftar pada Folder Path Master.',
+            ]);
         }
 
         return [[
             'EmpSharingFolderID' => $headerId,
             'FolderPathID' => null,
+            'ParentFolderID' => null,
             'ParentFolderPathID' => $parentId,
             'FolderName' => $folderName,
             'RequestedPath' => $requestedPath,
@@ -213,7 +213,6 @@ class EmpSharingFolderService
     public function delete(string $id): void
     {
         DB::transaction(function () use ($id) {
-
             $model = $this->repository->find($id);
 
             if (!$model) {

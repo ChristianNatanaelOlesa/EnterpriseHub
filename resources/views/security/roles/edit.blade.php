@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Role')
+@section('title', 'Role Management - Edit Role')
 
 @section('content')
 
@@ -9,7 +9,7 @@
         <div class="card-header">
 
             <h3 class="card-title">
-                Edit Role
+                Role Management - Edit Role
             </h3>
 
         </div>
@@ -27,8 +27,8 @@
                 ])
 
                 @include('security.roles._permissions', [
-                    'menus' => $menus,
-                    'permissions' => $permissions,
+                    'menuPermissions' => $menuPermissions,
+                    'selectedPermissions' => $selectedPermissions,
                 ])
 
             </div>

@@ -20,18 +20,18 @@ class DivisionRepository extends BaseRepository
                 'directorate',
             ])
             ->whereNull('DeletedDate')
-            ->orderBy('DivisionID')
+            ->orderBy('DivID')
             ->paginate($perPage);
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->model
             ->with([
                 'directorate.company',
             ])
             ->where(
-                'DivisionID',
+                'DivID',
                 $id
             )
             ->whereNull('DeletedDate')
@@ -51,12 +51,12 @@ class DivisionRepository extends BaseRepository
 
                     $query
                         ->where(
-                            'DivisionCode',
+                            'DivID',
                             'like',
                             "%{$search}%"
                         )
                         ->orWhere(
-                            'DivisionName',
+                            'Division',
                             'like',
                             "%{$search}%"
                         )
@@ -65,7 +65,7 @@ class DivisionRepository extends BaseRepository
                             function ($query) use ($search) {
 
                                 $query->where(
-                                    'DirectorateName',
+                                    'Directorate',
                                     'like',
                                     "%{$search}%"
                                 );
@@ -75,7 +75,7 @@ class DivisionRepository extends BaseRepository
                                     function ($query) use ($search) {
 
                                         $query->where(
-                                            'CompanyName',
+                                            'Company',
                                             'like',
                                             "%{$search}%"
                                         );
@@ -89,7 +89,7 @@ class DivisionRepository extends BaseRepository
                 });
 
             })
-            ->orderBy('DivisionID')
+            ->orderBy('DivID')
             ->paginate($perPage)
             ->withQueryString();
     }

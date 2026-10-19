@@ -8,13 +8,19 @@ class MsCompany extends BaseModel
 {
     protected $table = 'ms_company';
 
-    protected $primaryKey = 'CompanyID';
+    protected $primaryKey = 'CompID';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
 
     protected $fillable = [
-        'CompanyCode',
-        'CompanyName',
+        'CompID',
+        'Company',
+        'Description',
         'Address',
-        'Phone',
+        'Phone1',
+        'Phone2',
         'Email',
         'IsActive',
 
@@ -30,15 +36,14 @@ class MsCompany extends BaseModel
         'IsActive' => 'boolean',
         'InputDate' => 'datetime',
         'ModifDate' => 'datetime',
-        'DeletedDate' => 'datetime',
     ];
 
     public function directorates()
     {
         return $this->hasMany(
             MsDirectorate::class,
-            'CompanyID',
-            'CompanyID'
+            'CompID',
+            'CompID'
         );
     }
 }

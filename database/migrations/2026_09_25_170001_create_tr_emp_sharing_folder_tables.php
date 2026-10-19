@@ -4,15 +4,12 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class () extends Migration {
     public function up(): void
     {
-        Schema::create('Tr_EmpSharingFolder', function (Blueprint $table) {
+        Schema::create('tr_empsharingfolder', function (Blueprint $table) {
             $table->string('EmpSharingFolderID', 13)->primary();
             $table->string('EmpFormID', 13);
-            $table->unsignedBigInteger('ReqDivID')->nullable();
-            $table->string('ReqUser', 50);
             $table->date('ReqDate');
             $table->string('ReqType', 20)->default('Permanent');
             $table->date('DateFrom');
@@ -40,26 +37,19 @@ return new class extends Migration
             $table->dateTime('ModifDate')->useCurrent();
 
             $table->index('EmpFormID');
-            $table->index('ReqDivID');
             $table->index('Status');
 
             $table->foreign('EmpFormID')
                 ->references('EmpFormID')
-                ->on('Tr_EmpForm')
-                ->cascadeOnUpdate();
-
-            $table->foreign('ReqDivID')
-                ->references('DivisionID')
-                ->on('Ms_Division')
-                ->nullOnDelete()
+                ->on('tr_empform')
                 ->cascadeOnUpdate();
         });
 
-        Schema::create('Tr_EmpSharingFolderDetail', function (Blueprint $table) {
+        Schema::create('tr_empsharingfolderdetail', function (Blueprint $table) {
             $table->bigIncrements('EmpSharingFolderDetailID');
             $table->string('EmpSharingFolderID', 13);
             $table->string('FolderPathID', 10)->nullable();
-            $table->string('ParentFolderPathID', 10)->nullable();
+            $table->string('ParentFolderID', 10)->nullable();
             $table->string('FolderName', 150)->nullable();
             $table->string('RequestedPath', 500)->nullable();
             $table->string('AccessType', 20)->default('Read');
@@ -71,22 +61,23 @@ return new class extends Migration
 
             $table->index('EmpSharingFolderID');
             $table->index('FolderPathID');
+            $table->index('ParentFolderID', 'tr_empsharingfolderdetail_parentfolderid_index');
 
             $table->foreign('EmpSharingFolderID')
                 ->references('EmpSharingFolderID')
-                ->on('Tr_EmpSharingFolder')
+                ->on('tr_empsharingfolder')
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
             $table->foreign('FolderPathID')
                 ->references('FolderPathID')
-                ->on('Ms_FolderPath')
+                ->on('ms_folderpath')
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->foreign('ParentFolderPathID')
-                ->references('FolderPathID')
-                ->on('Ms_FolderPath')
+            $table->foreign('ParentFolderID', 'tr_empsharingfolderdetail_parentfolderid_foreign')
+                ->references('ParentFolderID')
+                ->on('ms_parentfolder')
                 ->nullOnDelete()
                 ->cascadeOnUpdate();
         });
@@ -94,7 +85,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('Tr_EmpSharingFolderDetail');
-        Schema::dropIfExists('Tr_EmpSharingFolder');
+        Schema::dropIfExists('tr_empsharingfolderdetail');
+        Schema::dropIfExists('tr_empsharingfolder');
     }
 };

@@ -22,7 +22,8 @@ class EmpAppController extends Controller
         $search = trim((string) $request->input('search', ''));
         $employeeApps = $this->service->getAll(
             $search,
-            (int) $request->input('perPage', 10)
+            (int) $request->input('perPage', 10),
+            auth()->user()?->EmpFormId
         );
 
         return view(

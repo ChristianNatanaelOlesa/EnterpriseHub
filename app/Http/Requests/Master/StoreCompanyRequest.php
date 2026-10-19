@@ -14,18 +14,20 @@ class StoreCompanyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'CompanyCode' => [
+            'CompID' => [
                 'required',
                 'string',
                 'max:20',
-                'unique:ms_company,CompanyCode',
+                'unique:ms_company,CompID',
             ],
 
-            'CompanyName' => [
+            'Company' => [
                 'required',
                 'string',
                 'max:200',
             ],
+
+            'Description' => ['required', 'string'],
 
             'Address' => [
                 'nullable',
@@ -33,11 +35,8 @@ class StoreCompanyRequest extends FormRequest
                 'max:500',
             ],
 
-            'Phone' => [
-                'nullable',
-                'string',
-                'max:30',
-            ],
+            'Phone1' => ['required', 'string', 'max:30'],
+            'Phone2' => ['nullable', 'string', 'max:30'],
 
             'Email' => [
                 'nullable',

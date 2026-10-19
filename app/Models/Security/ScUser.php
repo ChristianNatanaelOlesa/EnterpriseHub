@@ -20,7 +20,6 @@ class ScUser extends Authenticatable
         'Username',
         'FullName',
         'Password',
-        'RoleID',
         'Email',
         'PhoneNumber',
         'Photo',
@@ -60,13 +59,14 @@ class ScUser extends Authenticatable
             'sc_user_role',
             'UserID',
             'RoleID'
-        )->withPivot('IsActive');
+        )->withPivot(['IsActive', 'DeletedDate']);
     }
 
     public function activeRoles()
     {
         return $this->roles()
             ->wherePivot('IsActive', true)
+            ->wherePivotNull('DeletedDate')
             ->where('sc_role.IsActive', true)
             ->whereNull('sc_role.DeletedDate');
     }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Security;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreMenuRequest extends FormRequest
 {
@@ -14,15 +15,20 @@ class StoreMenuRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'ParentID'  => ['nullable', 'integer', 'exists:sc_menu,MenuID'],
-            'Code'      => ['required', 'string', 'max:30', 'unique:sc_menu,Code'],
-            'Name'      => ['required', 'string', 'max:100'],
+            'ParentID'  => [
+                'nullable', 'string', 'regex:/^\d{2}-\d{2}-\d{2}$/',
+                Rule::exists('sc_menu', 'MenuID')->where(fn ($query) => $query->where('IsActive', true)->whereNull('DeletedDate')),
+            ],
+            'Menu'      => ['required', 'string', 'max:100'],
+            'Description' => ['required', 'string'],
+            'MenuArea'  => ['required', 'string', 'in:TOP,SIDEBAR', 'max:20'],
             'Route'     => ['nullable', 'string', 'max:255'],
-            'URL'       => ['nullable', 'string', 'max:255'],
             'Icon'      => ['nullable', 'string', 'max:100'],
             'SortOrder' => ['required', 'integer', 'min:0'],
             'IsMenu'    => ['nullable', 'boolean'],
             'IsActive'  => ['nullable', 'boolean'],
+            'MenuID' => ['prohibited'],
+            'Lvl' => ['prohibited'],
         ];
     }
 }

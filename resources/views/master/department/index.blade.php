@@ -106,23 +106,23 @@
                             <tr>
 
                                 <td>
-                                    {{ $department->division?->directorate?->company?->CompanyName ?? '-' }}
+                                    {{ $department->division?->directorate?->company?->Company ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $department->division?->directorate?->DirectorateName ?? '-' }}
+                                    {{ $department->division?->directorate?->Directorate ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $department->division?->DivisionName ?? '-' }}
+                                    {{ $department->division?->Division ?? '-' }}
                                 </td>
 
                                 <td>
-                                    {{ $department->DepartmentCode }}
+                                    {{ $department->DeptID }}
                                 </td>
 
                                 <td>
-                                    {{ $department->DepartmentName }}
+                                    {{ $department->Department }}
                                 </td>
 
                                 <td>
@@ -143,7 +143,7 @@
 
                                     @canEdit('master.department.index')
 
-                                    <a href="{{ route('master.department.edit', $department->DepartmentID) }}"
+                                    <a href="{{ route('master.department.edit', $department->DeptID) }}"
                                         class="btn btn-sm btn-warning">
 
                                         <i class="bi bi-pencil"></i>
@@ -157,7 +157,7 @@
                                     @canDelete('master.department.index')
 
                                     <form method="POST"
-                                        action="{{ route('master.department.destroy', $department->DepartmentID) }}"
+                                        action="{{ route('master.department.destroy', $department->DeptID) }}"
                                         class="d-inline">
 
                                         @csrf

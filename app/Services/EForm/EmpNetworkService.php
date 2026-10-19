@@ -5,6 +5,7 @@ namespace App\Services\EForm;
 use App\Models\EForm\TrEmpForm;
 use App\Models\EForm\TrEmpFormHist;
 use App\Models\EForm\TrEmpNetwork;
+use App\Models\Scopes\EmployeeVisibilityScope;
 use App\Repositories\EForm\EmpNetworkRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
@@ -15,9 +16,9 @@ class EmpNetworkService
 {
     public function __construct(protected EmpNetworkRepository $repository) {}
 
-    public function getAll(?string $search = null, int $perPage = 10): LengthAwarePaginator
+    public function getAll(?string $search = null, int $perPage = 10, ?string $empFormId = null): LengthAwarePaginator
     {
-        return $this->repository->getAll($search, $perPage);
+        return $this->repository->getAll($search, $perPage, $empFormId);
     }
 
     public function find(string $id): ?TrEmpNetwork
@@ -57,7 +58,7 @@ class EmpNetworkService
                 ]);
             }
 
-            $reqDivId = $this->getCurrentRequestDivisionId($empFormId);
+            $this->getCurrentRequestDivisionId($empFormId);
             $username = $this->username();
             $now = now();
             $dateFrom = $data['DateFrom'];
@@ -65,8 +66,6 @@ class EmpNetworkService
 
             $data['EmpNetworkID'] = $this->generateId($dateFrom);
             $data['EmpFormID'] = $empFormId;
-            $data['ReqDivID'] = $reqDivId;
-            $data['ReqUser'] = $username;
             $data['ReqDate'] = $now->toDateString();
             $data['DateUntil'] = $reqType === 'Permanent'
                 ? '1900-01-01'
@@ -127,8 +126,6 @@ class EmpNetworkService
             unset(
                 $data['EmpNetworkID'],
                 $data['EmpFormID'],
-                $data['ReqDivID'],
-                $data['ReqUser'],
                 $data['ReqDate'],
                 $data['CocID'],
                 $data['IsConfirm'],
@@ -190,7 +187,7 @@ class EmpNetworkService
 
         if ($divisionId === null) {
             throw ValidationException::withMessages([
-                'ReqDivID' => 'Division aktif untuk EmpFormID user login tidak ditemukan pada Tr_EmpFormHist.',
+                'EmpFormID' => 'Division aktif untuk EmpFormID user login tidak ditemukan pada Tr_EmpFormHist.',
             ]);
         }
 
@@ -214,7 +211,7 @@ class EmpNetworkService
         $date = \Carbon\Carbon::parse($dateFrom);
         $prefix = 'ENW' . $date->format('Ym') . '-';
 
-        $ids = TrEmpNetwork::query()
+        $ids = TrEmpNetwork::withoutGlobalScope(EmployeeVisibilityScope::class)
             ->where('EmpNetworkID', 'like', $prefix . '%')
             ->lockForUpdate()
             ->pluck('EmpNetworkID');

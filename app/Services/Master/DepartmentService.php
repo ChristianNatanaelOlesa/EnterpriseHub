@@ -23,7 +23,7 @@ class DepartmentService
         );
     }
 
-    public function findById(int $id)
+    public function findById(string $id)
     {
         return $this->repository->findById($id);
     }
@@ -33,14 +33,14 @@ class DepartmentService
         return DB::transaction(function () use ($data) {
 
             /*
-             * CompanyID dan DirectorateID hanya digunakan
+             * CompID dan DirID hanya digunakan
              * untuk validasi hierarchy/form.
              *
-             * ms_department hanya menyimpan DivisionID.
+             * ms_department hanya menyimpan DivID.
              */
             unset(
-                $data['CompanyID'],
-                $data['DirectorateID']
+                $data['CompID'],
+                $data['DirID']
             );
 
             $data['InputUser'] =
@@ -53,7 +53,7 @@ class DepartmentService
     }
 
     public function update(
-        int $id,
+        string $id,
         array $data
     ) {
         return DB::transaction(function () use (
@@ -62,12 +62,12 @@ class DepartmentService
         ) {
 
             /*
-             * Jangan kirim CompanyID dan DirectorateID
+             * Jangan kirim CompID dan DirID
              * ke ms_department.
              */
             unset(
-                $data['CompanyID'],
-                $data['DirectorateID']
+                $data['CompID'],
+                $data['DirID']
             );
 
             $data['ModifUser'] =
@@ -82,7 +82,7 @@ class DepartmentService
         });
     }
 
-    public function delete(int $id)
+    public function delete(string $id)
     {
         return DB::transaction(function () use ($id) {
 

@@ -48,11 +48,12 @@ class MenuController extends Controller
     public function edit(string $id)
     {
         $menu = $this->menuService->findById($id);
-        $parents = $this->menuService->getParents();
+        $parents = $this->menuService->getParents($id);
+        $permissions = $this->menuService->getPermissionConfiguration($id);
 
         return view(
             'security.menus.edit',
-            compact('menu', 'parents')
+            compact('menu', 'parents', 'permissions')
         );
     }
 
@@ -76,6 +77,6 @@ class MenuController extends Controller
 
         return redirect()
             ->route('security.menus.index')
-            ->with('success', 'Menu berhasil dihapus.');
+            ->with('success', 'Menu dinonaktifkan. Relasi permission tetap disimpan.');
     }
 }
