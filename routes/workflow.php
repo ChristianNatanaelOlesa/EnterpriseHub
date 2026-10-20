@@ -13,6 +13,11 @@ Route::middleware('auth')->prefix('workflow')->group(function () {
         ->middleware('permission:workflow.index,View')
         ->name('workflow.show');
 
+    // Approval History: seluruh aktivitas approval yang pernah dilakukan oleh user login.
+    Route::get('/approval-history', [WorkflowController::class, 'approvalHistory'])
+        ->middleware('permission:workflow.index,View')
+        ->name('workflow.approval-history');
+
     // Read-only transaction detail for requesters and workflow participants.
     // Authorization is performed inside WorkflowController@detail().
     Route::get('/detail/{instance}', [WorkflowController::class, 'detail'])

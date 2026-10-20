@@ -68,3 +68,10 @@ Laravel 12 internal application (PHP 8.2, MySQL, XAMPP). Blade + Tailwind CSS v4
   - User dengan role `Transaction Approver` melihat semua data `Status = 'WAITING_APPROVAL'` lintas divisi/departemen, selain data dalam cakupan organisasinya sendiri
   - Staff hanya melihat data sendiri; Kabag melihat dept-nya; Kadiv melihat divisi-nya
   - Scope diterapkan via global scope `HasEmployeeVisibility` trait pada semua model EForm
+- **Approval History (Tahap 3):**
+  - Menu berada di bawah Workflow, samping My Approval: route `GET workflow/approval-history` (nama route `workflow.approval-history`)
+  - Controller: `WorkflowController@approvalHistory` — query `WfInstanceStep` where `ApproverUserID = auth()->user()->UserID` AND `CompletedAt IS NOT NULL`, diurutkan `CompletedAt` desc
+  - View: `resources/views/workflow/approval-history.blade.php`
+  - Menu di database `sc_menu`: MenuID `07-02-00`, ParentID `07-00-00` (Workflow), Route `workflow.approval-history`, Lvl 2 (migration `2026_10_20_085755_add_approval_history_menu`)
+  - Kolom yang ditampilkan: No., Transaction Number, Module, Requester, Approval Date, Decision, Comment, Current Status, Action (Detail)
+  - Hanya aksi approval yang dilakukan oleh user login yang ditampilkan; komentar kosong ditampilkan sebagai `-`

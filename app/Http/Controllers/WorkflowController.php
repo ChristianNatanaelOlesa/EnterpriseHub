@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\WorkflowStatus;
 use App\Models\Workflow\WfInstance;
+use App\Models\Workflow\WfInstanceStep;
 use App\Models\Security\ScUser;
 use App\Services\Transaction\TransactionDetailRegistry;
 use App\Services\Workflow\WorkflowEngine;
@@ -47,6 +48,31 @@ class WorkflowController extends Controller
             ->withQueryString();
 
         return view('workflow.index', compact('approvals', 'search'));
+    }
+
+    public function approvalHistory(Request $request): View
+    {
+        $search = trim((string) $request->input('search', ''));
+        $userId = (int) auth()->user()->UserID;
+
+        $steps = WfInstanceStep::query()
+            ->with(['instance.process', 'instance.requester', 'approver'])
+            ->where('ApproverUserID', $userId)
+            ->whereNotNull('CompletedAt')
+            ->when($search !== '', function ($q) use ($search) {
+                $like = '%' . $search . '%';
+                $q->where(function ($x) use ($like) {
+                    $x->where('StepName', 'like', $like)
+                        ->orWhere('Comments', 'like', $like)
+                        ->orWhereHas('instance.process', fn ($p) => $p->where('Process', 'like', $like))
+                        ->orWhereHas('instance.requester', fn ($u) => $u->where('Username', 'like', $like));
+                });
+            })
+            ->orderByDesc('CompletedAt')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('workflow.approval-history', compact('steps', 'search'));
     }
 
     public function show(string $instance): View
